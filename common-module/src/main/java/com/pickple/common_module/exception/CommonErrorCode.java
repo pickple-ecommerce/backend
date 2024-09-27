@@ -1,7 +1,6 @@
 package com.pickple.common_module.exception;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
  * }</pre>
  */
 @AllArgsConstructor
-@Getter
 public enum CommonErrorCode implements ErrorCode {
 
     // 공통 서버 에러
