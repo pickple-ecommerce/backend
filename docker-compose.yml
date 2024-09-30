@@ -34,6 +34,18 @@ services:
     volumes:
       - ./db-init/payment/init-payment.sql:/docker-entrypoint-initdb.d/init-payment.sql
 
+  user_db:
+    image: postgres:latest
+    container_name: user_db
+    environment:
+      - POSTGRES_DB=user_db
+      - POSTGRES_USER=user_db
+      - POSTGRES_PASSWORD=user_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
