@@ -1,0 +1,11 @@
+services:
+  delivery_db:
+    image: bitnami/cassandra:latest
+    container_name: delivery_db
+    environment:
+      - CASSANDRA_CLUSTER_NAME=delivery_db
+      - CASSANDRA_CQL_PORT_NUMBER=5435
+    ports:
+      - "5435:5435"
+    volumes:
+      - ./db-init/delivery/init-delivery.cql:/docker-entrypoint-initdb.d/init-delivery.cql
