@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: delivery-service
+  cassandra:
+    port: 5435
+    contact-points: localhost
+    keyspace-name: delivery_keyspace
+    local-datacenter: datacenter1
+    username: cassandra
+    password: cassandra
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+server:
+  port: 19096
