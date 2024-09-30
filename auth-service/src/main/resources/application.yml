@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: auth
+  profiles:
+    active: dev
+
+server:
+  port: 19092
