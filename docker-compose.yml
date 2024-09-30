@@ -9,6 +9,7 @@ services:
       - "5435:5435"
     volumes:
       - ./db-init/delivery/init-delivery.cql:/docker-entrypoint-initdb.d/init-delivery.cql
+
   commerce_db:
     image: postgres:latest
     container_name: commerce_db
@@ -20,6 +21,7 @@ services:
       - "5433:5432"
     volumes:
       - ./db-init/commerce/init-commerce.sql:/docker-entrypoint-initdb.d/init-commerce.sql
+
   payment_db:
     image: postgres:latest
     container_name: payment_db
@@ -68,3 +70,9 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
