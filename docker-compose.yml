@@ -20,3 +20,14 @@ services:
       - "5433:5432"
     volumes:
       - ./db-init/commerce/init-commerce.sql:/docker-entrypoint-initdb.d/init-commerce.sql
+  payment_db:
+    image: postgres:latest
+    container_name: payment_db
+    environment:
+      - POSTGRES_DB=payment_db
+      - POSTGRES_USER=pickple
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./db-init/payment/init-payment.sql:/docker-entrypoint-initdb.d/init-payment.sql
