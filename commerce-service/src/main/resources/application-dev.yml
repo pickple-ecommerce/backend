@@ -6,6 +6,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5433/commerce_db
+    username: postgres
+    password: postgres
 
 eureka:
   client:
