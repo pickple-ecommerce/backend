@@ -18,18 +18,5 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping()
-    public CommonResponse<PaymentCreateRespDto> createPayment(@RequestBody PaymentCreateReqDto reqDto) {
-        CommonResponse<PaymentCreateRespDto> response = CommonResponse.success(
-                HttpStatus.OK,
-                "test",
-                paymentService.createPayment(reqDto)
-        );
-        return response;
-
-    }
-
-
-
 
 }

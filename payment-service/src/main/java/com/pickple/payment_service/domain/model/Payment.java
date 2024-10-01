@@ -36,4 +36,19 @@ public class Payment extends BaseEntity {
 
     @Column(name="approval_number")
     private String approvalNumber;
+
+    public Payment(UUID orderId, BigDecimal amount) {
+        this.orderId = orderId;
+        this.amount = amount;
+        this.method = "CREDIT-CARD";
+        this.status = PaymentStatusEnum.PENDING;
+    }
+
+    public void success() {
+        this.status = PaymentStatusEnum.SUCCESS;
+    }
+
+    public void fail() {
+        this.status = PaymentStatusEnum.FAILED;
+    }
 }
