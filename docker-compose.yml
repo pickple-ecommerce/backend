@@ -14,8 +14,9 @@ services:
     container_name: commerce_db
     environment:
       - POSTGRES_DB=commerce_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=commerce_db
+      - POSTGRES_PASSWORD=commerce
+      - POSTGRESQL_PORT_NUMBER: 5433
     ports:
       - "5433:5432"
     volumes:
