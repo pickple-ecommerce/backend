@@ -12,7 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PaymentSuccessEvent {
     private UUID paymentId;
-    private UUID orderId;
     private PaymentStatusEnum status;
 
 }
