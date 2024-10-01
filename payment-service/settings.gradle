@@ -1,3 +1,1 @@
 rootProject.name = 'payment-service'
-include ':common-module'
-project(':common-module').projectDir = new File('../common-module')

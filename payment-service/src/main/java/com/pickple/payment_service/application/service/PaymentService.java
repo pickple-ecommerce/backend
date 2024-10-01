@@ -27,7 +27,7 @@ public class PaymentService {
         payment.success();
         paymentRepository.save(payment);
 
-        PaymentSuccessEvent event = new PaymentSuccessEvent(payment.getPaymentId(), payment.getOrderId(), payment.getStatus());
+        PaymentSuccessEvent event = new PaymentSuccessEvent(payment.getPaymentId(), payment.getStatus());
         paymentEventService.sendPaymentSuccessEvent(event);
 
     }
