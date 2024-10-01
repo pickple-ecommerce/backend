@@ -1,10 +1,11 @@
 package com.pickple.user.presentation.controller;
 
+import com.pickple.user.application.dto.UserDto;
 import com.pickple.user.application.service.UserService;
+import com.pickple.user.presentation.request.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -17,6 +18,11 @@ public class UserController {
     @PostMapping("/sign-up")
     Boolean registerUser(@RequestBody SignUpRequestDto signUpDto) {
         return userService.registerUser(signUpDto);
+    }
+
+    @GetMapping("/user/{username}")
+    UserDto getUserByUsername(@PathVariable("username") String username) {
+        return userService.getUserByUsername(username);
     }
 
 }
