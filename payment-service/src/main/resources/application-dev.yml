@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/payment_db
     username: pickple
-    password: postgres
+    password: 1234
 
 eureka:
   client:
