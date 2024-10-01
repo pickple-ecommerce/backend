@@ -1,4 +1,4 @@
-package com.pickple.gateway.application;
+package com.pickple.gateway.application.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
