@@ -1,4 +1,4 @@
-package com.pickple.delivery.domain.model;
+package com.pickple.delivery.domain.model.enums;
 
 /**
  * 배송 상태를 나타내는 ENUM 클래스입니다.
@@ -12,5 +12,5 @@ package com.pickple.delivery.domain.model;
 public enum DeliveryStatus {
     PENDING,
     IN_TRANSIT,
-    DELIVERED;
+    DELIVERED
 }
