@@ -29,6 +29,7 @@ public class AuthService {
     private final UserServiceClient userServiceClient;
     private final RedisService redisService;
 
+    // 로그인
     public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
@@ -50,6 +51,7 @@ public class AuthService {
         response.addHeader("X-User-Roles", rolesString);
     }
 
+    // 회원 가입
     public Boolean signup(SignUpRequestDto signUpDto) {
         String password = passwordEncoder.encode(signUpDto.getPassword());
         signUpDto.setPassword(password);
