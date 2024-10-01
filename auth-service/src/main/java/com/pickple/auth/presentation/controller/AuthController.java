@@ -8,4 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequestDto signUpDto) {
+        Boolean result = authService.signup(signUpDto);
+        if (result) {
+            return ResponseEntity.ok().body("signup success");
+        } else {
+            return ResponseEntity.badRequest().body("signup failed");
+        }
+    }
+
 }

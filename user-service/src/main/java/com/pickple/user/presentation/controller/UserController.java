@@ -14,4 +14,9 @@ public class UserController {
 
     private final UserService userService;
 
+    @PostMapping("/sign-up")
+    Boolean registerUser(@RequestBody SignUpRequestDto signUpDto) {
+        return userService.registerUser(signUpDto);
+    }
+
 }
