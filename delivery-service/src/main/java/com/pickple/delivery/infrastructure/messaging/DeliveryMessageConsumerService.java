@@ -1,9 +1,11 @@
-package com.pickple.delivery.application.service;
+package com.pickple.delivery.infrastructure.messaging;
 
 import static com.pickple.common_module.infrastructure.messaging.EventSerializer.objectMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pickple.delivery.application.dto.DeliveryCreateResponseDto;
+import com.pickple.delivery.application.mapper.DeliveryMapper;
+import com.pickple.delivery.application.service.DeliveryApplicationService;
 import com.pickple.delivery.infrastructure.messaging.events.DeliveryCreateRequestEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +26,7 @@ public class DeliveryMessageConsumerService {
             DeliveryCreateRequestEvent deliveryCreateRequestEvent = objectMapper.readValue(message,
                     DeliveryCreateRequestEvent.class);
             DeliveryCreateResponseDto delivery = deliveryApplicationService.createDelivery(
-                    deliveryCreateRequestEvent);
-
+                    DeliveryMapper.convertCreateRequestEventToDto(deliveryCreateRequestEvent));
             // TODO: Order 로 이벤트 발행?
         } catch (JsonProcessingException e) {
             // TODO: Exception Handler 구현

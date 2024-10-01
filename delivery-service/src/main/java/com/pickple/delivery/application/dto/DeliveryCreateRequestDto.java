@@ -1,6 +1,5 @@
 package com.pickple.delivery.application.dto;
 
-import com.pickple.delivery.infrastructure.messaging.events.DeliveryCreateRequestEvent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -24,15 +23,5 @@ public class DeliveryCreateRequestDto {
 
     @NotBlank
     private String recipientContact;
-
-    public static DeliveryCreateRequestDto fromEvent(DeliveryCreateRequestEvent event) {
-        return DeliveryCreateRequestDto.builder()
-                .orderId(event.getOrderId())
-                .deliveryRequirement(event.getDeliveryRequirement())
-                .recipientName(event.getRecipientName())
-                .recipientAddress(event.getRecipientAddress())
-                .recipientContact(event.getRecipientContact())
-                .build();
-    }
 
 }
