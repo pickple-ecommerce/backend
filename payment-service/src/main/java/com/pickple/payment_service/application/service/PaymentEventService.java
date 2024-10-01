@@ -1,7 +1,7 @@
 package com.pickple.payment_service.application.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pickple.payment_service.EventSerializer;
+
 import com.pickple.payment_service.infrastructure.messaging.events.PaymentSuccessEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class PaymentEventService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public void sendPaymentSuccessEvent(PaymentSuccessEvent event) {
-        kafkaTemplate.send("payment-success", EventSerializer.serialize(event));
+
     }
 
 }

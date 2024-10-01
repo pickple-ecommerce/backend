@@ -12,15 +12,15 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentCreateRespDto {
+public class PaymentRespDto {
     private UUID paymentId;
     private UUID orderId;
     private BigDecimal amount;
     private String method;
     private PaymentStatusEnum status;
 
-    public static PaymentCreateRespDto from(Payment payment) {
-        return PaymentCreateRespDto.builder()
+    public static PaymentRespDto from(Payment payment) {
+        return PaymentRespDto.builder()
                 .paymentId(payment.getPaymentId())
                 .orderId(payment.getOrderId())
                 .amount(payment.getAmount())
