@@ -9,6 +9,7 @@ services:
       - "5435:5435"
     volumes:
       - ./db-init/delivery/init-delivery.cql:/docker-entrypoint-initdb.d/init-delivery.cql
+
   commerce_db:
     image: postgres:latest
     container_name: commerce_db
@@ -21,3 +22,70 @@ services:
       - "5433:5432"
     volumes:
       - ./db-init/commerce/init-commerce.sql:/docker-entrypoint-initdb.d/init-commerce.sql
+
+  payment_db:
+    image: postgres:latest
+    container_name: payment_db
+    environment:
+      - POSTGRES_DB=payment_db
+      - POSTGRES_USER=pickple
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./db-init/payment/init-payment.sql:/docker-entrypoint-initdb.d/init-payment.sql
+
+  user_db:
+    image: postgres:latest
+    container_name: user_db
+    environment:
+      - POSTGRES_DB=user_db
+      - POSTGRES_USER=user_db
+      - POSTGRES_PASSWORD=user_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092,DOCKER://host.docker.internal:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - 8080:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"

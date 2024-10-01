@@ -1,5 +1,7 @@
 package com.pickple.delivery.domain.model;
 
+import com.pickple.delivery.domain.model.enums.DeliveryStatus;
+import com.pickple.delivery.domain.model.enums.DeliveryType;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
