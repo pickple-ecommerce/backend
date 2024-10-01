@@ -4,15 +4,15 @@ import com.pickple.delivery.domain.model.DeliveryDetail;
 import com.pickple.delivery.domain.model.DeliveryDetailId;
 import com.pickple.delivery.infrastructure.config.AuditorConfig;
 import com.pickple.delivery.infrastructure.repository.DeliveryDetailRepository;
-import com.pickple.delivery.infrastructure.repository.DeliveryRepository;
+import com.pickple.delivery.infrastructure.repository.DeliveryCassandraRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.data.cassandra.DataCassandraTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.pickple.delivery.domain.model.Delivery;
-import com.pickple.delivery.domain.model.DeliveryType;
-import com.pickple.delivery.domain.model.DeliveryStatus;
+import com.pickple.delivery.domain.model.enums.DeliveryType;
+import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataCassandraTest
 @ExtendWith(SpringExtension.class)
 @Import(AuditorConfig.class)
-public class DeliveryRepositoryTest {
+public class DeliveryCassandraRepositoryTest {
 
     @Autowired
-    private DeliveryRepository deliveryRepository;
+    private DeliveryCassandraRepository deliveryCassandraRepository;
 
     @Autowired
     private DeliveryDetailRepository deliveryDetailRepository;
@@ -85,11 +85,11 @@ public class DeliveryRepositoryTest {
                 .build();
 
         // When
-        deliveryRepository.save(delivery);
+        deliveryCassandraRepository.save(delivery);
         deliveryDetailRepository.saveAll(deliveryDetails);
 
         // Then
-        Delivery foundDelivery = deliveryRepository.findById(deliveryId).orElse(null);
+        Delivery foundDelivery = deliveryCassandraRepository.findById(deliveryId).orElse(null);
         assertThat(foundDelivery).isNotNull();
         assertThat(foundDelivery.getDeliveryId()).isEqualTo(deliveryId);
         assertThat(foundDelivery.getDeliveryStatus()).isEqualTo(DeliveryStatus.PENDING);

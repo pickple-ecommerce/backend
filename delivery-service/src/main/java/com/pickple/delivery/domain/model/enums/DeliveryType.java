@@ -1,4 +1,4 @@
-package com.pickple.delivery.domain.model;
+package com.pickple.delivery.domain.model.enums;
 
 /**
  * 배송 유형을 나타내는 ENUM 클래스입니다.
