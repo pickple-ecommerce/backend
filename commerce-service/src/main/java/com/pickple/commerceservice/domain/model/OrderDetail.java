@@ -23,6 +23,7 @@ public class OrderDetail extends BaseEntity {
     @Column(name = "order_detail_id", updatable = false, nullable = false)
     private UUID orderDetailId;
 
+    @Builder.Default
     @Column(name = "total_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
@@ -36,5 +37,4 @@ public class OrderDetail extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
-
 }
