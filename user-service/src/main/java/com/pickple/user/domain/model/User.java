@@ -1,6 +1,7 @@
 package com.pickple.user.domain.model;
 
 import com.pickple.common_module.domain.model.BaseEntity;
+import com.pickple.user.presentation.request.SignUpRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -45,5 +46,15 @@ public class User extends BaseEntity implements Serializable {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
+
+    public static User convertSignUpDtoToUser(SignUpRequestDto signUpDto) {
+        return User.builder()
+                .username(signUpDto.getUsername())
+                .password(signUpDto.getPassword())
+                .nickname(signUpDto.getNickname())
+                .email(signUpDto.getEmail())
+                .role(UserRole.fromString(signUpDto.getRole()))
+                .build();
+    }
 
 }
