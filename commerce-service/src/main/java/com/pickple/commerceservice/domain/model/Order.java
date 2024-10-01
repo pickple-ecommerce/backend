@@ -24,10 +24,12 @@ public class Order extends BaseEntity {
     @Column(name = "order_id", updatable = false, nullable = false)
     private UUID orderId;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
+    @Builder.Default
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal amount = BigDecimal.ZERO;
 
