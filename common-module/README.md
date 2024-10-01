@@ -1,6 +1,6 @@
 # common_module
 
-Pickple Backend 에서 공통으로 사용되는 클래스, 로직들을 포함하는 레포지토리 입니다.
+Pickple Backend 에서 공통으로 사용되는 클래스, 로직들을 포함하는 패키지 입니다.
 
 # Common Module 사용법
 
@@ -18,19 +18,10 @@ dependencies {
 }
 ```
 
-### `settings.gradle` 설정
+### `./gradlew build -x test` 수행
 
-`settings.gradle` 파일에 `common-module`을 프로젝트에 포함시키고, 경로를 지정합니다. 아래 코드를 `settings.gradle`에 추가합니다.
-
-```gradle
-// common-module을 프로젝트에 포함시킵니다.
-include ':common-module'
-
-// common-module의 경로를 절대 경로로 지정합니다.
-project(':common-module').projectDir = new File('../common-module')
-```
-
-`projectDir` 경로는 실제 환경에 맞게 수정해 주세요.
+`backend/` 디렉토리 내부 에서 위 명령을 수행하면, 각 service 마다 gradle build를 수행하고 이후에 
+module 로 사용할 수 있게 됩니다. 
 
 ## 2. `BaseEntity` 사용을 위한 설정
 
