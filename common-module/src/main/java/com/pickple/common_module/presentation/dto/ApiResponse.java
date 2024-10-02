@@ -22,13 +22,13 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 @AllArgsConstructor
-public class CommonResponse<T> {
+public class ApiResponse<T> {
 
     private HttpStatus status;
     private String message;
     private T data;
 
-    public static <T> CommonResponse<T> success(HttpStatus status, String message, T data) {
-        return new CommonResponse<>(status, message, data);
+    public static <T> ApiResponse<T> success(HttpStatus status, String message, T data) {
+        return new ApiResponse<>(status, message, data);
     }
 }
