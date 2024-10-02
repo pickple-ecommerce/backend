@@ -1,5 +1,6 @@
 package com.pickple.delivery.domain.model;
 
+import com.pickple.delivery.application.dto.DeliveryStartRequestDto;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import java.util.UUID;
@@ -69,6 +70,19 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
     @Override
     public boolean isNew() {
         return getCreatedAt() == null;
+    }
+
+    public void startDelivery (String carrierId, DeliveryType deliveryType,
+            DeliveryStartRequestDto dto) {
+        this.deliveryStatus = DeliveryStatus.IN_TRANSIT;
+        this.carrierId = carrierId;
+        this.deliveryType = deliveryType;
+        this.carrierName = dto.getCarrierName();
+        this.trackingNumber = dto.getTrackingNumber();
+    }
+
+    public void delete() {
+        this.isDelete = true;
     }
 
 }
