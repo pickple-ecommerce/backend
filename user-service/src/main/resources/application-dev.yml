@@ -1,0 +1,13 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: user_db
+    password: user_db
+    driver-class-name: org.postgresql.Driver

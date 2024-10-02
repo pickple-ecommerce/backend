@@ -1,6 +1,5 @@
 package com.pickple.payment_service.presentation.controller;
 
-import com.pickple.payment_service.application.dto.PaymentRespDto;
 import com.pickple.payment_service.application.service.PaymentService;
 
 import lombok.RequiredArgsConstructor;
@@ -11,9 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/payments")
