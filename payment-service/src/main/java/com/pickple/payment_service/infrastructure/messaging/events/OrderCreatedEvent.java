@@ -13,4 +13,5 @@ import java.util.UUID;
 public class OrderCreatedEvent {
     private UUID orderId;
     private BigDecimal amount;
+    private Long userId;
 }

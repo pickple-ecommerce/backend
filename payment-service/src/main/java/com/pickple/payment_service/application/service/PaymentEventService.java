@@ -15,7 +15,7 @@ public class PaymentEventService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public void sendPaymentSuccessEvent(PaymentSuccessEvent event) {
-        kafkaTemplate.send("payment-completed", EventSerializer.serialize(event));
+        kafkaTemplate.send("payment-create-response", event);
     }
 
 }
