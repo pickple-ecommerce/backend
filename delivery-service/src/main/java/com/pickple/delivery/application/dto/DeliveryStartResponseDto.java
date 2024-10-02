@@ -1,6 +1,5 @@
 package com.pickple.delivery.application.dto;
 
-import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
