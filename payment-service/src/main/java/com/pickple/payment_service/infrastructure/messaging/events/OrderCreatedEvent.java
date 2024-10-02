@@ -12,6 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class OrderCreatedEvent {
     private UUID orderId;
-    private BigDecimal amount;
     private Long userId;
+    private BigDecimal amount;
 }
