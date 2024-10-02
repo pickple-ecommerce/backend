@@ -1,6 +1,6 @@
 package com.pickple.payment_service.application.service;
 
-import com.pickple.common_module.exception.CommonErrorCode;
+import com.pickple.payment_service.exception.PaymentErrorCode;
 import com.pickple.common_module.exception.CustomException;
 import com.pickple.payment_service.application.dto.PaymentRespDto;
 import com.pickple.payment_service.domain.model.Payment;
@@ -46,7 +46,7 @@ public class PaymentService {
     public void cancelPayment(UUID orderId, String status){
         // errorEvent 만들고 난 뒤에 검증 처리 추가 예정
         Payment payment = paymentRepository.findByOrderIdAndIsDeleteIsFalse(orderId).orElseThrow(
-                () -> new CustomException(CommonErrorCode.RESOURCE_NOT_FOUND)
+                () -> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
         );
 
         payment.canceled();
@@ -54,34 +54,34 @@ public class PaymentService {
     }
 
     // 결제 상세 조회
+    @Transactional(readOnly = true)
     public PaymentRespDto getPaymentDetails (UUID paymentId){
         Payment payment = paymentRepository.findByPaymentIdAndIsDeleteIsFalse(paymentId).orElseThrow(
-                ()-> new CustomException(CommonErrorCode.RESOURCE_NOT_FOUND)
+                ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
         );
 
         return PaymentRespDto.from(payment);
     }
 
     // 결제 전체 조회 (user)
+    @Transactional(readOnly = true)
     public Page<PaymentRespDto> getPaymentByUser(Long userId, Pageable pageable) {
         Page<Payment> paymentList = paymentRepository.findAllByUserIdAndIsDeleteIsFalse(userId, pageable).orElseThrow(
-                ()-> new CustomException(CommonErrorCode.RESOURCE_NOT_FOUND)
+                ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
         );
 
         return paymentList.map(PaymentRespDto::from);
     }
 
     // 결제 전체 조회 (admin)
+    @Transactional(readOnly = true)
     public Page<PaymentRespDto> getPaymentByAdmin(Long userId, Pageable pageable) {
         Page<Payment> paymentList = paymentRepository.findAllByIsDeleteIsFalse(userId, pageable).orElseThrow(
-                ()-> new CustomException(CommonErrorCode.RESOURCE_NOT_FOUND)
+                ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
         );
 
         return paymentList.map(PaymentRespDto::from);
     }
-
-
-
 
 
 

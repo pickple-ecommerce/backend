@@ -15,12 +15,14 @@ public class PaymentEventConsumer {
     private final PaymentService paymentService;
 
     @KafkaListener(topics="payment-create-request", groupId="payment-group")
-    public void handleOrderCreated(OrderCreatedEvent event) {
+    public void handleOrderCreated(String message) {
+        OrderCreatedEvent event = EventSerializer.deserialize(message, OrderCreatedEvent.class);
         paymentService.createPayment(event.getOrderId(), event.getUserId(), event.getAmount());
     }
 
     @KafkaListener(topics="payment-cancel-request", groupId="payment-group")
-    public void handlePaymentCanceled(PaymentCanceledEvent event) {
+    public void handlePaymentCanceled(String message) {
+        PaymentCanceledEvent event = EventSerializer.deserialize(message, PaymentCanceledEvent.class);
         paymentService.cancelPayment(event.getOrderId(), event.getStatus());
     }
 }
