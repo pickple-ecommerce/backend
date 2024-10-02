@@ -1,6 +1,6 @@
 package com.pickple.payment_service.infrastructure.messaging;
 
-import com.pickple.payment_service.EventSerializer;
+import com.pickple.common_module.infrastructure.messaging.EventSerializer;
 import com.pickple.payment_service.application.service.PaymentService;
 import com.pickple.payment_service.infrastructure.messaging.events.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
