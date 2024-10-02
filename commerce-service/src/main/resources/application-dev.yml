@@ -8,8 +8,8 @@ spring:
     show-sql: true
   datasource:
     url: jdbc:postgresql://localhost:5433/commerce_db
-    username: postgres
-    password: postgres
+    username: commerce_db
+    password: commerce
 
 eureka:
   client:

@@ -1,0 +1,16 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+service:
+  jwt:
+    secret-key: paieRY4DK8B5jo8NRHQRVo8Ljs2zJgWbEDjbJ3cTVKVac7oftXqVaFmoaC9ouoAp
