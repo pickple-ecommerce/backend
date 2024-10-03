@@ -13,5 +13,4 @@ import java.util.UUID;
 public class PaymentSuccessEvent {
     private UUID paymentId;
     private PaymentStatusEnum status;
-
 }

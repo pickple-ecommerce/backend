@@ -35,6 +35,7 @@ public class Product extends BaseEntity {
     @Column(name = "product_image", length = 255)
     private String productImage;
 
+    @Builder.Default
     @Column(name = "is_public", nullable = false)
     private Boolean isPublic = true;
 
