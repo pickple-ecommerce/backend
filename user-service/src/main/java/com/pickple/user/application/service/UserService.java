@@ -1,14 +1,17 @@
 package com.pickple.user.application.service;
 
+import com.pickple.common_module.exception.CommonErrorCode;
 import com.pickple.common_module.exception.CustomException;
 import com.pickple.user.application.dto.UserDto;
 import com.pickple.user.application.dto.UserResponseDto;
 import com.pickple.user.domain.model.User;
 import com.pickple.user.domain.repository.UserRepository;
+import com.pickple.user.exception.UserErrorCode;
 import com.pickple.user.presentation.request.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +30,19 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    // 회원 상세 조회
+    @Transactional(readOnly = true)
+    public UserResponseDto getUsername(String username) {
+        User user = findUserByUsername(username);
+        return UserResponseDto.from(user);
+    }
+
+    // 유저 존재 여부 확인 메서드
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsernameAndIsDeleteFalse(username)
+                .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+    }
+
     public UserDto getUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
@@ -43,6 +59,5 @@ public class UserService {
             return false;
         }
     }
-
 
 }

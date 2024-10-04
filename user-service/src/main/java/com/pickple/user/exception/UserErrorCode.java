@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum UserErrorCode implements ErrorCode {
     // ------- 4xx --------
-    FORBIDDEN(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),;
+    FORBIDDEN(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저가 존재하지 않습니다."),;
 
 
     private final HttpStatus status;
