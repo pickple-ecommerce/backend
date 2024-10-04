@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,29 +34,30 @@ public class DeliveryController {
 
     @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
     @PostMapping("/{delivery_id}/start")
-    public ApiResponse<DeliveryStartResponseDto> startDelivery(
+    public ResponseEntity<ApiResponse<DeliveryStartResponseDto>> startDelivery(
             @PathVariable("delivery_id") UUID deliveryId,
             @Valid @RequestBody DeliveryStartRequest request) {
-        return ApiResponse.success(HttpStatus.OK, "배송이 등록되었습니다.", deliveryService.startDelivery(
-                DeliveryMapper.convertStartRequestToDto(deliveryId, request)));
+        return ResponseEntity.ok(
+                ApiResponse.success(HttpStatus.OK, "배송이 등록되었습니다.", deliveryService.startDelivery(
+                        DeliveryMapper.convertStartRequestToDto(deliveryId, request))));
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
     @GetMapping("/{delivery_id}")
-    public ApiResponse<DeliveryInfoResponseDto> getDeliveryInfo(
+    public ResponseEntity<ApiResponse<DeliveryInfoResponseDto>> getDeliveryInfo(
             @PathVariable("delivery_id") UUID deliveryId) {
-        return ApiResponse.success(HttpStatus.OK, "배송 조회에 성공하였습니다.",
-                deliveryService.getDeliveryInfo(deliveryId));
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 조회에 성공하였습니다.",
+                deliveryService.getDeliveryInfo(deliveryId)));
     }
 
     @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
     @PostMapping("/{delivery_id}/details")
-    public ApiResponse<DeliveryDetailCreateResponseDto> createDeliveryDetail(
+    public ResponseEntity<ApiResponse<DeliveryDetailCreateResponseDto>> createDeliveryDetail(
             @PathVariable("delivery_id") UUID deliveryId,
             @Valid @RequestBody DeliveryDetailCreateRequest request) {
-        return ApiResponse.success(HttpStatus.OK, "배송 경로가 등록되었습니다.",
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 경로가 등록되었습니다.",
                 deliveryDetailService.createDeliveryDetail(
-                        DeliveryDetailMapper.convertCreateRequestToDto(deliveryId, request)));
+                        DeliveryDetailMapper.convertCreateRequestToDto(deliveryId, request))));
     }
 
 }
