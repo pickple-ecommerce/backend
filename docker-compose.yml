@@ -47,6 +47,17 @@ services:
     volumes:
       - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
 
+  notification_db:
+    image: cassandra:latest
+    container_name: notification_db
+    environment:
+      - CASSANDRA_CLUSTER_NAME=notification_db
+      - CASSANDRA_CQL_PORT_NUMBER=5436
+    ports:
+      - "5436:5436"
+    volumes:
+      - ./db-init/notification/init-notification.cql:/docker-entrypoint-initdb.d/init-notification.cql
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
