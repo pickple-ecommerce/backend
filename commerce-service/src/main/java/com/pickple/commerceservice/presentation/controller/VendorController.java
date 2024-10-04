@@ -64,4 +64,15 @@ public class VendorController {
     public ResponseEntity<ApiResponse<VendorResponseDto>> deleteVendor(@PathVariable UUID vendorId) {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "업체가 성공적으로 삭제되었습니다.", vendorService.deleteVendor(vendorId)));
     }
+
+    /**
+     * vendor 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<VendorResponseDto>>> searchVendors(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Pageable pageable) {
+        Page<VendorResponseDto> response = vendorService.searchVendors(keyword, pageable);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "검색 결과입니다.", response));
+    }
 }

@@ -107,4 +107,18 @@ public class VendorService {
                 deletedVendor.getVendorAddress()
         );
     }
+
+    /**
+     * vendor 검색
+     */
+    @Transactional(readOnly = true)
+    public Page<VendorResponseDto> searchVendors(String keyword, Pageable pageable) {
+        return vendorRepository.searchVendors(keyword, pageable)
+                .map(vendor -> new VendorResponseDto(
+//                        vendor.getUserId(),
+                        vendor.getVendorId(),
+                        vendor.getVendorName(),
+                        vendor.getVendorAddress()
+                ));
+    }
 }
