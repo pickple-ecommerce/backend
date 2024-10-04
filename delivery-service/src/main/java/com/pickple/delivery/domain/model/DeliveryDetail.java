@@ -1,5 +1,6 @@
 package com.pickple.delivery.domain.model;
 
+import com.pickple.delivery.application.dto.DeliveryDetailCreateRequestDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,5 +26,16 @@ public class DeliveryDetail extends BaseEntity {
 
     @Column("delivery_detail_description")
     private String deliveryDetailDescription;
+
+    public static DeliveryDetail createFrom(DeliveryDetailCreateRequestDto dto) {
+        return DeliveryDetail.builder()
+                .deliveryDetailId(DeliveryDetailId.builder()
+                        .deliveryId(dto.getDeliveryId())
+                        .deliveryDetailTime(dto.getDeliveryDetailTime())
+                        .build())
+                .deliveryDetailDescription(dto.getDeliveryDetailDescription())
+                .deliveryDetailStatus(dto.getDeliveryDetailStatus())
+                .build();
+    }
 
 }
