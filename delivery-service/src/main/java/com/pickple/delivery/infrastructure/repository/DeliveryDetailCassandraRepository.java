@@ -2,7 +2,7 @@ package com.pickple.delivery.infrastructure.repository;
 
 import com.pickple.delivery.domain.model.DeliveryDetail;
 import com.pickple.delivery.domain.model.DeliveryDetailId;
-import com.pickple.delivery.domain.repository.DeliveryDetailInfoProjection;
+import com.pickple.delivery.domain.repository.projection.DeliveryDetailInfoProjection;
 import com.pickple.delivery.domain.repository.DeliveryDetailRepository;
 import jakarta.annotation.Nonnull;
 import java.util.Collection;

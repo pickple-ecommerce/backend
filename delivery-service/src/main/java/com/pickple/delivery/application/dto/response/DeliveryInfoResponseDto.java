@@ -1,5 +1,6 @@
-package com.pickple.delivery.application.dto;
+package com.pickple.delivery.application.dto.response;
 
+import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
 import java.util.List;
 import java.util.UUID;
 import lombok.Builder;

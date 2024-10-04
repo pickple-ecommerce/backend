@@ -1,4 +1,4 @@
-package com.pickple.delivery.domain.repository;
+package com.pickple.delivery.domain.repository.projection;
 
 import com.pickple.delivery.domain.model.DeliveryDetailId;
 

@@ -1,9 +1,9 @@
 package com.pickple.delivery.presentation.controller;
 
 import com.pickple.common_module.presentation.dto.ApiResponse;
-import com.pickple.delivery.application.dto.DeliveryDetailCreateResponseDto;
-import com.pickple.delivery.application.dto.DeliveryInfoResponseDto;
-import com.pickple.delivery.application.dto.DeliveryStartResponseDto;
+import com.pickple.delivery.application.dto.response.DeliveryDetailCreateResponseDto;
+import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
+import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.application.service.DeliveryApplicationService;

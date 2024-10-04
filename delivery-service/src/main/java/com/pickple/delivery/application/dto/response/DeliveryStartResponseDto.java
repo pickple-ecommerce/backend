@@ -1,4 +1,4 @@
-package com.pickple.delivery.application.dto;
+package com.pickple.delivery.application.dto.response;
 
 import java.util.UUID;
 import lombok.Builder;

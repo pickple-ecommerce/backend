@@ -1,12 +1,12 @@
 package com.pickple.delivery.application.service;
 
 import com.pickple.common_module.exception.CustomException;
-import com.pickple.delivery.application.dto.DeliveryDetailCreateRequestDto;
-import com.pickple.delivery.application.dto.DeliveryDetailCreateResponseDto;
+import com.pickple.delivery.application.dto.request.DeliveryDetailCreateRequestDto;
+import com.pickple.delivery.application.dto.response.DeliveryDetailCreateResponseDto;
 import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
 import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.domain.model.DeliveryDetail;
-import com.pickple.delivery.domain.repository.DeliveryDetailInfoProjection;
+import com.pickple.delivery.domain.repository.projection.DeliveryDetailInfoProjection;
 import com.pickple.delivery.domain.repository.DeliveryDetailRepository;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.exception.DeliveryErrorCode;

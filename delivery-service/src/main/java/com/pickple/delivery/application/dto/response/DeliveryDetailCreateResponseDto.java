@@ -1,4 +1,4 @@
-package com.pickple.delivery.application.dto;
+package com.pickple.delivery.application.dto.response;
 
 import com.pickple.delivery.domain.model.DeliveryDetailId;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.pickple.delivery.infrastructure.repository;
 
-import com.pickple.delivery.domain.repository.DeliveryInfoProjection;
+import com.pickple.delivery.domain.repository.projection.DeliveryInfoProjection;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.domain.model.Delivery;
 import jakarta.annotation.Nonnull;

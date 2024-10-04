@@ -1,4 +1,4 @@
-package com.pickple.delivery.application.dto;
+package com.pickple.delivery.application.dto.request;
 
 import java.time.Instant;
 import java.util.UUID;

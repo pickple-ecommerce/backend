@@ -1,13 +1,13 @@
 package com.pickple.delivery.application.mapper;
 
-import com.pickple.delivery.application.dto.DeliveryCreateRequestDto;
+import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
 import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
 import com.pickple.delivery.application.dto.DeliveryInfoDto;
-import com.pickple.delivery.application.dto.DeliveryInfoResponseDto;
-import com.pickple.delivery.application.dto.DeliveryStartRequestDto;
-import com.pickple.delivery.application.dto.DeliveryStartResponseDto;
+import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
+import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
+import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.domain.model.Delivery;
-import com.pickple.delivery.domain.repository.DeliveryInfoProjection;
+import com.pickple.delivery.domain.repository.projection.DeliveryInfoProjection;
 import com.pickple.delivery.infrastructure.messaging.events.DeliveryCreateRequestEvent;
 import com.pickple.delivery.presentation.request.DeliveryStartRequest;
 import java.util.List;

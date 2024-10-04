@@ -1,6 +1,7 @@
 package com.pickple.delivery.domain.repository;
 
 import com.pickple.delivery.domain.model.DeliveryDetail;
+import com.pickple.delivery.domain.repository.projection.DeliveryDetailInfoProjection;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
