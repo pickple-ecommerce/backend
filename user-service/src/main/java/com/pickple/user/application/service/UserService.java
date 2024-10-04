@@ -1,10 +1,10 @@
 package com.pickple.user.application.service;
 
-import com.pickple.common_module.exception.CommonErrorCode;
 import com.pickple.common_module.exception.CustomException;
 import com.pickple.user.application.dto.UserDto;
 import com.pickple.user.application.dto.UserResponseDto;
 import com.pickple.user.domain.model.User;
+import com.pickple.user.domain.model.UserRole;
 import com.pickple.user.domain.repository.UserRepository;
 import com.pickple.user.exception.UserErrorCode;
 import com.pickple.user.presentation.request.SignUpRequestDto;
@@ -50,6 +50,20 @@ public class UserService {
     public void softDeleteUser(String username) {
         User user = findUserByUsername(username);
         user.markAsDeleted();
+    }
+
+    // 유저 권한 부여
+    @Transactional
+    public void updateUserRole(String username, UserRole role) {
+        User user = findUserByUsername(username);
+        //UserRole newRole = UserRole.fromString(role); // 문자열을 UserRole로 변환
+
+        // 동일한 권한으로 변경 할 경우 예외 처리
+        if (user.getRole().equals(role)) {
+            throw new CustomException(UserErrorCode.ALREADY_SAME_ROLE);
+        }
+
+        user.updateRole(role);
     }
 
     // 유저 존재 여부 확인 메서드

@@ -4,6 +4,7 @@ import com.pickple.common_module.domain.model.BaseEntity;
 import com.pickple.user.presentation.request.SignUpRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,6 +54,10 @@ public class User extends BaseEntity implements Serializable {
 
     public void markAsDeleted() {
         this.isDelete = true;
+    }
+
+    public void updateRole(UserRole role) {
+        this.role = role;
     }
 
     public static User convertSignUpDtoToUser(SignUpRequestDto signUpDto) {

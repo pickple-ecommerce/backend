@@ -1,11 +1,10 @@
 package com.pickple.user.presentation.controller;
 
-import com.pickple.common_module.exception.CustomException;
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import com.pickple.user.application.dto.UserDto;
 import com.pickple.user.application.dto.UserResponseDto;
 import com.pickple.user.application.service.UserService;
-import com.pickple.user.exception.UserErrorCode;
+import com.pickple.user.domain.model.UserRole;
 import com.pickple.user.presentation.request.SignUpRequestDto;
 import com.pickple.user.presentation.request.UpdateUserRequestDto;
 import jakarta.validation.Valid;
@@ -69,6 +68,18 @@ public class UserController {
                                                           @RequestHeader("X-User-Name") String requestUsername) {
         userService.softDeleteUser(username);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "회원 삭제 성공", null));
+    }
+
+    /**
+     * 회원 권한 부여
+     */
+    @PutMapping("/{username}/role")
+    @PreAuthorize("hasAuthority('MASTER')")
+    public ResponseEntity<ApiResponse<String>> updateUserRole(@PathVariable("username") String username,
+                                                              @RequestParam("role") String role) {
+        UserRole newRole = UserRole.fromString(role);
+        userService.updateUserRole(username, newRole);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "회원 권한 수정 성공", null));
     }
 
     @PostMapping("/sign-up")
