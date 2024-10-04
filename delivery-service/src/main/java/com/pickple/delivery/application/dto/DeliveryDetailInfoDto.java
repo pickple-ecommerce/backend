@@ -1,19 +1,17 @@
 package com.pickple.delivery.application.dto;
 
 import java.time.Instant;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class DeliveryDetailCreateRequestDto {
-
-    private UUID deliveryId;
+public class DeliveryDetailInfoDto {
 
     private Instant deliveryDetailTime;
 
     private String deliveryDetailStatus;
 
     private String deliveryDetailDescription;
+
 }

@@ -1,12 +1,14 @@
-package com.pickple.delivery.application.dto;
+package com.pickple.delivery.application.dto.response;
 
+import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class DeliveryStartResponseDto {
+public class DeliveryInfoResponseDto {
 
     private UUID deliveryId;
 
@@ -14,7 +16,7 @@ public class DeliveryStartResponseDto {
 
     private String carrierName;
 
-    private String  deliveryType;
+    private String deliveryType;
 
     private String trackingNumber;
 
@@ -27,4 +29,7 @@ public class DeliveryStartResponseDto {
     private String recipientAddress;
 
     private String recipientContact;
+
+    private List<DeliveryDetailInfoDto> deliveryDetailList;
+
 }

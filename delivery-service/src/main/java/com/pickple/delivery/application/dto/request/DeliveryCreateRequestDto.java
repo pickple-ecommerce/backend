@@ -1,4 +1,4 @@
-package com.pickple.delivery.application.dto;
+package com.pickple.delivery.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
