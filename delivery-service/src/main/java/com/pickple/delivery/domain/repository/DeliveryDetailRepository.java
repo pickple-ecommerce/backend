@@ -1,7 +1,6 @@
 package com.pickple.delivery.domain.repository;
 
 import com.pickple.delivery.domain.model.DeliveryDetail;
-import jakarta.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 

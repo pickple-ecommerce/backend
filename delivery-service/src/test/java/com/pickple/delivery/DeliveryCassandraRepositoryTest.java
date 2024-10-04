@@ -3,7 +3,7 @@ package com.pickple.delivery;
 import com.pickple.delivery.domain.model.DeliveryDetail;
 import com.pickple.delivery.domain.model.DeliveryDetailId;
 import com.pickple.delivery.infrastructure.config.AuditorConfig;
-import com.pickple.delivery.infrastructure.repository.DeliveryDetailRepository;
+import com.pickple.delivery.domain.repository.DeliveryDetailRepository;
 import com.pickple.delivery.infrastructure.repository.DeliveryCassandraRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.data.cassandra.DataCassandraTest;

@@ -15,4 +15,6 @@ public interface DeliveryCassandraRepository extends DeliveryRepository, Cassand
     @Override
     @Nonnull Optional<Delivery> findById(@Nonnull UUID uuid);
 
+    @Override
+    boolean existsById(@Nonnull UUID uuid);
 }
