@@ -8,6 +8,7 @@ import com.pickple.user.application.service.UserService;
 import com.pickple.user.exception.UserErrorCode;
 import com.pickple.user.presentation.request.SignUpRequestDto;
 import com.pickple.user.presentation.request.UpdateUserRequestDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('MASTER') or #username == #requestUsername")
     public ResponseEntity<ApiResponse<String>> updateUser(@PathVariable("username") String username,
                                                           @RequestHeader("X-User-Name") String requestUsername,
-                                                          @RequestBody UpdateUserRequestDto requestDto) {
+                                                          @Valid @RequestBody UpdateUserRequestDto requestDto) {
         userService.updateUser(username, requestDto);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "회원 수정 성공", null));
     }
