@@ -31,4 +31,14 @@ public class Vendor extends BaseEntity {
 //    @Column(name = "user_id", nullable = false)
 //    private Long userId;
 
+    public Vendor updateVendor(String vendorName, String vendorAddress) {
+        this.vendorName = vendorName;
+        this.vendorAddress = vendorAddress;
+        return this;
+    }
+
+    public Vendor softDelete() {
+        this.isDelete = true;
+        return this;
+    }
 }
