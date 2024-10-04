@@ -47,6 +47,11 @@ public class User extends BaseEntity implements Serializable {
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
+    public void updateUserInfo(String nickname, String password) {
+        this.nickname = nickname;
+        this.password = password;
+    }
+
     public static User convertSignUpDtoToUser(SignUpRequestDto signUpDto) {
         return User.builder()
                 .username(signUpDto.getUsername())

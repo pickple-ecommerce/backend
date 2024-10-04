@@ -8,6 +8,7 @@ import com.pickple.user.domain.model.User;
 import com.pickple.user.domain.repository.UserRepository;
 import com.pickple.user.exception.UserErrorCode;
 import com.pickple.user.presentation.request.SignUpRequestDto;
+import com.pickple.user.presentation.request.UpdateUserRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,13 @@ public class UserService {
     public UserResponseDto getUsername(String username) {
         User user = findUserByUsername(username);
         return UserResponseDto.from(user);
+    }
+
+    // 회원 수정
+    @Transactional
+    public void updateUser(String username, UpdateUserRequestDto requestDto) {
+        User user = findUserByUsername(username);
+        user.updateUserInfo(requestDto.getNickname(), requestDto.getPassword());
     }
 
     // 유저 존재 여부 확인 메서드

@@ -7,6 +7,7 @@ import com.pickple.user.application.dto.UserResponseDto;
 import com.pickple.user.application.service.UserService;
 import com.pickple.user.exception.UserErrorCode;
 import com.pickple.user.presentation.request.SignUpRequestDto;
+import com.pickple.user.presentation.request.UpdateUserRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,18 @@ public class UserController {
                                                                 @RequestHeader("X-User-Name") String requestUsername) {
         UserResponseDto user = userService.getUsername(username);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "회원 상세 조회 성공", user));
+    }
+
+    /**
+     * 회원 수정
+     */
+    @PutMapping("/{username}")
+    @PreAuthorize("hasAuthority('MASTER') or #username == #requestUsername")
+    public ResponseEntity<ApiResponse<String>> updateUser(@PathVariable("username") String username,
+                                                          @RequestHeader("X-User-Name") String requestUsername,
+                                                          @RequestBody UpdateUserRequestDto requestDto) {
+        userService.updateUser(username, requestDto);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "회원 수정 성공", null));
     }
 
     @PostMapping("/sign-up")
