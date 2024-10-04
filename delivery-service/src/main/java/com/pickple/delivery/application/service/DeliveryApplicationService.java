@@ -13,7 +13,6 @@ import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.domain.model.Delivery;
-import com.pickple.delivery.domain.service.DeliveryDomainService;
 import com.pickple.delivery.exception.DeliveryErrorCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,6 @@ public class DeliveryApplicationService {
 
     private final DeliveryRepository deliveryRepository;
 
-    private final DeliveryDomainService deliveryDomainService;
-
     private final DeliveryMessageProducerService deliveryMessageProducerService;
 
     @Value("${kafka.topic.delivery-create-response}")
@@ -47,7 +44,7 @@ public class DeliveryApplicationService {
         try {
             log.info("새로운 Delivery 를 생성합니다. 요청 정보: {}", dto);
             delivery = deliveryRepository.save(
-                    deliveryDomainService.createDelivery(dto));
+                    Delivery.createFrom(dto));
         } catch (Exception e) {
             log.info("Kafka 실패 메시지를 발행합니다. Topic: {}, 주문 ID: {}", deliveryCreateFailureTopic,
                     dto.getOrderId());
@@ -58,6 +55,7 @@ public class DeliveryApplicationService {
             throw new CustomException(CommonErrorCode.DATABASE_ERROR);
         }
         DeliveryCreateResponseEvent deliveryCreateResponseEvent = new DeliveryCreateResponseEvent(
+                delivery.getOrderId(),
                 delivery.getDeliveryId());
 
         log.info("Kafka 메시지를 발행합니다. Topic: {}, 배송 ID: {}", deliveryCreateResponseTopic,

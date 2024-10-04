@@ -28,6 +28,7 @@ public class DeliveryMapper {
                 .trackingNumber(dto.getTrackingNumber())
                 .build();
     }
+
     public static DeliveryStartResponseDto convertEntityToStartResponseDto(Delivery delivery) {
         return DeliveryStartResponseDto.builder()
                 .deliveryId(delivery.getDeliveryId())
@@ -42,7 +43,6 @@ public class DeliveryMapper {
                 .recipientContact(delivery.getRecipientContact())
                 .build();
     }
-
 
 }
 

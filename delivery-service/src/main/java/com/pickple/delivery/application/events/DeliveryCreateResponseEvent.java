@@ -8,6 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DeliveryCreateResponseEvent {
 
+    private UUID orderId;
+
     private UUID deliveryId;
 
 }
