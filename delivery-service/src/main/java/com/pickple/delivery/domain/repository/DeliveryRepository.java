@@ -7,10 +7,12 @@ import java.util.UUID;
 
 public interface DeliveryRepository {
 
-    <S extends Delivery> S save(S entity);
+    <S extends Delivery> S save(S deliveryId);
 
-    Optional<Delivery> findById(UUID uuid);
+    Optional<Delivery> findById(UUID deliveryId);
 
-    boolean existsById(@Nonnull UUID uuid);
+    boolean existsById(@Nonnull UUID deliveryId);
+
+    Optional<DeliveryInfoProjection> findInfoByDeliveryId(UUID deliveryId);
 
 }

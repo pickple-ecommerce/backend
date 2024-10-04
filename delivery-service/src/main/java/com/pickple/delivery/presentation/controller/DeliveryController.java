@@ -2,6 +2,7 @@ package com.pickple.delivery.presentation.controller;
 
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import com.pickple.delivery.application.dto.DeliveryDetailCreateResponseDto;
+import com.pickple.delivery.application.dto.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.dto.DeliveryStartResponseDto;
 import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +38,14 @@ public class DeliveryController {
             @Valid @RequestBody DeliveryStartRequest request) {
         return ApiResponse.success(HttpStatus.OK, "배송이 등록되었습니다.", deliveryService.startDelivery(
                 DeliveryMapper.convertStartRequestToDto(deliveryId, request)));
+    }
+
+    @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
+    @GetMapping("/{delivery_id}")
+    public ApiResponse<DeliveryInfoResponseDto> getDeliveryInfo(
+            @PathVariable("delivery_id") UUID deliveryId) {
+        return ApiResponse.success(HttpStatus.OK, "배송 조회에 성공하였습니다.",
+                deliveryService.getDeliveryInfo(deliveryId));
     }
 
     @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")

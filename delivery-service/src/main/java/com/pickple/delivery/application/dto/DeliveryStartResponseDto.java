@@ -14,7 +14,7 @@ public class DeliveryStartResponseDto {
 
     private String carrierName;
 
-    private String  deliveryType;
+    private String deliveryType;
 
     private String trackingNumber;
 
