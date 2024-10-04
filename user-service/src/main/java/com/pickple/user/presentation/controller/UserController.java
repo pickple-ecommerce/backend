@@ -59,6 +59,18 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "회원 수정 성공", null));
     }
 
+
+    /**
+     * 회원 탈퇴 및 삭제
+     */
+    @DeleteMapping("/{username}")
+    @PreAuthorize("hasAuthority('MASTER') or #username == #requestUsername")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable("username") String username,
+                                                          @RequestHeader("X-User-Name") String requestUsername) {
+        userService.softDeleteUser(username);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "회원 삭제 성공", null));
+    }
+
     @PostMapping("/sign-up")
     Boolean registerUser(@RequestBody SignUpRequestDto signUpDto) {
         return userService.registerUser(signUpDto);

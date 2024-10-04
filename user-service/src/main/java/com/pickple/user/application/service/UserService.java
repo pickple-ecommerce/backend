@@ -45,6 +45,13 @@ public class UserService {
         user.updateUserInfo(requestDto.getNickname(), requestDto.getPassword());
     }
 
+    // 회원 탈퇴 및 삭제
+    @Transactional
+    public void softDeleteUser(String username) {
+        User user = findUserByUsername(username);
+        user.markAsDeleted();
+    }
+
     // 유저 존재 여부 확인 메서드
     private User findUserByUsername(String username) {
         return userRepository.findByUsernameAndIsDeleteFalse(username)

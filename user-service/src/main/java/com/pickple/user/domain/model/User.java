@@ -52,6 +52,10 @@ public class User extends BaseEntity implements Serializable {
         this.password = password;
     }
 
+    public void markAsDeleted() {
+        this.isDelete = true;
+    }
+
     public static User convertSignUpDtoToUser(SignUpRequestDto signUpDto) {
         return User.builder()
                 .username(signUpDto.getUsername())
