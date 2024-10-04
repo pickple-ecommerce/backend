@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class DeliveryDetailCreateResponseDto {
 
-    private DeliveryDetailId deliveryId;
+    private DeliveryDetailId deliveryDetailId;
 
     private String deliveryDetailStatus;
 
