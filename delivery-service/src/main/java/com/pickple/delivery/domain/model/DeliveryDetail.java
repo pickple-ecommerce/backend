@@ -1,6 +1,7 @@
 package com.pickple.delivery.domain.model;
 
 import com.pickple.delivery.application.dto.request.DeliveryDetailCreateRequestDto;
+import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,5 +48,11 @@ public class DeliveryDetail extends BaseEntity implements Persistable<DeliveryDe
     @Override
     public boolean isNew() {
         return getCreatedAt() == null;
+    }
+
+    public void delete(String deleter) {
+        this.isDelete = true;
+        this.deletedAt = Instant.now();
+        this.deletedBy = deleter;
     }
 }

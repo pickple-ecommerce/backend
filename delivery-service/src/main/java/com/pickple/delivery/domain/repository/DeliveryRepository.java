@@ -14,6 +14,6 @@ public interface DeliveryRepository {
 
     boolean existsById(@Nonnull UUID deliveryId);
 
-    Optional<DeliveryInfoProjection> findInfoByDeliveryId(UUID deliveryId);
+    Optional<DeliveryInfoProjection> findInfoByDeliveryIdAndIsDeleteFalse(UUID deliveryId);
 
 }

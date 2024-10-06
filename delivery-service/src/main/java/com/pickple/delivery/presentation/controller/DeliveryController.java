@@ -1,6 +1,7 @@
 package com.pickple.delivery.presentation.controller;
 
 import com.pickple.common_module.presentation.dto.ApiResponse;
+import com.pickple.delivery.application.dto.response.DeliveryDeleteResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryDetailCreateResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +61,15 @@ public class DeliveryController {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 경로가 등록되었습니다.",
                 deliveryDetailService.createDeliveryDetail(
                         DeliveryDetailMapper.convertCreateRequestToDto(deliveryId, request))));
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @DeleteMapping("/{delivery_id}")
+    public ResponseEntity<ApiResponse<DeliveryDeleteResponseDto>> deleteDeliveryDetail(
+            @PathVariable("delivery_id") UUID deliveryId) {
+        String deleter = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "성공적으로 삭제되었습니다.",
+                deliveryService.deleteDelivery(deliveryId, deleter)));
     }
 
 }

@@ -4,6 +4,7 @@ import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
+import java.time.Instant;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -92,8 +93,10 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
         this.trackingNumber = dto.getTrackingNumber();
     }
 
-    public void delete() {
+    public void delete(String deleter) {
         this.isDelete = true;
+        this.deletedAt = Instant.now();
+        this.deletedBy = deleter;
     }
 
 }

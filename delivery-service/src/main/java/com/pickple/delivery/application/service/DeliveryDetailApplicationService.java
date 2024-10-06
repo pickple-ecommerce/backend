@@ -42,10 +42,22 @@ public class DeliveryDetailApplicationService {
 
     public List<DeliveryDetailInfoDto> getDeliveryDetailInfoList(UUID deliveryId) {
         Collection<DeliveryDetailInfoProjection> deliveryInfoDtoList =
-                deliveryDetailRepository.findInfoByDeliveryDetailIdDeliveryId(
+                deliveryDetailRepository.findInfoByDeliveryDetailIdDeliveryIdAndIsDeleteFalse(
                         deliveryId);
         return deliveryInfoDtoList.stream().map(DeliveryDetailMapper::convertProjectionToDto)
                 .toList();
+    }
+
+    public void deleteDeliveryDetail(UUID deliveryId, String deleter) {
+        try {
+            List<DeliveryDetail> deliveryDetailList = deliveryDetailRepository.findByDeliveryDetailIdDeliveryId(deliveryId);
+            deliveryDetailList.forEach(detail -> detail.delete(deleter));
+            deliveryDetailRepository.saveAll(deliveryDetailList);
+        } catch (Exception e) {
+            log.error("DeliveryDetail 삭제에 실패하였습니다. 요청 정보: {}", deliveryId);
+            throw new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND);
+        }
+
     }
 
 }

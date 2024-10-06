@@ -30,6 +30,7 @@ kafka:
   topic:
     delivery-create-response: delivery-create-response
     delivery-create-failure: delivery-create-failure
+    delivery-delete-failure: delivery-delete-failure
 
 server:
   port: 19096

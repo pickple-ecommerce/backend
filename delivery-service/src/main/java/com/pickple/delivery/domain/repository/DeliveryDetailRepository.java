@@ -14,5 +14,5 @@ public interface DeliveryDetailRepository {
 
     <S extends DeliveryDetail> List<S> saveAll(Iterable<S> entities);
 
-    Collection<DeliveryDetailInfoProjection> findInfoByDeliveryDetailIdDeliveryId(UUID deliveryId);
+    Collection<DeliveryDetailInfoProjection> findInfoByDeliveryDetailIdDeliveryIdAndIsDeleteFalse(UUID deliveryId);
 }

@@ -23,6 +23,6 @@ public interface DeliveryDetailCassandraRepository extends
     @Nonnull
     <S extends DeliveryDetail> List<S> saveAll(@Nonnull Iterable<S> entities);
 
-    Collection<DeliveryDetailInfoProjection> findInfoByDeliveryDetailIdDeliveryId(UUID deliveryId);
+    Collection<DeliveryDetailInfoProjection> findInfoByDeliveryDetailIdDeliveryIdAndIsDeleteFalse(UUID deliveryId);
 
 }
