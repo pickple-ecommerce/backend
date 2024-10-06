@@ -17,7 +17,6 @@ services:
       - POSTGRES_DB=commerce_db
       - POSTGRES_USER=commerce_db
       - POSTGRES_PASSWORD=commerce
-      - POSTGRESQL_PORT_NUMBER=5433
     ports:
       - "5433:5432"
     volumes:
@@ -46,6 +45,17 @@ services:
       - "5432:5432"
     volumes:
       - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
+
+  notification_db:
+    image: cassandra:latest
+    container_name: notification_db
+    environment:
+      - CASSANDRA_CLUSTER_NAME=notification_db
+      - CASSANDRA_CQL_PORT_NUMBER=5436
+    ports:
+      - "5436:5436"
+    volumes:
+      - ./db-init/notification/init-notification.cql:/docker-entrypoint-initdb.d/init-notification.cql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest

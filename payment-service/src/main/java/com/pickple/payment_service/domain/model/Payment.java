@@ -23,6 +23,9 @@ public class Payment extends BaseEntity {
     @Column(name="order_id")
     private UUID orderId;
 
+    @Column(name="user_id")
+    private Long userId;
+
     @Column(name="amount")
     private BigDecimal amount;
 
@@ -33,21 +36,20 @@ public class Payment extends BaseEntity {
     @Enumerated(value=EnumType.STRING)
     private PaymentStatusEnum status;
 
-    @Column(name="approval_number")
-    private String approvalNumber;
-
-    public Payment(UUID orderId, BigDecimal amount) {
+    public Payment(UUID orderId, Long userId, BigDecimal amount) {
         this.orderId = orderId;
         this.amount = amount;
+        this.userId = userId;
         this.method = "CREDIT-CARD";
         this.status = PaymentStatusEnum.PENDING;
     }
 
     public void success() {
-        this.status = PaymentStatusEnum.SUCCESS;
+        this.status = PaymentStatusEnum.COMPLETED;
     }
 
-    public void fail() {
-        this.status = PaymentStatusEnum.FAILED;
+    public void canceled() {
+        this.isDelete = true;
+        this.status = PaymentStatusEnum.CANCELED;
     }
 }

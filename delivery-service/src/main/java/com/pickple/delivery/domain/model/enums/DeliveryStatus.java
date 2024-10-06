@@ -1,5 +1,8 @@
 package com.pickple.delivery.domain.model.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * 배송 상태를 나타내는 ENUM 클래스입니다.
  *
@@ -9,8 +12,12 @@ package com.pickple.delivery.domain.model.enums;
  *   <li>DELIVERED - 배송 완료</li>
  * </ul>
  */
+@Getter
+@AllArgsConstructor
 public enum DeliveryStatus {
-    PENDING,
-    IN_TRANSIT,
-    DELIVERED
+    PENDING("배송준비중"),
+    IN_TRANSIT("배송중"),
+    DELIVERED("배송완료");
+
+    private final String status;
 }
