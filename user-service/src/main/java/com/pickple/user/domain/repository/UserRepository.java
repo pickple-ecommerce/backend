@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustom {
     Optional<User> findByUsername(String username);
     List<User> findAllByIsDeleteFalse();
     Optional<User> findByUsernameAndIsDeleteFalse(String username);
