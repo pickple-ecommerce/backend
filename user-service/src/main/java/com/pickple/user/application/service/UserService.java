@@ -9,8 +9,11 @@ import com.pickple.user.domain.repository.UserRepository;
 import com.pickple.user.exception.UserErrorCode;
 import com.pickple.user.presentation.request.SignUpRequestDto;
 import com.pickple.user.presentation.request.UpdateUserRequestDto;
+import com.pickple.user.presentation.request.UserSearchDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +67,13 @@ public class UserService {
         }
 
         user.updateRole(role);
+    }
+
+    // 유저 검색
+    @Transactional(readOnly = true)
+    public Page<UserResponseDto> searchUsers(UserSearchDto searchDto, Pageable pageable) {
+        return userRepository.searchUsers(searchDto, pageable)
+                .map(UserResponseDto::from);
     }
 
     // 유저 존재 여부 확인 메서드
