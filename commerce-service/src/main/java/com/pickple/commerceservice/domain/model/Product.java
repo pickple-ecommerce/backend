@@ -39,4 +39,11 @@ public class Product extends BaseEntity {
     @Column(name = "is_public", nullable = false)
     private Boolean isPublic = true;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Stock stock;
+
 }
