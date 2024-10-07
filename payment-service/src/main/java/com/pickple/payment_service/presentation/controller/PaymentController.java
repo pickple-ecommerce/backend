@@ -5,7 +5,6 @@ import com.pickple.payment_service.application.dto.PaymentRespDto;
 import com.pickple.payment_service.application.service.PaymentService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,17 +18,26 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/payments")
-@Slf4j
 @RequiredArgsConstructor
 public class PaymentController {
 
     private final PaymentService paymentService;
 
+    @PreAuthorize("hasAuthority('MASTER')")
+    @DeleteMapping("/{payment_id}")
+    public ResponseEntity<Void> deletePayment(
+            @PathVariable(name="payment_id") UUID paymentId
+    ){
+        paymentService.deletePayment(paymentId);
+
+        return ResponseEntity.noContent().build();
+    }
 
     @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
     @GetMapping("{payment_id}")
     public ResponseEntity<ApiResponse<PaymentRespDto>> getPaymentDetails(
-            @PathVariable(name="payment_id") UUID paymentId) {
+            @PathVariable(name="payment_id") UUID paymentId
+    ) {
 
         ApiResponse<PaymentRespDto> response = ApiResponse.success(
                 HttpStatus.OK,

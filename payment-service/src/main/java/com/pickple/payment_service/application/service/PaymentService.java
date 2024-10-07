@@ -1,5 +1,6 @@
 package com.pickple.payment_service.application.service;
 
+import com.pickple.common_module.exception.CommonErrorCode;
 import com.pickple.payment_service.exception.PaymentErrorCode;
 import com.pickple.common_module.exception.CustomException;
 import com.pickple.payment_service.application.dto.PaymentRespDto;
@@ -69,7 +70,7 @@ public class PaymentService {
 
         try {
             // 결제 취소
-            payment.canceled();
+            payment.cancel();
             paymentRepository.save(payment);
         } catch(Exception e){
             PaymentCancelFailureEvent event = new PaymentCancelFailureEvent(orderId);
@@ -79,6 +80,21 @@ public class PaymentService {
 
         PaymentCancelResponseEvent event = new PaymentCancelResponseEvent(payment.getOrderId(), payment.getPaymentId());
         paymentEventService.sendCancelSuccessEvent(event);
+    }
+
+    // 결제 삭제
+    @Transactional
+    public void deletePayment(UUID paymentId){
+        Payment payment = paymentRepository.findByPaymentIdAndIsDeleteIsFalse(paymentId).orElseThrow(
+                ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
+        );
+
+        try {
+            payment.delete();
+            paymentRepository.save(payment);
+        }catch(Exception e){
+            throw new CustomException(CommonErrorCode.DATABASE_ERROR);
+        }
     }
 
     // 결제 단건 조회
@@ -110,7 +126,5 @@ public class PaymentService {
 
         return paymentList.map(PaymentRespDto::from);
     }
-
-
 
 }

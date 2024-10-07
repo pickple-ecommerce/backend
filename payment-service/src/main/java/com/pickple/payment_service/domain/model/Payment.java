@@ -48,8 +48,11 @@ public class Payment extends BaseEntity {
         this.status = PaymentStatusEnum.COMPLETED;
     }
 
-    public void canceled() {
-        this.isDelete = true;
+    public void cancel() {
         this.status = PaymentStatusEnum.CANCELED;
+    }
+
+    public void delete() {
+        this.isDelete = true;
     }
 }
