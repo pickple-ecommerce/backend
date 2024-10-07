@@ -10,7 +10,13 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentSuccessEvent {
+public class PaymentCreateResponseEvent {
+    private UUID orderId;
     private UUID paymentId;
-    private PaymentStatusEnum status;
+    private String status = "COMPLETED";
+
+    public PaymentCreateResponseEvent(UUID orderId, UUID paymentId) {
+        this.orderId = orderId;
+        this.paymentId = paymentId;
+    }
 }
