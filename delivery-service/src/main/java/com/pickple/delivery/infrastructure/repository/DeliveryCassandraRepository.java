@@ -1,6 +1,5 @@
 package com.pickple.delivery.infrastructure.repository;
 
-import com.pickple.delivery.domain.repository.projection.DeliveryInfoProjection;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.domain.model.Delivery;
 import jakarta.annotation.Nonnull;
@@ -19,6 +18,6 @@ public interface DeliveryCassandraRepository extends DeliveryRepository, Cassand
     @Override
     boolean existsById(@Nonnull UUID deliveryId);
 
-    Optional<DeliveryInfoProjection> findInfoByDeliveryIdAndIsDeleteFalse(UUID deliveryId);
-
+    @Override
+    void deleteById(@Nonnull UUID deliveryId);
 }

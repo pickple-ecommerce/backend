@@ -1,6 +1,6 @@
 package com.pickple.delivery.application.dto;
 
-import java.time.Instant;
+import com.pickple.delivery.domain.model.DeliveryDetailId;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class DeliveryDetailInfoDto {
 
-    private Instant deliveryDetailTime;
+    private DeliveryDetailId deliveryDetailId;
 
     private String deliveryDetailStatus;
 

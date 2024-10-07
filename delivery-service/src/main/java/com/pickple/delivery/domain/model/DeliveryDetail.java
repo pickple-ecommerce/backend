@@ -1,7 +1,6 @@
 package com.pickple.delivery.domain.model;
 
 import com.pickple.delivery.application.dto.request.DeliveryDetailCreateRequestDto;
-import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
