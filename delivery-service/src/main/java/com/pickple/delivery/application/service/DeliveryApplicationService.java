@@ -3,18 +3,24 @@ package com.pickple.delivery.application.service;
 import com.pickple.common_module.exception.CommonErrorCode;
 import com.pickple.common_module.exception.CustomException;
 import com.pickple.common_module.infrastructure.messaging.EventSerializer;
-import com.pickple.delivery.application.dto.DeliveryCreateRequestDto;
+import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
+import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
+import com.pickple.delivery.application.dto.DeliveryInfoDto;
+import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.events.DeliveryCreateFailureEvent;
 import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
-import com.pickple.delivery.application.dto.DeliveryStartRequestDto;
-import com.pickple.delivery.application.dto.DeliveryStartResponseDto;
+import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
+import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
+import com.pickple.delivery.domain.repository.projection.DeliveryInfoProjection;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.domain.model.Delivery;
 import com.pickple.delivery.exception.DeliveryErrorCode;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +37,8 @@ public class DeliveryApplicationService {
     private final DeliveryRepository deliveryRepository;
 
     private final DeliveryMessageProducerService deliveryMessageProducerService;
+
+    private final DeliveryDetailApplicationService deliveryDetailApplicationService;
 
     @Value("${kafka.topic.delivery-create-response}")
     private String deliveryCreateResponseTopic;
@@ -79,6 +87,21 @@ public class DeliveryApplicationService {
 
         log.info("배송 정보가 성공적으로 업데이트되었습니다. 배송 ID: {}", delivery.getDeliveryId());
         return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
+    }
+
+    public DeliveryInfoResponseDto getDeliveryInfo(UUID deliveryId) {
+        log.info("배송 정보 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
+        DeliveryInfoProjection projection = deliveryRepository.findInfoByDeliveryId(deliveryId)
+                .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
+
+        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertProjectionToDto(projection);
+
+        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList =
+                deliveryDetailApplicationService.getDeliveryDetailInfoList(
+                        deliveryId);
+
+        return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
+                deliveryDetailInfoDtoList);
     }
 
 }

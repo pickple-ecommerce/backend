@@ -1,7 +1,7 @@
 package com.pickple.delivery.domain.model;
 
-import com.pickple.delivery.application.dto.DeliveryCreateRequestDto;
-import com.pickple.delivery.application.dto.DeliveryStartRequestDto;
+import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
+import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import java.util.UUID;
