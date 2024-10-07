@@ -51,7 +51,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
     public WebFilter jwtAuthenticationFilter(JwtUtil jwtUtil) {
         return (exchange, chain) -> {
 

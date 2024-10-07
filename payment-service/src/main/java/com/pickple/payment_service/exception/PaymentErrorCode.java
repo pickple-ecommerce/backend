@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum PaymentErrorCode implements ErrorCode {
 
-    // 결제 ID 관련 에러
-    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID에 해당하는 결제를 찾을 수 없습니다.");
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID의 결제 내역을 찾을 수 없습니다."),
+    INVALID_MESSAGE_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 메시지 형식입니다."),
+    PAYMENT_CREATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제 생성에 실패했습니다." ),
+    PAYMENT_CANCEL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제 취소에 실패했습니다." );
 
     private final HttpStatus status;
     private final String message;

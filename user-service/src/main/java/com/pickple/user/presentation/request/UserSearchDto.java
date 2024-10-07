@@ -1,14 +1,15 @@
-package com.pickple.auth.presentation.request;
+package com.pickple.user.presentation.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDto {
+public class UserSearchDto {
     private String username;
-    private String password;
+    private String nickname;
+    private String email;
+    private String role;
 }
