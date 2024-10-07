@@ -12,6 +12,7 @@ import com.pickple.payment_service.infrastructure.messaging.events.PaymentCreate
 import com.pickple.payment_service.infrastructure.messaging.events.PaymentCreateResponseEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentEventService paymentEventService;
+    private final AuditorAware auditorProvider;
 
     // 결제 생성
     @Transactional
@@ -90,7 +92,8 @@ public class PaymentService {
         );
 
         try {
-            payment.delete();
+            // 논리적 삭제 처리
+            payment.delete(auditorProvider.toString());
             paymentRepository.save(payment);
         }catch(Exception e){
             throw new CustomException(CommonErrorCode.DATABASE_ERROR);

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -52,7 +53,9 @@ public class Payment extends BaseEntity {
         this.status = PaymentStatusEnum.CANCELED;
     }
 
-    public void delete() {
+    public void delete(String deleteBy) {
         this.isDelete = true;
+        this.deletedBy = deleteBy;
+        this.deletedAt = LocalDateTime.now();
     }
 }
