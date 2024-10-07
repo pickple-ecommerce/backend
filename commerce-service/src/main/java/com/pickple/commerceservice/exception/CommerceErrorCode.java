@@ -6,8 +6,11 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 public enum CommerceErrorCode implements ErrorCode {
+    VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 업체입니다."),
 
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),;
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
+    PRODUCT_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "상품 ID가 Null 입니다."),
+    STOCK_DATA_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 재고 요청 데이터가 존재하지 않습니다."),;
 
 
     private final HttpStatus status;
