@@ -13,16 +13,18 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentRespDto {
-    private UUID paymentId;
     private UUID orderId;
+    private UUID paymentId;
+    private String userName;
     private BigDecimal amount;
     private String method;
     private PaymentStatusEnum status;
 
     public static PaymentRespDto from(Payment payment) {
         return PaymentRespDto.builder()
-                .paymentId(payment.getPaymentId())
                 .orderId(payment.getOrderId())
+                .paymentId(payment.getPaymentId())
+                .userName(payment.getUserName())
                 .amount(payment.getAmount())
                 .method(payment.getMethod())
                 .status(payment.getStatus())
