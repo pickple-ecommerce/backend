@@ -50,9 +50,4 @@ public class DeliveryDetail extends BaseEntity implements Persistable<DeliveryDe
         return getCreatedAt() == null;
     }
 
-    public void delete(String deleter) {
-        this.isDelete = true;
-        this.deletedAt = Instant.now();
-        this.deletedBy = deleter;
-    }
 }
