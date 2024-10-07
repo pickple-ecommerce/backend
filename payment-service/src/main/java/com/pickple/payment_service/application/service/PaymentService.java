@@ -93,7 +93,7 @@ public class PaymentService {
 
     // 결제 전체 조회 (user)
     @Transactional(readOnly = true)
-    public Page<PaymentRespDto> getPaymentsByUser(String userName, Pageable pageable) {
+    public Page<PaymentRespDto> getPaymentsHistory(String userName, Pageable pageable) {
         Page<Payment> paymentList = paymentRepository.findAllByUserNameAndIsDeleteIsFalse(userName, pageable).orElseThrow(
                 ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
         );
@@ -103,7 +103,7 @@ public class PaymentService {
 
     // 결제 전체 조회 (admin)
     @Transactional(readOnly = true)
-    public Page<PaymentRespDto> getPaymentByAdmin(Pageable pageable) {
+    public Page<PaymentRespDto> getAllPayments(Pageable pageable) {
         Page<Payment> paymentList = paymentRepository.findAllByIsDeleteIsFalse(pageable).orElseThrow(
                 ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
         );
