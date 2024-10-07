@@ -12,14 +12,15 @@ import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
+import com.pickple.delivery.domain.model.deleted.DeliveryDeleted;
 import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
-import com.pickple.delivery.domain.repository.projection.DeliveryInfoProjection;
+import com.pickple.delivery.domain.repository.deleted.DeliveryDeletedRepository;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.domain.model.Delivery;
 import com.pickple.delivery.exception.DeliveryErrorCode;
-import com.pickple.delivery.exception.DeliveryMessageFailureHandler;
 import com.pickple.delivery.infrastructure.messaging.DeliveryMessageProducerService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Validated
 public class DeliveryApplicationService {
 
     private final DeliveryRepository deliveryRepository;
@@ -39,13 +42,13 @@ public class DeliveryApplicationService {
 
     private final DeliveryDetailApplicationService deliveryDetailApplicationService;
 
-    private final DeliveryMessageFailureHandler deliveryMessageFailureHandler;
+    private final DeliveryDeletedRepository deliveryDeletedRepository;
 
     @Value("${kafka.topic.delivery-create-response}")
     private String deliveryCreateResponseTopic;
 
     @Transactional
-    public void createDelivery(DeliveryCreateRequestDto dto) {
+    public void createDelivery(@Valid DeliveryCreateRequestDto dto) {
         Delivery delivery;
         try {
             log.info("새로운 Delivery 를 생성합니다. 요청 정보: {}", dto);
@@ -81,13 +84,14 @@ public class DeliveryApplicationService {
         log.info("배송 정보가 성공적으로 업데이트되었습니다. 배송 ID: {}", delivery.getDeliveryId());
         return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
     }
-
+    
+    @Transactional(readOnly = true)
     public DeliveryInfoResponseDto getDeliveryInfo(UUID deliveryId) {
         log.info("배송 정보 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
-        DeliveryInfoProjection projection = deliveryRepository.findInfoByDeliveryIdAndIsDeleteFalse(deliveryId)
+        Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
 
-        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertProjectionToDto(projection);
+        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
 
         List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList =
                 deliveryDetailApplicationService.getDeliveryDetailInfoList(
@@ -97,19 +101,24 @@ public class DeliveryApplicationService {
                 deliveryDetailInfoDtoList);
     }
 
+    @Transactional
     public DeliveryDeleteResponseDto deleteDelivery(UUID deliveryId, String deleter) {
+        log.error("배송을 삭제합니다. 배송 ID: {}, 배송 삭제 요청자: {}", deliveryId, deleter);
         Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
                 () -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND)
         );
         try {
             deliveryDetailApplicationService.deleteDeliveryDetail(deliveryId, deleter);
-            delivery.delete(deleter);
-            deliveryRepository.save(delivery);
+            DeliveryDeleted deletedDelivery = DeliveryDeleted.fromDelivery(delivery);
+            deletedDelivery.delete(deleter);
+
+            deliveryDeletedRepository.save(deletedDelivery);
+            deliveryRepository.deleteById(deliveryId);
         } catch (Exception e) {
+            log.error("배송 삭제에 실패하였습니다.: {}", e.getMessage());
             throw new CustomException(DeliveryErrorCode.DELIVERY_SAVE_FAILURE);
         }
-        return new DeliveryDeleteResponseDto(delivery.getDeliveryId(),
-                delivery.getDeletedAt(), deleter);
+        return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(), deleter);
     }
 
 }

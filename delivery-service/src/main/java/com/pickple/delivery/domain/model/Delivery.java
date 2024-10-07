@@ -4,7 +4,6 @@ import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
-import java.time.Instant;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
