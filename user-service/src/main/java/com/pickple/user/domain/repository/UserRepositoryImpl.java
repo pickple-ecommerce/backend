@@ -6,6 +6,7 @@ import com.pickple.user.presentation.request.UserSearchDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
@@ -45,7 +47,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        System.out.println("검색된 유저 수: " + results.size());
+        log.info("검색된 유저 수: " + results.size());
 
         // 결과의 총 개수 구하기
         long total = queryFactory.selectFrom(user)
