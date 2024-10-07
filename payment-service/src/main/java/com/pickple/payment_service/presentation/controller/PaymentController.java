@@ -25,12 +25,12 @@ public class PaymentController {
 
     @PreAuthorize("hasAuthority('MASTER')")
     @DeleteMapping("/{payment_id}")
-    public ResponseEntity<Void> deletePayment(
+    public ResponseEntity<ApiResponse<String>> deletePayment(
             @PathVariable(name="payment_id") UUID paymentId
     ){
         paymentService.deletePayment(paymentId);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.NO_CONTENT, "해당 결제 내역이 삭제 되었습니다.", null));
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
