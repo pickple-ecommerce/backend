@@ -5,6 +5,7 @@ import com.pickple.payment_service.application.dto.PaymentRespDto;
 import com.pickple.payment_service.application.service.PaymentService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,54 +22,37 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentController {
 
+    @Autowired
     private final PaymentService paymentService;
 
     @PreAuthorize("hasAuthority('MASTER')")
     @DeleteMapping("/{payment_id}")
-    public ResponseEntity<ApiResponse<String>> deletePayment(
+    public ResponseEntity<Void> deletePayment(
             @PathVariable(name="payment_id") UUID paymentId
     ){
         paymentService.deletePayment(paymentId);
 
-        return ResponseEntity.ok(ApiResponse.success(HttpStatus.NO_CONTENT, "해당 결제 내역이 삭제 되었습니다.", null));
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
-    @GetMapping("{payment_id}")
-    public ResponseEntity<ApiResponse<PaymentRespDto>> getPaymentDetails(
-            @PathVariable(name="payment_id") UUID paymentId
+    @GetMapping("/details/{payment_id}")
+    public ResponseEntity<ApiResponse<PaymentRespDto>> getPaymentDetailsByUser(
+            @PathVariable(name="payment_id") UUID paymentId,
+            @RequestHeader(name="X-User-Name") String userName
     ) {
 
         ApiResponse<PaymentRespDto> response = ApiResponse.success(
                 HttpStatus.OK,
                 "해당 결제의 상세 내역이 조회되었습니다.",
-                paymentService.getPaymentDetails(paymentId)
+                paymentService.getPaymentDetails(paymentId, userName)
         );
 
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
-    @GetMapping("/history")
-    public ResponseEntity<ApiResponse<Page<PaymentRespDto>>> getPaymentsHistory(
-            @RequestHeader(name="X-User-Name") String userName,
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="size", defaultValue = "10") int size,
-            @RequestParam(value="sort", defaultValue = "createdAt, desc") String[] sort
-    ){
-       Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-
-       ApiResponse<Page<PaymentRespDto>> response = ApiResponse.success(
-               HttpStatus.OK,
-               "전체 결제 내역이 조회 되었습니다.",
-               paymentService.getPaymentsHistory(userName, pageable)
-       );
-
-       return ResponseEntity.ok(response);
-    }
-
     @PreAuthorize("hasAuthority('MASTER')")
-    @GetMapping("/getAllPayments")
+    @GetMapping("/all-payments")
     public ResponseEntity<ApiResponse<Page<PaymentRespDto>>> getAllPayments(
             @RequestParam(value="page", defaultValue="0") int page,
             @RequestParam(value="size", defaultValue = "10") int size,
@@ -78,7 +62,7 @@ public class PaymentController {
 
         ApiResponse<Page<PaymentRespDto>> response = ApiResponse.success(
                 HttpStatus.OK,
-                "admin > 전체 결제 내역이 조회 되었습니다.",
+                "전체 결제 내역이 조회 되었습니다.",
                 paymentService.getAllPayments(pageable)
         );
 

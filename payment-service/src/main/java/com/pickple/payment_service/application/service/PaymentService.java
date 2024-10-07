@@ -12,6 +12,7 @@ import com.pickple.payment_service.infrastructure.messaging.events.PaymentCreate
 import com.pickple.payment_service.infrastructure.messaging.events.PaymentCreateResponseEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +27,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final PaymentRepository paymentRepository;
+    @Autowired
+    PaymentRepository paymentRepository;
+
+    @Autowired
     private final PaymentEventService paymentEventService;
+
     private final AuditorAware auditorProvider;
 
     // 결제 생성
@@ -102,22 +107,17 @@ public class PaymentService {
 
     // 결제 단건 조회
     @Transactional(readOnly = true)
-    public PaymentRespDto getPaymentDetails (UUID paymentId){
+    public PaymentRespDto getPaymentDetails (UUID paymentId, String userName){
         Payment payment = paymentRepository.findByPaymentIdAndIsDeleteIsFalse(paymentId).orElseThrow(
                 ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
         );
 
+        // 요청한 클라이언트의 결제 내역이 맞는지 확인
+        if(!payment.getUserName().equals(userName)){
+            throw new CustomException(CommonErrorCode.AUTHORIZATION_ERROR);
+        }
+
         return PaymentRespDto.from(payment);
-    }
-
-    // 결제 전체 조회 (user)
-    @Transactional(readOnly = true)
-    public Page<PaymentRespDto> getPaymentsHistory(String userName, Pageable pageable) {
-        Page<Payment> paymentList = paymentRepository.findAllByUserNameAndIsDeleteIsFalse(userName, pageable).orElseThrow(
-                ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
-        );
-
-        return paymentList.map(PaymentRespDto::from);
     }
 
     // 결제 전체 조회 (admin)
