@@ -2,10 +2,7 @@ package com.pickple.commerceservice.domain.model;
 
 import com.pickple.common_module.domain.model.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,9 +10,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "p_products")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Product extends BaseEntity {
 
     @Id
@@ -37,7 +34,7 @@ public class Product extends BaseEntity {
 
     @Builder.Default
     @Column(name = "is_public", nullable = false)
-    private Boolean isPublic = true;
+    private Boolean isPublic = true; // 기본값 설정
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id")
@@ -45,5 +42,9 @@ public class Product extends BaseEntity {
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Stock stock;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) // PreOrderDetails와 1:1 매핑 추가
+    private PreOrderDetails preOrderDetails;
+
 
 }
