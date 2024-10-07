@@ -92,8 +92,4 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
         this.trackingNumber = dto.getTrackingNumber();
     }
 
-    public void delete() {
-        this.isDelete = true;
-    }
-
 }

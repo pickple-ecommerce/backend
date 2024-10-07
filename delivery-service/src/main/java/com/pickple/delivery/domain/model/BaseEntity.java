@@ -25,16 +25,4 @@ public abstract class BaseEntity implements Serializable {
     @LastModifiedBy
     private String updatedBy;
 
-    @Column("deleted_at")
-    protected Instant deletedAt;
-
-    @Column("deleted_by")
-    protected String deletedBy;
-
-    @Column("is_delete")
-    protected Boolean isDelete;
-
-    protected BaseEntity() {
-        this.isDelete = false;
-    }
 }

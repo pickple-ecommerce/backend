@@ -48,4 +48,5 @@ public class DeliveryDetail extends BaseEntity implements Persistable<DeliveryDe
     public boolean isNew() {
         return getCreatedAt() == null;
     }
+
 }

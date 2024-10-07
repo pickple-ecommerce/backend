@@ -6,11 +6,12 @@ import com.pickple.delivery.application.dto.response.DeliveryDetailCreateRespons
 import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
 import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.domain.model.DeliveryDetail;
-import com.pickple.delivery.domain.repository.projection.DeliveryDetailInfoProjection;
+import com.pickple.delivery.domain.model.deleted.DeliveryDetailDeleted;
+import com.pickple.delivery.domain.repository.deleted.DeliveryDetailDeletedRepository;
 import com.pickple.delivery.domain.repository.DeliveryDetailRepository;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.exception.DeliveryErrorCode;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ public class DeliveryDetailApplicationService {
 
     private final DeliveryDetailRepository deliveryDetailRepository;
 
+    private final DeliveryDetailDeletedRepository deliveryDetailDeletedRepository;
+
     @Transactional
     public DeliveryDetailCreateResponseDto createDeliveryDetail(
             DeliveryDetailCreateRequestDto dto) {
@@ -41,11 +44,27 @@ public class DeliveryDetailApplicationService {
     }
 
     public List<DeliveryDetailInfoDto> getDeliveryDetailInfoList(UUID deliveryId) {
-        Collection<DeliveryDetailInfoProjection> deliveryInfoDtoList =
-                deliveryDetailRepository.findInfoByDeliveryDetailIdDeliveryId(
-                        deliveryId);
-        return deliveryInfoDtoList.stream().map(DeliveryDetailMapper::convertProjectionToDto)
-                .toList();
+        return deliveryDetailRepository.findByDeliveryDetailIdDeliveryId(deliveryId).stream()
+                .map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
+    }
+
+    public void deleteDeliveryDetail(UUID deliveryId, String deleter) {
+        try {
+            List<DeliveryDetail> deliveryDetailList = deliveryDetailRepository.findByDeliveryDetailIdDeliveryId(
+                    deliveryId);
+            List<DeliveryDetailDeleted> deliveryDetailDeletedList = new ArrayList<>();
+            deliveryDetailList.forEach(detail -> {
+                DeliveryDetailDeleted deletedDeliveryDetail = DeliveryDetailDeleted.fromDeliveryDetail(
+                        detail);
+                deletedDeliveryDetail.delete(deleter);
+                deliveryDetailDeletedList.add(deletedDeliveryDetail);
+            });
+            deliveryDetailRepository.deleteAll(deliveryDetailList);
+            deliveryDetailDeletedRepository.saveAll(deliveryDetailDeletedList);
+        } catch (Exception e) {
+            log.error("DeliveryDetail 삭제에 실패하였습니다. 요청 정보: {}", deliveryId);
+            throw new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND);
+        }
     }
 
 }
