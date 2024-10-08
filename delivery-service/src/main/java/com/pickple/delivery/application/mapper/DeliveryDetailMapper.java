@@ -21,7 +21,7 @@ public class DeliveryDetailMapper {
 
     public static DeliveryDetailCreateResponseDto convertEntityToCreateResponseDto(DeliveryDetail entity) {
         return DeliveryDetailCreateResponseDto.builder()
-                .deliveryDetailId(entity.getDeliveryDetailId())
+                .deliveryDetailTime(entity.getDeliveryDetailTime())
                 .deliveryDetailDescription(entity.getDeliveryDetailDescription())
                 .deliveryDetailStatus(entity.getDeliveryDetailStatus())
                 .build();
@@ -30,7 +30,7 @@ public class DeliveryDetailMapper {
     public static DeliveryDetailInfoDto convertEntityToInfoDto(
             DeliveryDetail deliveryDetail) {
         return DeliveryDetailInfoDto.builder()
-                .deliveryDetailId(deliveryDetail.getDeliveryDetailId())
+                .deliveryDetailTime(deliveryDetail.getDeliveryDetailTime())
                 .deliveryDetailDescription(deliveryDetail.getDeliveryDetailDescription())
                 .deliveryDetailStatus(deliveryDetail.getDeliveryDetailStatus())
                 .build();

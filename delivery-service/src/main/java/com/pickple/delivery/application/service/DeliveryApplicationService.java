@@ -11,8 +11,10 @@ import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
+import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.domain.model.deleted.DeliveryDeleted;
+import com.pickple.delivery.domain.model.deleted.DeliveryDetailDeleted;
 import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.domain.repository.deleted.DeliveryDeletedRepository;
@@ -84,7 +86,7 @@ public class DeliveryApplicationService {
         log.info("배송 정보가 성공적으로 업데이트되었습니다. 배송 ID: {}", delivery.getDeliveryId());
         return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
     }
-    
+
     @Transactional(readOnly = true)
     public DeliveryInfoResponseDto getDeliveryInfo(UUID deliveryId) {
         log.info("배송 정보 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
@@ -93,9 +95,8 @@ public class DeliveryApplicationService {
 
         DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
 
-        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList =
-                deliveryDetailApplicationService.getDeliveryDetailInfoList(
-                        deliveryId);
+        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList = delivery.getDeliveryDetails()
+                .stream().map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
 
         return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
                 deliveryDetailInfoDtoList);
@@ -108,8 +109,9 @@ public class DeliveryApplicationService {
                 () -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND)
         );
         try {
-            deliveryDetailApplicationService.deleteDeliveryDetail(deliveryId, deleter);
-            DeliveryDeleted deletedDelivery = DeliveryDeleted.fromDelivery(delivery);
+            List<DeliveryDetailDeleted> deliveryDetailDeleted = delivery.getDeliveryDetails()
+                    .stream().map(DeliveryDetailDeleted::fromDeliveryDetail).toList();
+            DeliveryDeleted deletedDelivery = DeliveryDeleted.fromDelivery(delivery, deliveryDetailDeleted);
             deletedDelivery.delete(deleter);
 
             deliveryDeletedRepository.save(deletedDelivery);
