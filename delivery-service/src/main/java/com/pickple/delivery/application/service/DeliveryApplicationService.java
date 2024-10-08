@@ -16,6 +16,7 @@ import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.domain.model.deleted.DeliveryDeleted;
 import com.pickple.delivery.domain.model.deleted.DeliveryDetailDeleted;
 import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
+import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.domain.repository.deleted.DeliveryDeletedRepository;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
@@ -28,6 +29,8 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -41,8 +44,6 @@ public class DeliveryApplicationService {
     private final DeliveryRepository deliveryRepository;
 
     private final DeliveryMessageProducerService deliveryMessageProducerService;
-
-    private final DeliveryDetailApplicationService deliveryDetailApplicationService;
 
     private final DeliveryDeletedRepository deliveryDeletedRepository;
 
@@ -102,6 +103,41 @@ public class DeliveryApplicationService {
                 deliveryDetailInfoDtoList);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Delivery> getAllDelivery(Pageable pageable) {
+        log.info("배송 전체 정보 조회 요청을 처리합니다. 요청 정보: {}", pageable);
+        return deliveryRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Delivery> getDeliveriesByCarrier(String carrierName, Pageable pageable) {
+        return deliveryRepository.findByCarrierName(carrierName, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Delivery> getDeliveriesByStatus(DeliveryStatus status, Pageable pageable) {
+        return deliveryRepository.findByDeliveryStatus(status, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Delivery> getDeliveriesByDeliveryType(DeliveryType deliveryType,
+            Pageable pageable) {
+        return deliveryRepository.findByDeliveryType(deliveryType, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public DeliveryInfoResponseDto getDeliveriesByTrackingNumber(String trackingNumber) {
+        Delivery delivery = deliveryRepository.findByTrackingNumber(trackingNumber)
+                .orElseThrow(() -> new CustomException(DeliveryErrorCode.TRACKING_NUMBER_NOT_FOUND));
+
+        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
+        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList = delivery.getDeliveryDetails()
+                .stream().map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
+        return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
+                deliveryDetailInfoDtoList);
+    }
+
+
     @Transactional
     public DeliveryDeleteResponseDto deleteDelivery(UUID deliveryId, String deleter) {
         log.error("배송을 삭제합니다. 배송 ID: {}, 배송 삭제 요청자: {}", deliveryId, deleter);
@@ -111,7 +147,8 @@ public class DeliveryApplicationService {
         try {
             List<DeliveryDetailDeleted> deliveryDetailDeleted = delivery.getDeliveryDetails()
                     .stream().map(DeliveryDetailDeleted::fromDeliveryDetail).toList();
-            DeliveryDeleted deletedDelivery = DeliveryDeleted.fromDelivery(delivery, deliveryDetailDeleted);
+            DeliveryDeleted deletedDelivery = DeliveryDeleted.fromDelivery(delivery,
+                    deliveryDetailDeleted);
             deletedDelivery.delete(deleter);
 
             deliveryDeletedRepository.save(deletedDelivery);
@@ -120,7 +157,8 @@ public class DeliveryApplicationService {
             log.error("배송 삭제에 실패하였습니다.: {}", e.getMessage());
             throw new CustomException(DeliveryErrorCode.DELIVERY_SAVE_FAILURE);
         }
-        return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(), deleter);
+        return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(),
+                deleter);
     }
 
 }

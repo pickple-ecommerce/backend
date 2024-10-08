@@ -10,6 +10,7 @@ public enum DeliveryErrorCode implements ErrorCode {
     DELIVERY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 배송입니다."),
     CARRIER_NAME_NOT_SUPPORT(HttpStatus.BAD_REQUEST, "지원하지 않는 택배사 입니다."),
     DELIVERY_TYPE_NOT_SUPPORT(HttpStatus.BAD_REQUEST, "지원하지 않는 배송 방식 입니다."),
+    TRACKING_NUMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 송장번호 입니다."),
     INVALID_MESSAGE_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 메시지 형식입니다."),
     DELIVERY_CREATE_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "Delivery 생성에 실패하였습니다."),
     DELIVERY_DELETE_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "Delivery 삭제에 실패하였습니다."),
