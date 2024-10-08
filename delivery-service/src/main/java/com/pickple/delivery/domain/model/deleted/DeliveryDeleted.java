@@ -3,87 +3,87 @@ package com.pickple.delivery.domain.model.deleted;
 import com.pickple.delivery.domain.model.Delivery;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
-import java.time.Instant;
-import java.util.UUID;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.cassandra.core.mapping.CassandraType;
-import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Table("p_deliveries_deleted")
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+@Document(collection = "p_deliveries_deleted")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeliveryDeleted {
 
-    @PrimaryKey(value = "delivery_id")
-    @CassandraType(type = Name.UUID)
+    @Id
     private UUID deliveryId;
 
-    @Column(value = "order_id")
-    @CassandraType(type = Name.UUID)
+    @Field("order_id")
     private UUID orderId;
 
-    @Column(value = "carrier_id")
+    @Field("carrier_id")
     private String carrierId;
 
-    @Column(value = "carrier_name")
+    @Field("carrier_name")
     private String carrierName;
 
-    @Column(value = "delivery_type")
-    @CassandraType(type = Name.TEXT)
+    @Field("delivery_type")
     private DeliveryType deliveryType;
 
-    @Column(value = "delivery_status")
-    @CassandraType(type = Name.TEXT)
+    @Field("delivery_status")
     private DeliveryStatus deliveryStatus;
 
-    @Column(value = "delivery_requirement")
+    @Field("delivery_requirement")
     private String deliveryRequirement;
 
-    @Column(value = "tracking_number")
+    @Field("tracking_number")
     private String trackingNumber;
 
-    @Column(value = "recipient_name")
+    @Field("recipient_name")
     private String recipientName;
 
-    @Column(value = "recipient_address")
+    @Field("recipient_address")
     private String recipientAddress;
 
-    @Column(value = "recipient_contact")
+    @Field("recipient_contact")
     private String recipientContact;
 
-    @Column("created_at")
-    private Instant createdAt;
+    @Field("created_at")
+    private Date createdAt;
 
-    @Column("updated_at")
-    private Instant updatedAt;
+    @Field("updated_at")
+    private Date updatedAt;
 
-    @Column("created_by")
+    @Field("created_by")
     private String createdBy;
 
-    @Column("updated_by")
+    @Field("updated_by")
     private String updatedBy;
 
-    @Column("deleted_at")
+    @Field("deleted_at")
     protected Instant deletedAt;
 
-    @Column("deleted_by")
+    @Field("deleted_by")
     protected String deletedBy;
+
+    @Field("delivery_details")
+    private List<DeliveryDetailDeleted> deliveryDetails;
 
     public void delete(String deleter) {
         this.deletedAt = Instant.now();
         this.deletedBy = deleter;
     }
 
-    public static DeliveryDeleted fromDelivery(Delivery delivery) {
+    public static DeliveryDeleted fromDelivery(Delivery delivery, List<DeliveryDetailDeleted> details) {
         return DeliveryDeleted.builder()
                 .deliveryId(delivery.getDeliveryId())
                 .carrierName(delivery.getCarrierName())
@@ -99,7 +99,7 @@ public class DeliveryDeleted {
                 .createdBy(delivery.getCreatedBy())
                 .updatedAt(delivery.getUpdatedAt())
                 .updatedBy(delivery.getUpdatedBy())
+                .deliveryDetails(details)
                 .build();
     }
-
 }

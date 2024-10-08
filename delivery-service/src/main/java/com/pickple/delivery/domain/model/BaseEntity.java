@@ -1,27 +1,27 @@
 package com.pickple.delivery.domain.model;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.util.Date;
 import lombok.Getter;
 import org.springframework.data.annotation.*;
-import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
 public abstract class BaseEntity implements Serializable {
 
-    @Column("created_at")
+    @Field("created_at")
     @CreatedDate
-    private Instant createdAt;
+    private Date createdAt;
 
-    @Column("updated_at")
+    @Field("updated_at")
     @LastModifiedDate
-    private Instant updatedAt;
+    private Date updatedAt;
 
-    @Column("created_by")
+    @Field("created_by")
     @CreatedBy
     private String createdBy;
 
-    @Column("updated_by")
+    @Field("updated_by")
     @LastModifiedBy
     private String updatedBy;
 

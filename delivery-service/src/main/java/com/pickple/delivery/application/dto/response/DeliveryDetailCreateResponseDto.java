@@ -1,6 +1,6 @@
 package com.pickple.delivery.application.dto.response;
 
-import com.pickple.delivery.domain.model.DeliveryDetailId;
+import java.util.Date;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class DeliveryDetailCreateResponseDto {
 
-    private DeliveryDetailId deliveryDetailId;
+    private Date deliveryDetailTime;
 
     private String deliveryDetailStatus;
 
