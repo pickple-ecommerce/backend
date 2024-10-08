@@ -63,7 +63,7 @@ public class DeliveryController {
                 deliveryService.getDeliveryInfo(deliveryId)));
     }
 
-    @PreAuthorize("hasAnyAuthority('MASTER')")
+    @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<Delivery>>> getAllDeliveryInfo(
             @PageableDefault(
