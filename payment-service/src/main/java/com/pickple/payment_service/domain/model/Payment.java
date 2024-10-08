@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -23,8 +24,8 @@ public class Payment extends BaseEntity {
     @Column(name="order_id")
     private UUID orderId;
 
-    @Column(name="user_id")
-    private Long userId;
+    @Column(name="username")
+    private String userName;
 
     @Column(name="amount")
     private BigDecimal amount;
@@ -36,10 +37,10 @@ public class Payment extends BaseEntity {
     @Enumerated(value=EnumType.STRING)
     private PaymentStatusEnum status;
 
-    public Payment(UUID orderId, Long userId, BigDecimal amount) {
+    public Payment(UUID orderId, String userName, BigDecimal amount) {
         this.orderId = orderId;
         this.amount = amount;
-        this.userId = userId;
+        this.userName = userName;
         this.method = "CREDIT-CARD";
         this.status = PaymentStatusEnum.PENDING;
     }
@@ -48,8 +49,13 @@ public class Payment extends BaseEntity {
         this.status = PaymentStatusEnum.COMPLETED;
     }
 
-    public void canceled() {
-        this.isDelete = true;
+    public void cancel() {
         this.status = PaymentStatusEnum.CANCELED;
+    }
+
+    public void delete(String deleteBy) {
+        this.isDelete = true;
+        this.deletedBy = deleteBy;
+        this.deletedAt = LocalDateTime.now();
     }
 }

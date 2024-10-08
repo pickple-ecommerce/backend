@@ -7,7 +7,6 @@ import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.domain.model.Delivery;
-import com.pickple.delivery.domain.repository.projection.DeliveryInfoProjection;
 import com.pickple.delivery.infrastructure.messaging.events.DeliveryCreateRequestEvent;
 import com.pickple.delivery.presentation.request.DeliveryStartRequest;
 import java.util.List;
@@ -51,18 +50,18 @@ public class DeliveryMapper {
                 .build();
     }
 
-    public static DeliveryInfoDto convertProjectionToDto(DeliveryInfoProjection projection) {
+    public static DeliveryInfoDto convertEntityToInfoDto(Delivery entity) {
         return DeliveryInfoDto.builder()
-                .deliveryId(projection.getDeliveryId())
-                .orderId(projection.getOrderId())
-                .deliveryType(projection.getDeliveryType())
-                .carrierName(projection.getCarrierName())
-                .deliveryRequirement(projection.getDeliveryRequirement())
-                .deliveryStatus(projection.getDeliveryStatus())
-                .trackingNumber(projection.getTrackingNumber())
-                .recipientName(projection.getRecipientName())
-                .recipientContact(projection.getRecipientContact())
-                .recipientAddress(projection.getRecipientAddress())
+                .deliveryId(entity.getDeliveryId())
+                .orderId(entity.getOrderId())
+                .deliveryType(entity.getDeliveryType())
+                .carrierName(entity.getCarrierName())
+                .deliveryRequirement(entity.getDeliveryRequirement())
+                .deliveryStatus(entity.getDeliveryStatus())
+                .trackingNumber(entity.getTrackingNumber())
+                .recipientName(entity.getRecipientName())
+                .recipientContact(entity.getRecipientContact())
+                .recipientAddress(entity.getRecipientAddress())
                 .build();
     }
 
@@ -73,7 +72,7 @@ public class DeliveryMapper {
                 .orderId(infoDto.getOrderId())
                 .carrierName(infoDto.getCarrierName())
                 .deliveryStatus(infoDto.getDeliveryStatus().getStatus())
-                .deliveryType(infoDto.getDeliveryType().getTypeName())
+                .deliveryType(infoDto.getDeliveryType() != null ? infoDto.getDeliveryType().getTypeName() : null)
                 .deliveryRequirement(infoDto.getDeliveryRequirement())
                 .recipientAddress(infoDto.getRecipientAddress())
                 .recipientContact(infoDto.getRecipientContact())

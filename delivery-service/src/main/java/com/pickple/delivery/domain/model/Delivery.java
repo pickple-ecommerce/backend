@@ -4,74 +4,69 @@ import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
-import java.util.UUID;
+import java.util.ArrayList;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.cassandra.core.mapping.CassandraType;
-import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
-import org.springframework.data.domain.Persistable;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Table("p_deliveries")
+import java.util.List;
+import java.util.UUID;
+
+@Document(collection = "p_deliveries")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Delivery extends BaseEntity implements Persistable<UUID> {
+public class Delivery extends BaseEntity {
 
-    @PrimaryKey(value = "delivery_id")
-    @CassandraType(type = Name.UUID)
+    @Id
+    @Field("delivery_id")
     @Builder.Default
     private UUID deliveryId = UUID.randomUUID();
 
-    @Column(value = "order_id")
-    @CassandraType(type = Name.UUID)
+    @Field("order_id")
     private UUID orderId;
 
-    @Column(value = "carrier_id")
+    @Field("carrier_id")
     private String carrierId;
 
-    @Column(value = "carrier_name")
+    @Field("carrier_name")
     private String carrierName;
 
-    @Column(value = "delivery_type")
-    @CassandraType(type = Name.TEXT)
+    @Field("delivery_type")
     private DeliveryType deliveryType;
 
-    @Column(value = "delivery_status")
-    @CassandraType(type = Name.TEXT)
+    @Field("delivery_status")
     @Builder.Default
     private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
 
-    @Column(value = "delivery_requirement")
+    @Field("delivery_requirement")
     private String deliveryRequirement;
 
-    @Column(value = "tracking_number")
+    @Field("tracking_number")
     private String trackingNumber;
 
-    @Column(value = "recipient_name")
+    @Field("recipient_name")
     private String recipientName;
 
-    @Column(value = "recipient_address")
+    @Field("recipient_address")
     private String recipientAddress;
 
-    @Column(value = "recipient_contact")
+    @Field("recipient_contact")
     private String recipientContact;
 
-    @Override
-    public UUID getId() {
-        return deliveryId;
-    }
+    @Field("delivery_details")
+    @Builder.Default
+    private List<DeliveryDetail> deliveryDetails = new ArrayList<>();
 
-    @Override
-    public boolean isNew() {
-        return getCreatedAt() == null;
-    }
+    @Field("is_deleted")
+    @Builder.Default
+    private Boolean isDeleted = false;
 
     public static Delivery createFrom(DeliveryCreateRequestDto dto) {
         return Delivery.builder()
@@ -83,8 +78,7 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
                 .build();
     }
 
-    public void startDelivery(String carrierId, DeliveryType deliveryType,
-            DeliveryStartRequestDto dto) {
+    public void startDelivery(String carrierId, DeliveryType deliveryType, DeliveryStartRequestDto dto) {
         this.deliveryStatus = DeliveryStatus.IN_TRANSIT;
         this.carrierId = carrierId;
         this.deliveryType = deliveryType;
@@ -92,8 +86,7 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
         this.trackingNumber = dto.getTrackingNumber();
     }
 
-    public void delete() {
-        this.isDelete = true;
+    public void addDeliveryDetail(DeliveryDetail detail) {
+        this.deliveryDetails.add(detail);
     }
-
 }

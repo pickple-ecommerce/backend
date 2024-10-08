@@ -14,3 +14,14 @@ spring:
 service:
   jwt:
     secret-key: paieRY4DK8B5jo8NRHQRVo8Ljs2zJgWbEDjbJ3cTVKVac7oftXqVaFmoaC9ouoAp
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true

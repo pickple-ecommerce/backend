@@ -1,6 +1,6 @@
-package com.pickple.delivery.domain.model;
+package com.pickple.delivery.domain.model.deleted;
 
-import com.pickple.delivery.application.dto.request.DeliveryDetailCreateRequestDto;
+import com.pickple.delivery.domain.model.DeliveryDetail;
 import java.util.Date;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,12 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class DeliveryDetail {
+public class DeliveryDetailDeleted {
 
     @Field("delivery_detail_status")
     private String deliveryDetailStatus;
@@ -25,12 +24,11 @@ public class DeliveryDetail {
     @Field("delivery_detail_time")
     private Date deliveryDetailTime;
 
-    public static DeliveryDetail createFrom(DeliveryDetailCreateRequestDto dto) {
-        return DeliveryDetail.builder()
-                .deliveryDetailTime(dto.getDeliveryDetailTime())
-                .deliveryDetailDescription(dto.getDeliveryDetailDescription())
-                .deliveryDetailStatus(dto.getDeliveryDetailStatus())
+    public static DeliveryDetailDeleted fromDeliveryDetail(DeliveryDetail deliveryDetail) {
+        return DeliveryDetailDeleted.builder()
+                .deliveryDetailStatus(deliveryDetail.getDeliveryDetailStatus())
+                .deliveryDetailDescription(deliveryDetail.getDeliveryDetailDescription())
+                .deliveryDetailTime(deliveryDetail.getDeliveryDetailTime())
                 .build();
     }
 }
-

@@ -1,14 +1,14 @@
 package com.pickple.delivery.infrastructure.repository;
 
-import com.pickple.delivery.domain.repository.projection.DeliveryInfoProjection;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.domain.model.Delivery;
 import jakarta.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface DeliveryCassandraRepository extends DeliveryRepository, CassandraRepository<Delivery, UUID> {
+public interface DeliveryMongoRepository extends DeliveryRepository,
+        MongoRepository<Delivery, UUID> {
 
     @Override
     <S extends Delivery> @Nonnull S save(@Nonnull S entity);
@@ -19,6 +19,6 @@ public interface DeliveryCassandraRepository extends DeliveryRepository, Cassand
     @Override
     boolean existsById(@Nonnull UUID deliveryId);
 
-    Optional<DeliveryInfoProjection> findInfoByDeliveryId(UUID deliveryId);
-
+    @Override
+    void deleteById(@Nonnull UUID deliveryId);
 }

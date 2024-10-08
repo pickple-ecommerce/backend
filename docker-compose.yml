@@ -1,14 +1,13 @@
 services:
   delivery_db:
-    image: bitnami/cassandra:latest
+    image: mongo:latest
     container_name: delivery_db
     environment:
-      - CASSANDRA_CLUSTER_NAME=delivery_db
-      - CASSANDRA_CQL_PORT_NUMBER=5435
+      - MONGO_INITDB_DATABASE=delivery_db
+      - MONGO_INITDB_ROOT_USERNAME=delivery_db
+      - MONGO_INITDB_ROOT_PASSWORD=delivery
     ports:
-      - "5435:5435"
-    volumes:
-      - ./db-init/delivery/init-delivery.cql:/docker-entrypoint-initdb.d/init-delivery.cql
+      - "5435:27017"
 
   commerce_db:
     image: postgres:latest
@@ -99,3 +98,56 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./.github/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - 9090:9090
+    command:
+      - '--storage.tsdb.path=/prometheus'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: always
+    networks:
+      - t4y
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    restart: always
+    depends_on:
+      - prometheus
+    networks:
+      - t4y
+
+  node_exporter:
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - 9100:9100
+    networks:
+      - t4y
+
+networks:
+  t4y:
+    driver: bridge
+
+volumes:
+  grafana-data:
+  prometheus-data:

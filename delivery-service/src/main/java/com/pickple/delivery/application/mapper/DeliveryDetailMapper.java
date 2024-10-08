@@ -4,7 +4,6 @@ import com.pickple.delivery.application.dto.request.DeliveryDetailCreateRequestD
 import com.pickple.delivery.application.dto.response.DeliveryDetailCreateResponseDto;
 import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
 import com.pickple.delivery.domain.model.DeliveryDetail;
-import com.pickple.delivery.domain.repository.projection.DeliveryDetailInfoProjection;
 import com.pickple.delivery.presentation.request.DeliveryDetailCreateRequest;
 import java.util.UUID;
 
@@ -22,18 +21,18 @@ public class DeliveryDetailMapper {
 
     public static DeliveryDetailCreateResponseDto convertEntityToCreateResponseDto(DeliveryDetail entity) {
         return DeliveryDetailCreateResponseDto.builder()
-                .deliveryDetailId(entity.getDeliveryDetailId())
+                .deliveryDetailTime(entity.getDeliveryDetailTime())
                 .deliveryDetailDescription(entity.getDeliveryDetailDescription())
                 .deliveryDetailStatus(entity.getDeliveryDetailStatus())
                 .build();
     }
 
-    public static DeliveryDetailInfoDto convertProjectionToDto(
-            DeliveryDetailInfoProjection projection) {
+    public static DeliveryDetailInfoDto convertEntityToInfoDto(
+            DeliveryDetail deliveryDetail) {
         return DeliveryDetailInfoDto.builder()
-                .deliveryDetailTime(projection.getDeliveryDetailId().getDeliveryDetailTime())
-                .deliveryDetailDescription(projection.getDeliveryDetailDescription())
-                .deliveryDetailStatus(projection.getDeliveryDetailStatus())
+                .deliveryDetailTime(deliveryDetail.getDeliveryDetailTime())
+                .deliveryDetailDescription(deliveryDetail.getDeliveryDetailDescription())
+                .deliveryDetailStatus(deliveryDetail.getDeliveryDetailStatus())
                 .build();
     }
 
