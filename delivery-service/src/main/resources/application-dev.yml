@@ -1,13 +1,14 @@
 spring:
   application:
     name: delivery-service
-  cassandra:
-    port: 5435
-    contact-points: localhost
-    keyspace-name: delivery_keyspace
-    local-datacenter: datacenter1
-    username: cassandra
-    password: cassandra
+  data:
+    mongodb:
+      host: localhost
+      port: 5435
+      database: delivery_db
+      username: delivery_db
+      password: delivery
+      authentication-database: admin
 
   kafka:
     bootstrap-servers: localhost:9092
