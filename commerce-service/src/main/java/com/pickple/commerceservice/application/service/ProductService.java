@@ -30,6 +30,7 @@ public class ProductService {
         Vendor vendor = vendorRepository.findByVendorIdAndIsDeleteFalse(createDto.getVendorId())
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.VENDOR_NOT_FOUND));
 
+        // 상품 생성
         Product product = Product.builder()
                 .productName(createDto.getProductName())
                 .description(createDto.getDescription())
@@ -37,20 +38,20 @@ public class ProductService {
                 .productImage(createDto.getProductImage())
                 .isPublic(createDto.getIsPublic())
                 .vendor(vendor)
-                .stock(null)
                 .build();
         Product savedProduct = productRepository.save(product);
 
         // 재고 생성
-        StockCreateRequestDto stockCreateRequestDto = createDto.getStock();
+        StockCreateRequestDto stockCreate = createDto.getStock();
+        stockCreate.setProductId(savedProduct.getProductId()); // 상품 ID 설정
+        StockResponseDto stockResponseDto = stockService.createStock(stockCreate);
 
-        stockCreateRequestDto.setProductId(savedProduct.getProductId()); // 상품 ID 설정
-        StockResponseDto stockResponseDto = stockService.createStock(stockCreateRequestDto);
+        // 생성된 재고를 상품에 할당 후, 다시 저장
+        savedProduct.assignStock(stockRepository.findById(stockResponseDto.getStockId())
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_NOT_FOUND)));
+        productRepository.save(savedProduct);
 
         // 상품 응답 DTO 생성
         return ProductResponseDto.fromEntity(savedProduct);
-//                .toBuilder()
-//                .stock(stockResponseDto) // 재고 정보 추가
-//                .build();
     }
 }
