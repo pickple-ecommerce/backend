@@ -2,15 +2,12 @@ package com.pickple.delivery.domain.model.deleted;
 
 import com.pickple.delivery.domain.model.DeliveryDetail;
 import java.util.Date;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.time.Instant;
 
 @Getter
 @Builder
