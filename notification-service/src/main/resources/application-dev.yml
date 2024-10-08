@@ -29,5 +29,19 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
+
 server:
   port: 19097
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+
+
