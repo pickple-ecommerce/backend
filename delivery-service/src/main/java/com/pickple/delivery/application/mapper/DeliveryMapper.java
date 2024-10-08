@@ -3,12 +3,17 @@ package com.pickple.delivery.application.mapper;
 import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
 import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
 import com.pickple.delivery.application.dto.DeliveryInfoDto;
+import com.pickple.delivery.application.dto.request.DeliveryUpdateRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.domain.model.Delivery;
+import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
+import com.pickple.delivery.domain.model.enums.DeliveryStatus;
+import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.infrastructure.messaging.events.DeliveryCreateRequestEvent;
 import com.pickple.delivery.presentation.request.DeliveryStartRequest;
+import com.pickple.delivery.presentation.request.DeliveryUpdateRequest;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,8 +34,8 @@ public class DeliveryMapper {
             DeliveryStartRequest dto) {
         return DeliveryStartRequestDto.builder()
                 .deliveryId(deliveryId)
-                .carrierName(dto.getCarrierName())
-                .deliveryType(dto.getDeliveryType())
+                .deliveryCarrier(DeliveryCarrier.getFromCarrierName(dto.getCarrierName()))
+                .deliveryType(DeliveryType.getDeliveryType(dto.getDeliveryType()))
                 .trackingNumber(dto.getTrackingNumber())
                 .build();
     }
@@ -79,6 +84,19 @@ public class DeliveryMapper {
                 .recipientName(infoDto.getRecipientName())
                 .trackingNumber(infoDto.getTrackingNumber())
                 .deliveryDetailList(detailInfoDtoList)
+                .build();
+    }
+
+    public static DeliveryUpdateRequestDto convertUpdateRequestToDto(DeliveryUpdateRequest request) {
+        return DeliveryUpdateRequestDto.builder()
+                .carrierName(DeliveryCarrier.getFromCarrierName(request.getCarrierName()))
+                .recipientAddress(request.getRecipientAddress())
+                .deliveryRequirement(request.getDeliveryRequirement())
+                .deliveryStatus(DeliveryStatus.getFromStatus(request.getDeliveryStatus()))
+                .deliveryType(DeliveryType.getDeliveryType(request.getDeliveryType()))
+                .recipientContact(request.getRecipientContact())
+                .recipientName(request.getRecipientName())
+                .trackingNumber(request.getTrackingNumber())
                 .build();
     }
 }

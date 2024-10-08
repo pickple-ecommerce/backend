@@ -6,6 +6,7 @@ import com.pickple.common_module.infrastructure.messaging.EventSerializer;
 import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
 import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
 import com.pickple.delivery.application.dto.DeliveryInfoDto;
+import com.pickple.delivery.application.dto.request.DeliveryUpdateRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryDeleteResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
@@ -71,20 +72,36 @@ public class DeliveryApplicationService {
                 EventSerializer.serialize(deliveryCreateResponseEvent));
     }
 
+    @Transactional
+    public DeliveryInfoResponseDto updateDelivery(UUID deliveryId, DeliveryUpdateRequestDto dto) {
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
+                () -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND)
+        );
+        if (delivery.getDeliveryStatus() != DeliveryStatus.PENDING) {
+            throw new CustomException(DeliveryErrorCode.DELIVERY_ALREADY_START);
+        }
+        delivery.updateDelivery(dto);
+        deliveryRepository.save(delivery);
+        log.info("배송 정보가 성공적으로 업데이트되었습니다. 배송 ID: {}", delivery.getDeliveryId());
+        return createDeliveryInfoResponseDto(delivery);
+    }
+
     @Transactional(readOnly = true)
     public DeliveryStartResponseDto startDelivery(DeliveryStartRequestDto dto) {
         log.info("배송 시작 요청을 처리합니다. 배송 ID: {}, 택배 회사: {}, 배송 유형: {}", dto.getDeliveryId(),
-                dto.getCarrierName(), dto.getDeliveryType());
+                dto.getDeliveryCarrier(), dto.getDeliveryType());
         Delivery delivery = deliveryRepository.findById(dto.getDeliveryId()).orElseThrow(
                 () -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND)
         );
 
-        String carrierId = DeliveryCarrier.getIdFromCarrierName(dto.getCarrierName())
-                .getCompanyId();
-        DeliveryType deliveryType = DeliveryType.getDeliveryType(dto.getDeliveryType());
-        delivery.startDelivery(carrierId, deliveryType, dto);
+        if (delivery.getDeliveryStatus() != DeliveryStatus.PENDING) {
+            throw new CustomException(DeliveryErrorCode.DELIVERY_ALREADY_START);
+        }
 
-        log.info("배송 정보가 성공적으로 업데이트되었습니다. 배송 ID: {}", delivery.getDeliveryId());
+        String carrierId = dto.getDeliveryCarrier().getCompanyId();
+        delivery.startDelivery(carrierId, dto.getDeliveryType(), dto);
+
+        log.info("배송 시작 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
         return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
     }
 
@@ -93,14 +110,7 @@ public class DeliveryApplicationService {
         log.info("배송 정보 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
-
-        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
-
-        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList = delivery.getDeliveryDetails()
-                .stream().map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
-
-        return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
-                deliveryDetailInfoDtoList);
+        return createDeliveryInfoResponseDto(delivery);
     }
 
     @Transactional(readOnly = true)
@@ -129,14 +139,8 @@ public class DeliveryApplicationService {
     public DeliveryInfoResponseDto getDeliveriesByTrackingNumber(String trackingNumber) {
         Delivery delivery = deliveryRepository.findByTrackingNumber(trackingNumber)
                 .orElseThrow(() -> new CustomException(DeliveryErrorCode.TRACKING_NUMBER_NOT_FOUND));
-
-        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
-        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList = delivery.getDeliveryDetails()
-                .stream().map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
-        return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
-                deliveryDetailInfoDtoList);
+        return createDeliveryInfoResponseDto(delivery);
     }
-
 
     @Transactional
     public DeliveryDeleteResponseDto deleteDelivery(UUID deliveryId, String deleter) {
@@ -159,6 +163,14 @@ public class DeliveryApplicationService {
         }
         return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(),
                 deleter);
+    }
+
+    private DeliveryInfoResponseDto createDeliveryInfoResponseDto(Delivery delivery) {
+        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
+        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList = delivery.getDeliveryDetails()
+                .stream().map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
+        return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
+                deliveryDetailInfoDtoList);
     }
 
 }

@@ -1,5 +1,8 @@
 package com.pickple.delivery.domain.model.enums;
 
+import com.pickple.common_module.exception.CustomException;
+import com.pickple.delivery.exception.DeliveryErrorCode;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,4 +23,11 @@ public enum DeliveryStatus {
     DELIVERED("배송완료");
 
     private final String status;
+
+    public static DeliveryStatus getFromStatus(String name) {
+        return Arrays.stream(values())
+                .filter(status -> status.getStatus().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_STATUS_NOT_SUPPORT));
+    }
 }

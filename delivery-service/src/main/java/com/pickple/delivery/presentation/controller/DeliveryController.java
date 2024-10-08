@@ -14,6 +14,7 @@ import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.presentation.request.DeliveryDetailCreateRequest;
 import com.pickple.delivery.presentation.request.DeliveryStartRequest;
+import com.pickple.delivery.presentation.request.DeliveryUpdateRequest;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,6 +83,15 @@ public class DeliveryController {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 경로가 등록되었습니다.",
                 deliveryDetailService.createDeliveryDetail(
                         DeliveryDetailMapper.convertCreateRequestToDto(deliveryId, request))));
+    }
+
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    @PutMapping("/{delivery_id}")
+    public ResponseEntity<ApiResponse<DeliveryInfoResponseDto>> updateDelivery(
+            @PathVariable("delivery_id") UUID deliveryId,
+            @Valid @RequestBody DeliveryUpdateRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송이 수정되었습니다.",
+                deliveryService.updateDelivery(deliveryId, DeliveryMapper.convertUpdateRequestToDto(request))));
     }
 
     @PreAuthorize("hasAuthority('MASTER')")

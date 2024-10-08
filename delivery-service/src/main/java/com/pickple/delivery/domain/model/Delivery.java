@@ -2,6 +2,7 @@ package com.pickple.delivery.domain.model;
 
 import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
+import com.pickple.delivery.application.dto.request.DeliveryUpdateRequestDto;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import java.util.ArrayList;
@@ -82,11 +83,21 @@ public class Delivery extends BaseEntity {
         this.deliveryStatus = DeliveryStatus.IN_TRANSIT;
         this.carrierId = carrierId;
         this.deliveryType = deliveryType;
-        this.carrierName = dto.getCarrierName();
+        this.carrierName = dto.getDeliveryCarrier().getCompanyName();
         this.trackingNumber = dto.getTrackingNumber();
     }
 
     public void addDeliveryDetail(DeliveryDetail detail) {
         this.deliveryDetails.add(detail);
+    }
+
+    public void updateDelivery(DeliveryUpdateRequestDto dto) {
+        this.deliveryStatus = dto.getDeliveryStatus();
+        this.deliveryType = dto.getDeliveryType();
+        this.deliveryRequirement = dto.getDeliveryRequirement();
+        this.trackingNumber = dto.getTrackingNumber();
+        this.recipientName = dto.getRecipientName();
+        this.recipientAddress = dto.getRecipientAddress();
+        this.recipientContact = dto.getRecipientContact();
     }
 }
