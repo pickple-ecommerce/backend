@@ -65,4 +65,14 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "상품 수정 성공", product));
     }
 
+    /**
+     * 상품 삭제
+     */
+    @DeleteMapping("/{productId}")
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable UUID productId) {
+        productService.softDeleteProduct(productId);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "상품 삭제 성공", null));
+    }
+
 }

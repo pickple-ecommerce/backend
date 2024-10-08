@@ -60,4 +60,9 @@ public class Product extends BaseEntity {
         this.productImage = updateDto.getProductImage();
         this.isPublic = updateDto.getIsPublic();
     }
+
+    public void markAsDeleted() {
+        this.isDelete = true;
+        this.isPublic = false;
+    }
 }

@@ -86,4 +86,12 @@ public class ProductService {
         product.update(updateDto);
         return ProductResponseDto.fromEntity(product);
     }
+
+    // 상품 삭제
+    @Transactional
+    public void softDeleteProduct(UUID productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
+        product.markAsDeleted();
+    }
 }
