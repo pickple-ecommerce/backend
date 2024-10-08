@@ -6,6 +6,7 @@ import com.pickple.delivery.application.dto.response.DeliveryDetailCreateRespons
 import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.domain.model.Delivery;
 import com.pickple.delivery.domain.model.DeliveryDetail;
+import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
 import com.pickple.delivery.exception.DeliveryErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,13 @@ public class DeliveryDetailApplicationService {
             DeliveryDetailCreateRequestDto dto) {
         Delivery delivery = deliveryRepository.findById(dto.getDeliveryId())
                 .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
+
+        if (delivery.getDeliveryStatus() == DeliveryStatus.PENDING) {
+            throw new CustomException(DeliveryErrorCode.DELIVERY_NOT_STARTED);
+        }
+        if (delivery.getDeliveryStatus() == DeliveryStatus.DELIVERED) {
+            throw new CustomException(DeliveryErrorCode.DELIVERY_ALREADY_DELIVERED);
+        }
 
         log.info("새로운 DeliveryDetail 을 생성합니다. 요청 정보: {}", dto);
         DeliveryDetail deliveryDetail = DeliveryDetail.createFrom(dto);

@@ -23,7 +23,7 @@ public enum DeliveryCarrier {
 
     private final String companyId;
 
-    public static DeliveryCarrier getIdFromCarrierName(String name) {
+    public static DeliveryCarrier getFromCarrierName(String name) {
         return Arrays.stream(values())
                 .filter(company -> company.companyName.equals(name))
                 .findFirst()

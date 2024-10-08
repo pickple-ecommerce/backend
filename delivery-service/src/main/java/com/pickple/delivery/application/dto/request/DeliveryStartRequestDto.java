@@ -1,5 +1,7 @@
 package com.pickple.delivery.application.dto.request;
 
+import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
+import com.pickple.delivery.domain.model.enums.DeliveryType;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +12,9 @@ public class DeliveryStartRequestDto {
 
     private UUID deliveryId;
 
-    private String carrierName;
+    private DeliveryCarrier deliveryCarrier;
 
-    private String deliveryType;
+    private DeliveryType deliveryType;
 
     private String trackingNumber;
 
