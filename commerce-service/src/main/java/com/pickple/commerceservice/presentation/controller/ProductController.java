@@ -3,6 +3,7 @@ package com.pickple.commerceservice.presentation.controller;
 import com.pickple.commerceservice.application.dto.ProductResponseDto;
 import com.pickple.commerceservice.application.service.ProductService;
 import com.pickple.commerceservice.presentation.dto.request.ProductCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.ProductUpdateRequestDto;
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,16 @@ public class ProductController {
     public ResponseEntity<ApiResponse<ProductResponseDto>> getProductById(@PathVariable UUID productId) {
         ProductResponseDto product = productService.getProductById(productId);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "상품 상세 조회 성공", product));
+    }
+
+    /**
+     * 상품 수정
+     */
+    @PutMapping("/{productId}")
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@PathVariable UUID productId, @RequestBody @Valid ProductUpdateRequestDto updateDto) {
+        ProductResponseDto product = productService.updateProduct(productId, updateDto);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "상품 수정 성공", product));
     }
 
 }
