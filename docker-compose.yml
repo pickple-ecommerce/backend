@@ -53,7 +53,7 @@ services:
       - CASSANDRA_CLUSTER_NAME=notification_db
       - CASSANDRA_CQL_PORT_NUMBER=5436
     ports:
-      - "5436:5436"
+      - "5436:9042"
     volumes:
       - ./db-init/notification/init-notification.cql:/docker-entrypoint-initdb.d/init-notification.cql
 
