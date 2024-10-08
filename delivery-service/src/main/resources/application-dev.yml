@@ -34,3 +34,14 @@ kafka:
 
 server:
   port: 19096
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
