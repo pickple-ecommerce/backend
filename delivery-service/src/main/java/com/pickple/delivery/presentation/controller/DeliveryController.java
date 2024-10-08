@@ -5,6 +5,7 @@ import com.pickple.delivery.application.dto.response.DeliveryDeleteResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryDetailCreateResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
+import com.pickple.delivery.application.dto.response.DeliveryStatusResponseDto;
 import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.application.service.DeliveryApplicationService;
@@ -102,6 +103,14 @@ public class DeliveryController {
                 .getPrincipal();
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "성공적으로 삭제되었습니다.",
                 deliveryService.deleteDelivery(deliveryId, deleter)));
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @GetMapping("/{delivery_id}/status")
+    public ResponseEntity<ApiResponse<DeliveryStatusResponseDto>> getDeliveryStatus(
+            @PathVariable("delivery_id") UUID deliveryId) {
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 상태 조회에 성공하였습니다.",
+                deliveryService.getDeliveryStatus(deliveryId)));
     }
 
     // 배송사 기준 검색
