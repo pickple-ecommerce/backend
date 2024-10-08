@@ -5,9 +5,10 @@ import com.pickple.delivery.domain.model.Delivery;
 import jakarta.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface DeliveryCassandraRepository extends DeliveryRepository, CassandraRepository<Delivery, UUID> {
+public interface DeliveryMongoRepository extends DeliveryRepository,
+        MongoRepository<Delivery, UUID> {
 
     @Override
     <S extends Delivery> @Nonnull S save(@Nonnull S entity);
