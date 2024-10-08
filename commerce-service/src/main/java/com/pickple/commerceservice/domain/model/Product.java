@@ -46,5 +46,9 @@ public class Product extends BaseEntity {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) // PreOrderDetails와 1:1 매핑 추가
     private PreOrderDetails preOrderDetails;
 
+    // 재고 설정 메서드
+    public void assignStock(Stock stock) {
+        this.stock = stock;
+    }
 
 }
