@@ -8,6 +8,7 @@ import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.domain.repository.StockRepository;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.presentation.dto.request.StockCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.StockUpdateRequestDto;
 import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,15 @@ public class StockService {
     public StockByProductDto getStockByProductId(UUID productId) {
         Stock stock = stockRepository.findByProduct_ProductId(productId)
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        return StockByProductDto.fromEntity(stock);
+    }
+
+    // 상품 별 재고 수정
+    @Transactional
+    public StockByProductDto updateStockQuantity(UUID productId, StockUpdateRequestDto updateDto) {
+        Stock stock = stockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        stock.updateStockQuantity(updateDto.getStockQuantity());
         return StockByProductDto.fromEntity(stock);
     }
 }
