@@ -3,6 +3,7 @@ package com.pickple.commerceservice.presentation.controller;
 import com.pickple.commerceservice.application.dto.PreOrderResponseDto;
 import com.pickple.commerceservice.application.service.PreOrderService;
 import com.pickple.commerceservice.presentation.dto.request.PreOrderCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.PreOrderUpdateRequestDto;
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,17 @@ public class PreOrderController {
     public ResponseEntity<ApiResponse<PreOrderResponseDto>> getPreOrderByProductId(@PathVariable UUID productId) {
         PreOrderResponseDto preOrder = preOrderService.getPreOrderByProductId(productId);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "특정 상품의 예약 구매 정보 조회 성공", preOrder));
+    }
+
+    /**
+     * 특정 상품의 예약 구매 정보 수정
+     */
+    @PutMapping("/products/{productId}")
+    @PreAuthorize("hasAuthority('MASTER')")
+    public ResponseEntity<ApiResponse<PreOrderResponseDto>> updatePreOrderByProductId(@PathVariable UUID productId,
+                                                                                      @RequestBody PreOrderUpdateRequestDto updateDto) {
+        PreOrderResponseDto updatedPreOrder = preOrderService.updatePreOrderByProductId(productId, updateDto);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "예약 구매 정보 수정 성공", updatedPreOrder));
     }
 
     /**
