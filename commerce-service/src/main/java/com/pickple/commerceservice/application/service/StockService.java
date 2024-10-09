@@ -64,4 +64,20 @@ public class StockService {
         stock.updateStockQuantity(updateDto.getStockQuantity());
         return StockByProductDto.fromEntity(stock);
     }
+
+    // 재고 1 증가 메서드
+    @Transactional
+    public void increaseStockQuantity(UUID productId) {
+        Stock stock = stockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        stock.increaseStock();  // 수량 1 증가
+    }
+
+    // 재고 1 감소 메서드
+    @Transactional
+    public void decreaseStockQuantity(UUID productId) {
+        Stock stock = stockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        stock.decreaseStock();  // 수량 1 감소
+    }
 }

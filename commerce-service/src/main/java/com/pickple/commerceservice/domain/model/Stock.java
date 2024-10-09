@@ -36,4 +36,17 @@ public class Stock extends BaseEntity {
         this.stockQuantity = newQuantity;
     }
 
+    // 재고 수량 1 증가 메서드
+    public void increaseStock() {
+        this.stockQuantity += 1;
+    }
+
+    // 재고 수량 1 감소 메서드
+    public void decreaseStock() {
+        if (this.stockQuantity <= 0) {
+            throw new CustomException(CommerceErrorCode.INSUFFICIENT_STOCK);
+        }
+        this.stockQuantity -= 1;
+    }
+
 }
