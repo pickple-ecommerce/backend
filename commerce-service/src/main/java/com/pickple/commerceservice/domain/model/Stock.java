@@ -49,4 +49,9 @@ public class Stock extends BaseEntity {
         this.stockQuantity -= 1;
     }
 
+    // 주문한 수량 만큼 재고 감소 메서드
+    public void decreaseStockQuantity(Long newQuantity) {
+        this.stockQuantity = newQuantity;
+    }
+
 }

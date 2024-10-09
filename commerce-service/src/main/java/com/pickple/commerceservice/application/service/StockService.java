@@ -2,6 +2,7 @@ package com.pickple.commerceservice.application.service;
 
 import com.pickple.commerceservice.application.dto.StockByProductDto;
 import com.pickple.commerceservice.application.dto.StockResponseDto;
+import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.model.Stock;
 import com.pickple.commerceservice.domain.repository.ProductRepository;
@@ -80,4 +81,24 @@ public class StockService {
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
         stock.decreaseStock();  // 수량 1 감소
     }
+
+    // 주문한 수량만큼 재고 감소 메서드
+    @Transactional
+    public void decreaseStockQuantityForOrder(OrderDetail orderDetail) {
+        UUID productId = orderDetail.getProduct().getProductId();
+        Long quantityToReduce = orderDetail.getOrderQuantity();
+
+        // 해당 상품 재고 조회
+        Stock stock = stockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+
+        // 재고 수량 차감
+        long currentQuantity = stock.getStockQuantity();
+        if (currentQuantity < quantityToReduce) {
+            throw new CustomException(CommerceErrorCode.INSUFFICIENT_STOCK);
+        }
+        stock.decreaseStockQuantity(currentQuantity - quantityToReduce);
+    }
+
+
 }
