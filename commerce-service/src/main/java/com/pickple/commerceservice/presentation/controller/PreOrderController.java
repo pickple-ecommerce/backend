@@ -38,4 +38,15 @@ public class PreOrderController {
         PreOrderResponseDto preOrder = preOrderService.getPreOrderByProductId(productId);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "특정 상품의 예약 구매 정보 조회 성공", preOrder));
     }
+
+    /**
+     * 특정 상품의 예약 구매 정보 삭제
+     */
+    @DeleteMapping("/products/{productId}")
+    @PreAuthorize("hasAuthority('MASTER')")
+    public ResponseEntity<ApiResponse<Void>> deletePreOrderByProductId(@PathVariable UUID productId) {
+        preOrderService.deletePreOrderByProductId(productId);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "예약 구매 정보 삭제 성공", null));
+    }
+
 }

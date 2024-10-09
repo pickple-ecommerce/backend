@@ -32,4 +32,8 @@ public class PreOrderDetails extends BaseEntity {
     @Column(name = "pre_order_stock_quantity", nullable = false)
     private Long preOrderStockQuantity;     // 예약 구매 가능한 재고 수량
 
+    public void markAsDeleted() {
+        this.isDelete = true;
+        this.deletedAt = LocalDateTime.now();
+    }
 }
