@@ -27,10 +27,6 @@ public class StockService {
     // 재고 생성
     @Transactional
     public StockResponseDto createStock(StockCreateRequestDto createDto) {
-        if (createDto == null) {
-            throw new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND);
-        }
-
         // 상품을 찾기 전에 productId가 null인지 체크
         UUID productId = createDto.getProductId();
         if (productId == null) {
@@ -52,16 +48,14 @@ public class StockService {
     // 상품 별 재고 조회
     @Transactional(readOnly = true)
     public StockByProductDto getStockByProductId(UUID productId) {
-        Stock stock = stockRepository.findByProduct_ProductId(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        Stock stock = findStockByProductId(productId);
         return StockByProductDto.fromEntity(stock);
     }
 
     // 상품 별 재고 수정
     @Transactional
     public StockByProductDto updateStockQuantity(UUID productId, StockUpdateRequestDto updateDto) {
-        Stock stock = stockRepository.findByProduct_ProductId(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        Stock stock = findStockByProductId(productId);
         stock.updateStockQuantity(updateDto.getStockQuantity());
         return StockByProductDto.fromEntity(stock);
     }
@@ -69,16 +63,14 @@ public class StockService {
     // 재고 1 증가 메서드
     @Transactional
     public void increaseStockQuantity(UUID productId) {
-        Stock stock = stockRepository.findByProduct_ProductId(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        Stock stock = findStockByProductId(productId);
         stock.increaseStock();  // 수량 1 증가
     }
 
     // 재고 1 감소 메서드
     @Transactional
     public void decreaseStockQuantity(UUID productId) {
-        Stock stock = stockRepository.findByProduct_ProductId(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        Stock stock = findStockByProductId(productId);
         stock.decreaseStock();  // 수량 1 감소
     }
 
@@ -89,8 +81,7 @@ public class StockService {
         Long quantityToReduce = orderDetail.getOrderQuantity();
 
         // 해당 상품 재고 조회
-        Stock stock = stockRepository.findByProduct_ProductId(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        Stock stock = findStockByProductId(productId);
 
         // 재고 수량 차감
         long currentQuantity = stock.getStockQuantity();
@@ -100,5 +91,10 @@ public class StockService {
         stock.decreaseStockQuantity(currentQuantity - quantityToReduce);
     }
 
+    // 상품 ID로 재고 조회 메서드
+    private Stock findStockByProductId(UUID productId) {
+        return stockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+    }
 
 }
