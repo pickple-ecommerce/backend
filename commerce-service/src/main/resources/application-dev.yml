@@ -10,6 +10,20 @@ spring:
     url: jdbc:postgresql://localhost:5433/commerce_db
     username: commerce_db
     password: commerce
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: commerce-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 eureka:
   client:
@@ -31,3 +45,8 @@ management:
       show-details: always
     prometheus:
       enabled: true
+
+kafka:
+  topic:
+    payment-request: payment-request
+    delivery-request: delivery-request
