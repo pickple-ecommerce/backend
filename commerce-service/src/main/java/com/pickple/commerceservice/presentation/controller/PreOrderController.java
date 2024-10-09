@@ -1,9 +1,16 @@
 package com.pickple.commerceservice.presentation.controller;
 
+import com.pickple.commerceservice.application.dto.PreOrderResponseDto;
 import com.pickple.commerceservice.application.service.PreOrderService;
+import com.pickple.commerceservice.presentation.dto.request.PreOrderCreateRequestDto;
+import com.pickple.common_module.presentation.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -12,4 +19,13 @@ public class PreOrderController {
 
     private final PreOrderService preOrderService;
 
+    /**
+     * 특정 상품의 예약 구매 정보 등록
+     */
+    @PostMapping("/products/{productId}")
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    public ResponseEntity<ApiResponse<PreOrderResponseDto>> createPreOrder(@PathVariable UUID productId, @RequestBody PreOrderCreateRequestDto requestDto) {
+        PreOrderResponseDto preOrder = preOrderService.createPreOrder(productId, requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(HttpStatus.CREATED, "특정 상품의 예약 구매 정보 등록 성공", preOrder));
+    }
 }
