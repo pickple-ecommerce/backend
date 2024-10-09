@@ -33,8 +33,8 @@ public class Order extends BaseEntity {
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal amount = BigDecimal.ZERO;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+//    @Column(name = "user_id", nullable = false)
+//    private Long userId;
 
     @Column(name = "payment_id")
     private UUID paymentId;
@@ -45,4 +45,7 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 
+    public void addOrderDetails(List<OrderDetail> details) {
+        this.orderDetails = details;
+    }
 }
