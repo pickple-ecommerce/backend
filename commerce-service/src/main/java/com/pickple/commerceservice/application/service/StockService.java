@@ -1,5 +1,6 @@
 package com.pickple.commerceservice.application.service;
 
+import com.pickple.commerceservice.application.dto.StockByProductDto;
 import com.pickple.commerceservice.application.dto.StockResponseDto;
 import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.model.Stock;
@@ -46,4 +47,11 @@ public class StockService {
         return StockResponseDto.fromEntity(savedStock);
     }
 
+    // 상품 별 재고 조회
+    @Transactional(readOnly = true)
+    public StockByProductDto getStockByProductId(UUID productId) {
+        Stock stock = stockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
+        return StockByProductDto.fromEntity(stock);
+    }
 }
