@@ -31,6 +31,15 @@ public class PreOrderController {
     }
 
     /**
+     * 특정 예약 구매 정보 조회
+     */
+    @GetMapping("/{preOrderId}")
+    public ResponseEntity<ApiResponse<PreOrderResponseDto>> getPreOrderById(@PathVariable UUID preOrderId) {
+        PreOrderResponseDto preOrder = preOrderService.getPreOrderById(preOrderId);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "특정 예약 구매 정보 조회 성공", preOrder));
+    }
+
+    /**
      * 특정 상품의 예약 구매 정보 등록
      */
     @PostMapping("/products/{productId}")

@@ -14,6 +14,7 @@ import java.util.UUID;
 public interface PreOrderRepository extends JpaRepository<PreOrderDetails, UUID> {
 
     List<PreOrderDetails> findByIsDeleteFalse();
+    Optional<PreOrderDetails> findByPreOrderIdAndIsDeleteFalse(UUID preOrderId);
 
     // 특정 상품의 예약 구매 정보 조회
     Optional<PreOrderDetails> findByProduct_ProductIdAndIsDeleteFalse(UUID productId);
