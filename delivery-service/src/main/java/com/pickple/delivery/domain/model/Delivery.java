@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Delivery extends BaseEntity {
+public class Delivery extends BaseEntity implements Persistable<UUID> {
 
     @Id
     @Field("delivery_id")
@@ -100,4 +101,15 @@ public class Delivery extends BaseEntity {
         this.recipientAddress = dto.getRecipientAddress();
         this.recipientContact = dto.getRecipientContact();
     }
+  
+    @Override
+    public UUID getId() {
+        return deliveryId;
+    }
+
+    @Override
+    public boolean isNew() {
+        return getCreatedAt() == null;
+    }
+  
 }
