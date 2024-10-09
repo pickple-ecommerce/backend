@@ -101,7 +101,7 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
         this.recipientAddress = dto.getRecipientAddress();
         this.recipientContact = dto.getRecipientContact();
     }
-
+  
     @Override
     public UUID getId() {
         return deliveryId;
@@ -111,4 +111,5 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
     public boolean isNew() {
         return getCreatedAt() == null;
     }
+  
 }
