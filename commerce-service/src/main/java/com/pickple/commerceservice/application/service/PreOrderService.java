@@ -39,4 +39,15 @@ public class PreOrderService {
         return PreOrderResponseDto.fromEntity(preOrder);
     }
 
+    // 특정 상품의 예약 구매 정보 조회
+    @Transactional(readOnly = true)
+    public PreOrderResponseDto getPreOrderByProductId(UUID productId) {
+        Product product = productRepository.findByProductIdAndIsDeleteFalse(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
+
+        PreOrderDetails preOrder = preOrderRepository.findByProduct_ProductIdAndIsDeleteFalse(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRE_ORDER_NOT_FOUND_FOR_PRODUCT));
+
+        return PreOrderResponseDto.fromEntity(preOrder);
+    }
 }

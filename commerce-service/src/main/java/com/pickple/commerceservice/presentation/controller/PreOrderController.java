@@ -23,9 +23,19 @@ public class PreOrderController {
      * 특정 상품의 예약 구매 정보 등록
      */
     @PostMapping("/products/{productId}")
-    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    @PreAuthorize("hasAuthority('MASTER')")
     public ResponseEntity<ApiResponse<PreOrderResponseDto>> createPreOrder(@PathVariable UUID productId, @RequestBody PreOrderCreateRequestDto requestDto) {
         PreOrderResponseDto preOrder = preOrderService.createPreOrder(productId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(HttpStatus.CREATED, "특정 상품의 예약 구매 정보 등록 성공", preOrder));
+    }
+
+    /**
+     * 특정 상품의 예약 구매 정보 조회
+     */
+    @GetMapping("/products/{productId}")
+    @PreAuthorize("hasAuthority('MASTER')")
+    public ResponseEntity<ApiResponse<PreOrderResponseDto>> getPreOrderByProductId(@PathVariable UUID productId) {
+        PreOrderResponseDto preOrder = preOrderService.getPreOrderByProductId(productId);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "특정 상품의 예약 구매 정보 조회 성공", preOrder));
     }
 }
