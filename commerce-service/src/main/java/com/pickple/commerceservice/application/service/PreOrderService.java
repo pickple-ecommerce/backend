@@ -14,7 +14,9 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,14 @@ public class PreOrderService {
 
     private final PreOrderRepository preOrderRepository;
     private final ProductRepository productRepository;
+
+    // 모든 예약 구매 목록 조회
+    @Transactional(readOnly = true)
+    public List<PreOrderResponseDto> getAllPreOrders() {
+        return preOrderRepository.findByIsDeleteFalse().stream()
+                .map(PreOrderResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 
     // 특정 상품의 예약 구매 정보 등록
     @Transactional
@@ -76,6 +86,5 @@ public class PreOrderService {
 
         preOrder.markAsDeleted();
     }
-
 
 }

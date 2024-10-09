@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,6 +20,15 @@ import java.util.UUID;
 public class PreOrderController {
 
     private final PreOrderService preOrderService;
+
+    /**
+     * 모든 예약 구매 목록 조회
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<PreOrderResponseDto>>> getAllPreOrders() {
+        List<PreOrderResponseDto> preOrders = preOrderService.getAllPreOrders();
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "모든 예약 구매 상품 목록 조회 성공", preOrders));
+    }
 
     /**
      * 특정 상품의 예약 구매 정보 등록
