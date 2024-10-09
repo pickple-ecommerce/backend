@@ -105,6 +105,14 @@ public class DeliveryController {
                 deliveryService.deleteDelivery(deliveryId, deleter)));
     }
 
+    @PreAuthorize("hasAuthority('MASTER')")
+    @GetMapping("/{delivery_id}/status")
+    public ResponseEntity<ApiResponse<DeliveryStatusResponseDto>> getDeliveryStatus(
+            @PathVariable("delivery_id") UUID deliveryId) {
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 상태 조회에 성공하였습니다.",
+                deliveryService.getDeliveryStatus(deliveryId)));
+    }
+
     // 배송사 기준 검색
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping("/carrier")
