@@ -58,7 +58,6 @@ public class PreOrderController {
      * 특정 상품의 예약 구매 정보 조회
      */
     @GetMapping("/products/{productId}")
-    @PreAuthorize("hasAuthority('MASTER')")
     public ResponseEntity<ApiResponse<PreOrderResponseDto>> getPreOrderByProductId(@PathVariable UUID productId) {
         PreOrderResponseDto preOrder = preOrderService.getPreOrderByProductId(productId);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "특정 상품의 예약 구매 정보 조회 성공", preOrder));

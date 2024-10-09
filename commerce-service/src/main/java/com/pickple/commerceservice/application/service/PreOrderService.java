@@ -37,16 +37,14 @@ public class PreOrderService {
     // 특정 예약 구매 정보 조회
     @Transactional(readOnly = true)
     public PreOrderResponseDto getPreOrderById(UUID preOrderId) {
-        PreOrderDetails preOrder = preOrderRepository.findByPreOrderIdAndIsDeleteFalse(preOrderId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PREORDER_NOT_FOUND));
+        PreOrderDetails preOrder = findPreOrderById(preOrderId);
         return PreOrderResponseDto.fromEntity(preOrder);
     }
 
     // 특정 상품의 예약 구매 정보 등록
     @Transactional
     public PreOrderResponseDto createPreOrder(UUID productId, PreOrderCreateRequestDto requestDto) {
-        Product product = productRepository.findByProductIdAndIsDeleteFalse(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
+        Product product = findProductById(productId);
 
         PreOrderDetails preOrder = PreOrderDetails.builder()
                 .product(product)
@@ -62,11 +60,8 @@ public class PreOrderService {
     // 특정 상품의 예약 구매 정보 조회
     @Transactional(readOnly = true)
     public PreOrderResponseDto getPreOrderByProductId(UUID productId) {
-        Product product = productRepository.findByProductIdAndIsDeleteFalse(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
-
-        PreOrderDetails preOrder = preOrderRepository.findByProduct_ProductIdAndIsDeleteFalse(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRE_ORDER_NOT_FOUND_FOR_PRODUCT));
+        Product product = findProductById(productId);
+        PreOrderDetails preOrder = findPreOrderByProductId(productId);
 
         return PreOrderResponseDto.fromEntity(preOrder);
     }
@@ -74,11 +69,8 @@ public class PreOrderService {
     // 특정 상품의 예약 구매 정보 수정
     @Transactional
     public PreOrderResponseDto updatePreOrderByProductId(UUID productId, PreOrderUpdateRequestDto updateDto) {
-        Product product = productRepository.findByProductIdAndIsDeleteFalse(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
-
-        PreOrderDetails preOrder = preOrderRepository.findByProduct_ProductIdAndIsDeleteFalse(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRE_ORDER_NOT_FOUND_FOR_PRODUCT));
+        Product product = findProductById(productId);
+        PreOrderDetails preOrder = findPreOrderByProductId(productId);
 
         preOrder.updatePreOrderDetails(updateDto.getPreOrderStartDate(), updateDto.getPreOrderEndDate(), updateDto.getPreOrderStockQuantity());
         return PreOrderResponseDto.fromEntity(preOrder);
@@ -87,13 +79,28 @@ public class PreOrderService {
     // 특정 상품의 예약 구매 정보 삭제
     @Transactional
     public void deletePreOrderByProductId(UUID productId) {
-        Product product = productRepository.findByProductIdAndIsDeleteFalse(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
-
-        PreOrderDetails preOrder = preOrderRepository.findByProduct_ProductIdAndIsDeleteFalse(productId)
-                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRE_ORDER_NOT_FOUND_FOR_PRODUCT));
+        Product product = findProductById(productId);
+        PreOrderDetails preOrder = findPreOrderByProductId(productId);
 
         preOrder.markAsDeleted();
+    }
+
+    // 특정 예약구매 ID로 PreOrderDetails 찾기 메서드
+    private PreOrderDetails findPreOrderById(UUID preOrderId) {
+        return preOrderRepository.findByPreOrderIdAndIsDeleteFalse(preOrderId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.PREORDER_NOT_FOUND));
+    }
+
+    // 특정 상품 ID로 Product 찾기 메서드
+    private Product findProductById(UUID productId) {
+        return productRepository.findByProductIdAndIsDeleteFalse(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
+    }
+
+    // 특정 상품 ID로 PreOrderDetails 찾기 메서드
+    private PreOrderDetails findPreOrderByProductId(UUID productId) {
+        return preOrderRepository.findByProduct_ProductIdAndIsDeleteFalse(productId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRE_ORDER_NOT_FOUND_FOR_PRODUCT));
     }
 
 }
