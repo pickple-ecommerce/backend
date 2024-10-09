@@ -11,6 +11,8 @@ import com.pickple.commerceservice.presentation.dto.request.PreOrderUpdateReques
 import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +27,11 @@ public class PreOrderService {
     private final PreOrderRepository preOrderRepository;
     private final ProductRepository productRepository;
 
-    // 모든 예약 구매 목록 조회
+    // 전체 예약 구매 목록 조회
     @Transactional(readOnly = true)
-    public List<PreOrderResponseDto> getAllPreOrders() {
-        return preOrderRepository.findByIsDeleteFalse().stream()
-                .map(PreOrderResponseDto::fromEntity)
-                .collect(Collectors.toList());
+    public Page<PreOrderResponseDto> getAllPreOrders(Pageable pageable) {
+        Page<PreOrderDetails> preOrders = preOrderRepository.findByIsDeleteFalse(pageable);
+        return preOrders.map(PreOrderResponseDto::fromEntity);
     }
 
     // 특정 예약 구매 정보 조회
