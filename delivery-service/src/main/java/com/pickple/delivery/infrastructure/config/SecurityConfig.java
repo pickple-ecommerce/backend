@@ -35,7 +35,7 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(authorize ->
-                authorize.anyRequest().authenticated()
+                authorize.requestMatchers("/actuator/**").permitAll().anyRequest().authenticated()
         );
         return http.build();
     }

@@ -11,7 +11,12 @@ public enum CommerceErrorCode implements ErrorCode {
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
     PRODUCT_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "상품 ID가 Null 입니다."),
     STOCK_DATA_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 재고 요청 데이터가 존재하지 않습니다."),
+    STOCK_DATA_NOT_FOUND_FOR_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품에 대한 재고가 존재하지 않습니다."),
     STOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 재고입니다."),
+    STOCK_UNDER_ZERO(HttpStatus.BAD_REQUEST, "재고 수량은 반드시 0 이상이어야 합니다."),
+    INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "재고가 부족합니다."),
+    PREORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 구매 정보를 찾을 수 없습니다."),
+    PRE_ORDER_NOT_FOUND_FOR_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품에 대한 예약 구매 정보를 찾을 수 없습니다."),
     ;
 
 

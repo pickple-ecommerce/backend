@@ -1,10 +1,12 @@
 package com.pickple.commerceservice.domain.model;
 
+import com.pickple.commerceservice.presentation.dto.request.ProductUpdateRequestDto;
 import com.pickple.common_module.domain.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -51,4 +53,16 @@ public class Product extends BaseEntity {
         this.stock = stock;
     }
 
+    public void update(ProductUpdateRequestDto updateDto) {
+        this.productName = updateDto.getProductName();
+        this.description = updateDto.getDescription();
+        this.productPrice = updateDto.getProductPrice();
+        this.productImage = updateDto.getProductImage();
+        this.isPublic = updateDto.getIsPublic();
+    }
+
+    public void markAsDeleted() {
+        this.isDelete = true;
+        this.isPublic = false;
+    }
 }

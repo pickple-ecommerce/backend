@@ -9,6 +9,7 @@ import com.pickple.delivery.application.dto.DeliveryInfoDto;
 import com.pickple.delivery.application.dto.request.DeliveryUpdateRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryDeleteResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
+import com.pickple.delivery.application.dto.response.DeliveryStatusResponseDto;
 import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
@@ -111,6 +112,14 @@ public class DeliveryApplicationService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
         return createDeliveryInfoResponseDto(delivery);
+    }
+
+    @Transactional(readOnly = true)
+    public DeliveryStatusResponseDto getDeliveryStatus(UUID deliveryId) {
+        log.info("배송 상태 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
+        return new DeliveryStatusResponseDto(delivery.getDeliveryStatus().getStatus());
     }
 
     @Transactional(readOnly = true)

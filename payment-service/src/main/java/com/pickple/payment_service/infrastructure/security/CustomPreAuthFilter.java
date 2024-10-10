@@ -1,4 +1,4 @@
-package com.pickple.delivery.infrastructure.security;
+package com.pickple.payment_service.infrastructure.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,11 +17,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @Component
-public class CustomAuthenticationFilter extends OncePerRequestFilter {
-
+public class CustomPreAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         String username = request.getHeader("X-User-Name");
         String roles = request.getHeader("X-User-Roles");
@@ -34,9 +33,10 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
-                   authorities
+                    authorities
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
         }
         filterChain.doFilter(request, response);
     }
