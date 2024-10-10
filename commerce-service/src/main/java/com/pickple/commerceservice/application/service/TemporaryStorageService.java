@@ -1,28 +1,44 @@
 package com.pickple.commerceservice.application.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
 public class TemporaryStorageService {
 
-    private final Map<UUID, Object> storage = new HashMap<>();
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
-    public void storeDeliveryInfo(UUID orderId, Object deliveryInfo) {
-        // 배송 정보 저장
-        storage.put(orderId, deliveryInfo);
+    public TemporaryStorageService(RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
+        this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
-    public Object getDeliveryInfo(UUID orderId) {
-        // 배송 정보 조회
-        return storage.get(orderId);
+    public OrderCreateRequestDto.DeliveryInfo getDeliveryInfo(UUID orderId) {
+        String deliveryInfoJson = (String) redisTemplate.opsForValue().get(orderId.toString());
+
+        try {
+            return objectMapper.readValue(deliveryInfoJson, OrderCreateRequestDto.DeliveryInfo.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("역직렬화 에러.", e);
+        }
+    }
+
+    public void storeDeliveryInfo(UUID orderId, OrderCreateRequestDto.DeliveryInfo deliveryInfo) {
+        try {
+            String deliveryInfoJson = objectMapper.writeValueAsString(deliveryInfo);
+            redisTemplate.opsForValue().set(orderId.toString(), deliveryInfoJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("직렬화 에러.", e);
+        }
     }
 
     public void removeDeliveryInfo(UUID orderId) {
-        // 배송 정보 삭제 (배송 생성 후 삭제하는 로직 추가)
-        storage.remove(orderId);
+        redisTemplate.delete(orderId.toString());
     }
 }
