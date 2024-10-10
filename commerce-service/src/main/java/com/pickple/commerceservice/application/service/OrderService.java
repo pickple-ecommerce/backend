@@ -63,12 +63,10 @@ public class OrderService {
         // 다시 Order 저장 + OrderDetail 함께 저장
         orderRepository.save(order);
 
-        String message = "dd";
         messagingProducerService.sendPaymentRequest(
                 order.getOrderId(),
                 order.getAmount(),
-                username,
-                message
+                username
         );
 
         temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());

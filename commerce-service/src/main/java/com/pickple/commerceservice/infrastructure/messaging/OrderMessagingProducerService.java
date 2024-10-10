@@ -30,9 +30,9 @@ public class OrderMessagingProducerService {
     @Value("${kafka.topic.payment-create-request}")
     private String paymentCreateRequestTopic;
 
-    public void sendPaymentRequest(UUID orderId, BigDecimal amount, String username, String message) {
+    public void sendPaymentRequest(UUID orderId, BigDecimal amount, String username) {
         // PaymentRequestEvent 생성
-        PaymentCreateRequestEvent event = new PaymentCreateRequestEvent(orderId, amount, username, message);
+        PaymentCreateRequestEvent event = new PaymentCreateRequestEvent(orderId, amount, username);
 
         try {
             // event 객체를 JSON 문자열로 변환
