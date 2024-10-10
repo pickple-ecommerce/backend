@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/252020312/backend.common-module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/252020312/backend.common-module.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1811975282/backend.gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-1811975282/backend.gateway.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend.payment-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/backend.payment-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/252020312/notification-service.common-module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/252020312/notification-service.common-module.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/notification-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/notification-service.main.iml" />
     </modules>
   </component>
