@@ -31,7 +31,7 @@ public class OrderDetail extends BaseEntity {
     private Long orderQuantity;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne

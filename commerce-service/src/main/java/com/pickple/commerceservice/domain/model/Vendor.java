@@ -28,12 +28,13 @@ public class Vendor extends BaseEntity {
     @Column(name = "vendor_address", length = 255, nullable = false)
     private String vendorAddress;
 
-//    @Column(name = "user_id", nullable = false)
-//    private Long userId;
+    @Column(name = "username", nullable = false)
+    private String username;
 
-    public Vendor updateVendor(String vendorName, String vendorAddress) {
+    public Vendor updateVendor(String vendorName, String vendorAddress, String username) {
         this.vendorName = vendorName;
         this.vendorAddress = vendorAddress;
+        this.username = username;
         return this;
     }
 

@@ -16,14 +16,14 @@ public class VendorResponseDto {
     private UUID vendorId;
     private String vendorName;
     private String vendorAddress;
-//    private Long userId;
+    private String username;
 
     public static VendorResponseDto fromEntity(Vendor vendor) {
         return VendorResponseDto.builder()
                 .vendorId(vendor.getVendorId())
                 .vendorName(vendor.getVendorName())
                 .vendorAddress(vendor.getVendorAddress())
-                // .userId(vendor.getUserId()) // 필요 시 주석 해제
+                .username(vendor.getUsername())
                 .build();
     }
 }

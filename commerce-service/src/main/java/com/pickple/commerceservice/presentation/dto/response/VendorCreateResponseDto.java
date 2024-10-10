@@ -13,5 +13,5 @@ public class VendorCreateResponseDto {
     private UUID vendorId;
     private String vendorName;
     private String vendorAddress;
-//    private Long userId;
+    private String username;
 }

@@ -24,20 +24,20 @@ public class VendorService {
      * vendor 생성
      */
     @Transactional
-    public VendorCreateResponseDto createVendor(VendorCreateRequestDto requestDto) {
+    public VendorCreateResponseDto createVendor(VendorCreateRequestDto requestDto, String username) {
         Vendor vendor = Vendor.builder()
                 .vendorName(requestDto.getVendorName())
                 .vendorAddress(requestDto.getVendorAddress())
-//                .userId(requestDto.getUserId())
+                .username(username)
                 .build();
 
         Vendor savedVendor = vendorRepository.save(vendor);
 
         return new VendorCreateResponseDto(
-//                savedVendor.getUserId(),
                 savedVendor.getVendorId(),
                 savedVendor.getVendorName(),
-                savedVendor.getVendorAddress()
+                savedVendor.getVendorAddress(),
+                savedVendor.getUsername()
         );
     }
 
@@ -48,10 +48,10 @@ public class VendorService {
     public Page<VendorResponseDto> getAllVendors(Pageable pageable) {
         return vendorRepository.findAllByIsDeleteFalse(pageable)
                 .map(vendor -> new VendorResponseDto(
-//                        vendor.getUserId(),
                         vendor.getVendorId(),
                         vendor.getVendorName(),
-                        vendor.getVendorAddress()
+                        vendor.getVendorAddress(),
+                        vendor.getUsername()
                 ));
     }
 
@@ -63,10 +63,10 @@ public class VendorService {
         Vendor vendor = vendorRepository.findByVendorIdAndIsDeleteFalse(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
         return new VendorResponseDto(
-//                vendor.getUserId(),
                 vendor.getVendorId(),
                 vendor.getVendorName(),
-                vendor.getVendorAddress()
+                vendor.getVendorAddress(),
+                vendor.getUsername()
         );
     }
 
@@ -74,18 +74,18 @@ public class VendorService {
      * vendor 수정
      */
     @Transactional
-    public VendorResponseDto updateVendor(UUID vendorId, VendorUpdateRequestDto requestDto) {
+    public VendorResponseDto updateVendor(UUID vendorId, VendorUpdateRequestDto requestDto, String username) {
         Vendor vendor = vendorRepository.findByVendorIdAndIsDeleteFalse(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
 
-        vendor.updateVendor(requestDto.getVendorName(), requestDto.getVendorAddress());
+        vendor.updateVendor(requestDto.getVendorName(), requestDto.getVendorAddress(), username);
 
         Vendor updatedVendor = vendorRepository.save(vendor);
         return new VendorResponseDto(
-//                updatedVendor.getUserId(),
                 updatedVendor.getVendorId(),
                 updatedVendor.getVendorName(),
-                updatedVendor.getVendorAddress()
+                updatedVendor.getVendorAddress(),
+                updatedVendor.getUsername()
         );
     }
 
@@ -93,7 +93,7 @@ public class VendorService {
      * vendor 삭제
      */
     @Transactional
-    public VendorResponseDto deleteVendor(UUID vendorId) {
+    public VendorResponseDto deleteVendor(UUID vendorId, String username) {
         Vendor vendor = vendorRepository.findByVendorIdAndIsDeleteFalse(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
 
@@ -101,10 +101,10 @@ public class VendorService {
 
         Vendor deletedVendor = vendorRepository.save(vendor);
         return new VendorResponseDto(
-//                deletedVendor.getUserId(),
                 deletedVendor.getVendorId(),
                 deletedVendor.getVendorName(),
-                deletedVendor.getVendorAddress()
+                deletedVendor.getVendorAddress(),
+                deletedVendor.getUsername()
         );
     }
 
@@ -115,10 +115,10 @@ public class VendorService {
     public Page<VendorResponseDto> searchVendors(String keyword, Pageable pageable) {
         return vendorRepository.searchVendors(keyword, pageable)
                 .map(vendor -> new VendorResponseDto(
-//                        vendor.getUserId(),
                         vendor.getVendorId(),
                         vendor.getVendorName(),
-                        vendor.getVendorAddress()
+                        vendor.getVendorAddress(),
+                        vendor.getUsername()
                 ));
     }
 }
