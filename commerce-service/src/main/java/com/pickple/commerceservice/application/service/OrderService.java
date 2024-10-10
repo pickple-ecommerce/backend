@@ -37,17 +37,11 @@ public class OrderService {
                 .username(username)
                 .build();
 
-        // Order 저장
-        orderRepository.save(order);
-
         // OrderDetail 생성
         List<OrderDetail> orderDetails = requestDto.getOrderDetails().stream()
                 .map(detail -> {
-                    // Product 조회
                     Product product = productRepository.findById(detail.getProductId())
                             .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + detail.getProductId()));
-
-                    // OrderDetail 생성 및 Product 설정
                     return OrderDetail.builder()
                             .order(order)
                             .product(product)
@@ -58,9 +52,9 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         order.addOrderDetails(orderDetails);
-
         order.calculateTotalAmount();
-        // 다시 Order 저장 + OrderDetail 함께 저장
+
+        // Order 및 OrderDetail 함께 저장
         orderRepository.save(order);
 
         messagingProducerService.sendPaymentRequest(
@@ -71,7 +65,6 @@ public class OrderService {
 
         temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
 
-        // DTO 반환
         List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
                 .map(detail -> OrderDetailResponseDto.builder()
                         .productId(detail.getProduct().getProductId())
