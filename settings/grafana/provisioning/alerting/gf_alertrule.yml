@@ -1,0 +1,67 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: server-check
+    folder: pickple
+    interval: 30s
+    rules:
+      - uid: ce0f5b2g00iyoc
+        title: slack-alert-rule
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            model:
+              disableTextWrap: false
+              editorMode: builder
+              expr: up{job="eureka-server"}
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+              useBackend: false
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        dashboardUid: ""
+        panelId: 0
+        noDataState: NoData
+        execErrState: Error
+        for: 30s
+        annotations: {}
+        labels: {}
+        isPaused: false
+        notification_settings:
+          receiver: Slack
