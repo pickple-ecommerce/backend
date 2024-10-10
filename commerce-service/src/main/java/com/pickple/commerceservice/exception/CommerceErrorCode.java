@@ -17,6 +17,10 @@ public enum CommerceErrorCode implements ErrorCode {
     INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "재고가 부족합니다."),
     PREORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 구매 정보를 찾을 수 없습니다."),
     PRE_ORDER_NOT_FOUND_FOR_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품에 대한 예약 구매 정보를 찾을 수 없습니다."),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다."),
+    INVALID_DELIVERY_MESSAGE_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않는 배송 메시지 형식입니다."),
+    INVALID_PAYMENT_MESSAGE_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않는 결제 메시지 응답입니다."),
+    PAYMENT_CREATE_FAILED(HttpStatus.BAD_GATEWAY, "결제 생성에 실패하였습니다.")
     ;
 
 

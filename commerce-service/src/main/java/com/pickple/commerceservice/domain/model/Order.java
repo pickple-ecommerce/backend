@@ -54,4 +54,13 @@ public class Order extends BaseEntity {
                 .map(OrderDetail::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public void assignPaymentId(UUID paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public void assignDeliveryId(UUID deliveryId) {
+        this.deliveryId = deliveryId;
+    }
+
 }

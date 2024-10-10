@@ -3,15 +3,19 @@ package com.pickple.commerceservice.application.service;
 import com.pickple.commerceservice.domain.model.Order;
 import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
+import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.repository.OrderRepository;
+import com.pickple.commerceservice.domain.repository.ProductRepository;
+import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.commerceservice.presentation.dto.response.OrderCreateResponseDto;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
+import com.pickple.commerceservice.presentation.dto.response.OrderDetailResponseDto;
+import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,6 +27,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final TemporaryStorageService temporaryStorageService;
     private final OrderMessagingProducerService messagingProducerService;
+    private final ProductRepository productRepository;
 
     @Transactional
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username) {
@@ -32,43 +37,71 @@ public class OrderService {
                 .username(username)
                 .build();
 
-        // 주문 세부 정보 생성
+        // Order 저장
+        orderRepository.save(order);
+
+        // OrderDetail 생성
         List<OrderDetail> orderDetails = requestDto.getOrderDetails().stream()
-                .map(detail -> OrderDetail.builder()
-                        .order(order)
+                .map(detail -> {
+                    // Product 조회
+                    Product product = productRepository.findById(detail.getProductId())
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + detail.getProductId()));
+
+                    // OrderDetail 생성 및 Product 설정
+                    return OrderDetail.builder()
+                            .order(order)
+                            .product(product)
+                            .orderQuantity(detail.getOrderQuantity())
+                            .totalPrice(detail.getTotalPrice())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        order.addOrderDetails(orderDetails);
+
+        order.calculateTotalAmount();
+        // 다시 Order 저장 + OrderDetail 함께 저장
+        orderRepository.save(order);
+
+        messagingProducerService.sendPaymentRequest(
+                order.getOrderId(),
+                order.getAmount(),
+                username
+        );
+
+        temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
+
+        // DTO 반환
+        List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
+                .map(detail -> OrderDetailResponseDto.builder()
+                        .productId(detail.getProduct().getProductId())
                         .orderQuantity(detail.getOrderQuantity())
                         .totalPrice(detail.getTotalPrice())
                         .build())
                 .collect(Collectors.toList());
 
-        order.addOrderDetails(orderDetails); // Order에 OrderDetail 추가
-
-        // 주문 세부 사항의 금액을 합산하여 총 금액을 설정
-        order.calculateTotalAmount();
-
-        orderRepository.save(order);
-
-        String message = "dd";
-        // 결제 정보 Kafka 메시지 전송
-        messagingProducerService.sendPaymentRequest(
-                order.getOrderId(),
-                order.getAmount(),
-                username,
-                message
-        );
-
-        // 배송 정보 임시 저장 (Redis)
-        temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
-
         return OrderCreateResponseDto.builder()
                 .orderId(order.getOrderId())
+                .username(username)
                 .amount(order.getAmount())
                 .orderStatus(order.getOrderStatus().name())
+                .orderDetails(orderDetailDtos)
                 .build();
     }
 
-    public void handlePaymentComplete(UUID orderId, String username) {
+    @Transactional
+    public void handlePaymentComplete(UUID orderId, UUID paymentId, String username) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
+                CommerceErrorCode.ORDER_NOT_FOUND));
+        order.assignPaymentId(paymentId);
         // 결제 완료 메시지가 오면 호출되는 메서드로, 배송 생성 메시지를 보냄
         messagingProducerService.sendDeliveryCreateRequest(orderId, username);
+    }
+
+    @Transactional
+    public void handleDeliveryCreate(UUID orderId, UUID deliveryId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
+                CommerceErrorCode.ORDER_NOT_FOUND));
+        order.assignDeliveryId(deliveryId);
     }
 }

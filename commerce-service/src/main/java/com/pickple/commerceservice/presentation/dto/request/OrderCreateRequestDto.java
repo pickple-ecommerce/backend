@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -23,6 +24,7 @@ public class OrderCreateRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderDetail {
+        private UUID productId;
         private Long orderQuantity; // 주문 수량
         private BigDecimal totalPrice; // 해당 상품 단가
     }
@@ -40,7 +42,6 @@ public class OrderCreateRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeliveryInfo {
-        private String deliveryType; // 배송 타입 (ENUM으로 처리)
         private String deliveryRequirement; // 배송 요청 사항
         private String recipientName; // 수령인 이름
         private String address; // 배송 주소
