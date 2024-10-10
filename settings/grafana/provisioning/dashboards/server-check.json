@@ -59,7 +59,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ee09odzgsawowc"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -125,7 +125,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "process_uptime_seconds{application=\"$application\", instance=\"$instance\", namespace=\"$Namespace\"}",
@@ -144,7 +144,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ee09odzgsawowc"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -214,7 +214,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", area=\"heap\", namespace=\"$Namespace\"})*100/sum(jvm_memory_max_bytes{application=\"$application\",instance=\"$instance\", area=\"heap\", namespace=\"$Namespace\"})",
@@ -232,7 +232,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ee09odzgsawowc"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -312,7 +312,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", area=\"nonheap\", namespace=\"$Namespace\"})*100/sum(jvm_memory_max_bytes{application=\"$application\",instance=\"$instance\", area=\"nonheap\", namespace=\"$Namespace\"})",
@@ -330,7 +330,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ee09odzgsawowc"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -412,7 +412,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "process_files_open_files{application=\"$application\", instance=\"$instance\", namespace=\"$Namespace\"}",
@@ -429,7 +429,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ee09odzgsawowc"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -494,7 +494,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "process_start_time_seconds{application=\"$application\", instance=\"$instance\", namespace=\"$Namespace\"}*1000",
@@ -513,7 +513,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ee09odzgsawowc"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -600,7 +600,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "system_cpu_usage{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}",
@@ -613,7 +613,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "process_cpu_usage{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}",
@@ -630,7 +630,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ee09odzgsawowc"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -717,7 +717,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "system_load_average_1m{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}",
@@ -730,7 +730,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "system_cpu_count{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}",
@@ -761,7 +761,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -847,7 +847,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_memory_used_bytes{instance=\"$instance\", application=\"$application\", id=\"$memory_pool_heap\", namespace=\"$Namespace\"}",
@@ -860,7 +860,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_memory_committed_bytes{instance=\"$instance\", application=\"$application\", id=\"$memory_pool_heap\", namespace=\"$Namespace\"}",
@@ -873,7 +873,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_memory_max_bytes{instance=\"$instance\", application=\"$application\", id=\"$memory_pool_heap\", namespace=\"$Namespace\"}",
@@ -890,7 +890,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -976,7 +976,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_memory_used_bytes{instance=\"$instance\", application=\"$application\", id=\"${memory_pool_nonheap:raw}\", namespace=\"$Namespace\"}",
@@ -990,7 +990,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_memory_committed_bytes{instance=\"$instance\", application=\"$application\", id=\"${memory_pool_nonheap:raw}\", namespace=\"$Namespace\"}",
@@ -1004,7 +1004,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_memory_max_bytes{instance=\"$instance\", application=\"$application\", id=\"${memory_pool_nonheap:raw}\", namespace=\"$Namespace\"}",
@@ -1022,7 +1022,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1106,7 +1106,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_threads_daemon_threads{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}",
@@ -1119,7 +1119,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_threads_live_threads{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}",
@@ -1132,7 +1132,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_threads_peak_threads{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}",
@@ -1149,7 +1149,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1228,7 +1228,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_buffer_memory_used_bytes{instance=\"$instance\", application=\"$application\", id=\"direct\", namespace=\"$Namespace\"}",
@@ -1241,7 +1241,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_buffer_total_capacity_bytes{instance=\"$instance\", application=\"$application\", id=\"direct\", namespace=\"$Namespace\"}",
@@ -1258,7 +1258,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1337,7 +1337,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_buffer_memory_used_bytes{instance=\"$instance\", application=\"$application\", id=\"mapped\", namespace=\"$Namespace\"}",
@@ -1350,7 +1350,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "jvm_buffer_total_capacity_bytes{instance=\"$instance\", application=\"$application\", id=\"mapped\", namespace=\"$Namespace\"}",
@@ -1367,7 +1367,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1446,7 +1446,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(jvm_gc_memory_allocated_bytes_total{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -1459,7 +1459,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(jvm_gc_memory_promoted_bytes_total{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -1503,7 +1503,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1587,7 +1587,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(jvm_gc_pause_seconds_count{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -1604,7 +1604,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1688,7 +1688,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(jvm_gc_pause_seconds_sum{instance=\"$instance\", application=\"$application\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -1732,7 +1732,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1794,7 +1794,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "hikaricp_connections{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\", namespace=\"$Namespace\"}",
@@ -1811,7 +1811,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1895,7 +1895,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "hikaricp_connections_active{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\", namespace=\"$Namespace\"}",
@@ -1908,7 +1908,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "hikaricp_connections_idle{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\", namespace=\"$Namespace\"}",
@@ -1921,7 +1921,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "hikaricp_connections_pending{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\", namespace=\"$Namespace\"}",
@@ -1938,7 +1938,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2000,7 +2000,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "hikaricp_connections_timeout_total{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\", namespace=\"$Namespace\"}",
@@ -2021,7 +2021,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fill": 1,
           "fillGradient": 0,
@@ -2062,7 +2062,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "hikaricp_connections_creation_seconds_sum{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\"} / hikaricp_connections_creation_seconds_count{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\"}",
               "format": "time_series",
@@ -2108,7 +2108,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fill": 1,
           "fillGradient": 0,
@@ -2149,7 +2149,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "hikaricp_connections_usage_seconds_sum{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\"} / hikaricp_connections_usage_seconds_count{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\"}",
               "format": "time_series",
@@ -2195,7 +2195,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fill": 1,
           "fillGradient": 0,
@@ -2236,7 +2236,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "hikaricp_connections_acquire_seconds_sum{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\"} / hikaricp_connections_acquire_seconds_count{instance=\"$instance\", application=\"$application\", pool=\"$hikaricp\"}",
               "format": "time_series",
@@ -2305,7 +2305,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2384,7 +2384,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(http_server_requests_seconds_count{instance=\"$instance\", application=\"$application\", uri!~\".*(prometheus|health).*\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -2401,7 +2401,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2484,7 +2484,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(http_server_requests_seconds_sum{instance=\"$instance\", application=\"$application\", exception=\"none\", uri!~\".*(prometheus|health).*\", namespace=\"$Namespace\"}[$__rate_interval]) / irate(http_server_requests_seconds_count{instance=\"$instance\", application=\"$application\", exception=\"none\",uri!~\".*(prometheus|health).*\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -2528,7 +2528,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2614,7 +2614,7 @@
               "alias": "",
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(logback_events_total{instance=\"$instance\", application=\"$application\", level=\"info\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -2628,7 +2628,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "logback_events_total{instance=\"$instance\", application=\"$application\"}",
@@ -2644,7 +2644,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2730,7 +2730,7 @@
               "alias": "",
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(logback_events_total{instance=\"$instance\", application=\"$application\", level=\"error\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -2748,7 +2748,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2834,7 +2834,7 @@
               "alias": "",
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(logback_events_total{instance=\"$instance\", application=\"$application\", level=\"warn\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -2852,7 +2852,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2938,7 +2938,7 @@
               "alias": "",
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(logback_events_total{instance=\"$instance\", application=\"$application\", level=\"debug\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -2956,7 +2956,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee09odzgsawowc"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3042,7 +3042,7 @@
               "alias": "",
               "datasource": {
                 "type": "prometheus",
-                "uid": "ee09odzgsawowc"
+                "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
               "expr": "irate(logback_events_total{instance=\"$instance\", application=\"$application\", level=\"trace\", namespace=\"$Namespace\"}[$__rate_interval])",
@@ -3087,7 +3087,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "ee09odzgsawowc"
+          "uid": "PBFA97CFB590B2093"
         },
         "definition": "label_values(jvm_info,application)",
         "hide": 0,
@@ -3118,7 +3118,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "ee09odzgsawowc"
+          "uid": "PBFA97CFB590B2093"
         },
         "definition": "label_values(jvm_info,namespace)",
         "hide": 0,
@@ -3144,7 +3144,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "ee09odzgsawowc"
+          "uid": "PBFA97CFB590B2093"
         },
         "definition": "label_values(jvm_info{application=\"$application\", namespace=\"$Namespace\"},instance)",
         "hide": 0,
@@ -3175,7 +3175,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "ee09odzgsawowc"
+          "uid": "PBFA97CFB590B2093"
         },
         "definition": "",
         "hide": 0,
@@ -3205,7 +3205,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "ee09odzgsawowc"
+          "uid": "PBFA97CFB590B2093"
         },
         "definition": "label_values(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", area=\"heap\"},id)",
         "hide": 0,
@@ -3235,7 +3235,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "ee09odzgsawowc"
+          "uid": "PBFA97CFB590B2093"
         },
         "definition": "label_values(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", area=\"nonheap\"},id)",
         "hide": 0,

@@ -68,4 +68,10 @@ public class PaymentController {
 
         return ResponseEntity.ok(response);
     }
+
+    // feign
+    @GetMapping("/getPaymentInfo/{order_id}")
+    public PaymentRespDto getPaymentInfo(@PathVariable(name="order_id") UUID orderId){
+        return paymentService.getPaymentInfo(orderId);
+    }
 }

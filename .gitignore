@@ -227,7 +227,3 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle,java,intellij,macos,windows
-
-# 마운트 된 볼륨
-prometheus/
-grafana/

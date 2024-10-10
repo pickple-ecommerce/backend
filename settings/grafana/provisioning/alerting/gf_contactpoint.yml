@@ -1,0 +1,11 @@
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: Slack
+    receivers:
+      - uid: ce0eyk36u28zlb
+        type: slack
+        settings:
+          url: https://hooks.slack.com/services/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
+        disableResolveMessage: false

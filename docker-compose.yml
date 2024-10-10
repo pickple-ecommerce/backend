@@ -103,8 +103,7 @@ services:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus/config:/etc/prometheus
-      - prometheus-data:/prometheus
+      - ./settings/prometheus/config:/etc/prometheus
     ports:
       - 9090:9090
     command:
@@ -119,9 +118,11 @@ services:
     container_name: grafana
     ports:
       - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=pickple
+      - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
-      - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./settings/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
     depends_on:
       - prometheus

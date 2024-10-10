@@ -130,4 +130,14 @@ public class PaymentService {
         return paymentList.map(PaymentRespDto::from);
     }
 
+    // feign - 주문 조회 시 결제 내역 요청
+    @Transactional(readOnly = true)
+    public PaymentRespDto getPaymentInfo(UUID orderId){
+        Payment payment = paymentRepository.findByOrderIdAndIsDeleteIsFalse(orderId).orElseThrow(
+                ()-> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
+        );
+
+        return PaymentRespDto.from(payment);
+    }
+
 }
