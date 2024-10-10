@@ -10,12 +10,14 @@ public class DeliveryCreateRequestEvent {
     private String recipientName;
     private String recipientAddress;
     private String recipientContact;
+    private String username;
 
-    public DeliveryCreateRequestEvent(UUID orderId, String deliveryRequirement, String recipientName, String recipientAddress, String recipientContact) {
+    public DeliveryCreateRequestEvent(UUID orderId, String deliveryRequirement, String recipientName, String recipientAddress, String recipientContact, String username) {
         this.orderId = orderId;
         this.deliveryRequirement = deliveryRequirement;
         this.recipientName = recipientName;
         this.recipientAddress = recipientAddress;
         this.recipientContact = recipientContact;
+        this.username = username;
     }
 }

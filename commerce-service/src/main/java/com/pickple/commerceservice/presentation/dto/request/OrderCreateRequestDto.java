@@ -14,9 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderCreateRequestDto {
 
-//    private Long userId; // 사용자 ID
-    private BigDecimal amount; // 총 주문 금액
-
     private List<OrderDetail> orderDetails; // 주문 세부 항목 리스트
     private PaymentInfo paymentInfo; // 결제 정보
     private DeliveryInfo deliveryInfo; // 배송 정보

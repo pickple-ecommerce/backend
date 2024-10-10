@@ -25,12 +25,11 @@ public class OrderService {
     private final OrderMessagingProducerService messagingProducerService;
 
     @Transactional
-    public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto) {
+    public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username) {
         // 주문 정보 생성
         Order order = Order.builder()
-//                .userId(requestDto.getUserId())
-                .amount(requestDto.getAmount())
                 .orderStatus(OrderStatus.PENDING)
+                .username(username)
                 .build();
 
         // 주문 세부 정보 생성
@@ -39,17 +38,22 @@ public class OrderService {
                         .order(order)
                         .orderQuantity(detail.getOrderQuantity())
                         .totalPrice(detail.getTotalPrice())
-//                        .productId(detail.getProductId())
                         .build())
                 .collect(Collectors.toList());
 
-
         order.addOrderDetails(orderDetails); // Order에 OrderDetail 추가
+
+        // 주문 세부 사항의 금액을 합산하여 총 금액을 설정
+        order.calculateTotalAmount();
 
         orderRepository.save(order);
 
         // 결제 정보 Kafka 메시지 전송
-        messagingProducerService.sendPaymentRequest(order.getOrderId(), requestDto.getPaymentInfo());
+        messagingProducerService.sendPaymentRequest(
+                order.getOrderId(),
+                order.getAmount(),
+                username
+        );
 
         // 배송 정보 임시 저장 (Redis)
         temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
@@ -61,8 +65,8 @@ public class OrderService {
                 .build();
     }
 
-    public void handlePaymentComplete(UUID orderId) {
+    public void handlePaymentComplete(UUID orderId, String username) {
         // 결제 완료 메시지가 오면 호출되는 메서드로, 배송 생성 메시지를 보냄
-        messagingProducerService.sendDeliveryCreateRequest(orderId);
+        messagingProducerService.sendDeliveryCreateRequest(orderId, username);
     }
 }

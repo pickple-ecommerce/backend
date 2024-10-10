@@ -48,5 +48,5 @@ management:
 
 kafka:
   topic:
-    payment-request: payment-request
-    delivery-request: delivery-request
+    payment-create-request: payment-create-request
+    delivery-create-request: delivery-create-request

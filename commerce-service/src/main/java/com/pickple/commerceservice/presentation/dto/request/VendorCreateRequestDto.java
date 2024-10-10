@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class VendorCreateRequestDto {
     private String vendorName;
     private String vendorAddress;
-//    private Long userId;
 }
