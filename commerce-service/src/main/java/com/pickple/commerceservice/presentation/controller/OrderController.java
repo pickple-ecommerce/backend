@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
@@ -30,16 +28,6 @@ public class OrderController {
         OrderCreateResponseDto responseDto = orderService.createOrder(requestDto, username);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(HttpStatus.CREATED, "주문이 성공적으로 생성되었습니다.", responseDto));
-    }
-
-    @PostMapping("/{orderId}/payment-complete")
-    @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
-    public ResponseEntity<ApiResponse<Void>> paymentComplete(
-            @PathVariable UUID orderId,
-            @RequestHeader("X-User-Name") String username) {
-        orderService.handlePaymentComplete(orderId, username);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(HttpStatus.OK, "결제 완료 후 배송 요청이 전송되었습니다.", null));
     }
 
 }

@@ -42,7 +42,6 @@ public class OrderCreateRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeliveryInfo {
-        private String deliveryType; // 배송 타입 (ENUM으로 처리)
         private String deliveryRequirement; // 배송 요청 사항
         private String recipientName; // 수령인 이름
         private String address; // 배송 주소

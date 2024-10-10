@@ -17,7 +17,6 @@ import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.domain.model.deleted.DeliveryDeleted;
 import com.pickple.delivery.domain.model.deleted.DeliveryDetailDeleted;
-import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.domain.repository.deleted.DeliveryDeletedRepository;

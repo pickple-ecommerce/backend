@@ -8,6 +8,7 @@ import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCreate
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,12 @@ public class OrderMessagingProducerService {
     private final TemporaryStorageService temporaryStorageService;
     private final ObjectMapper objectMapper;
 
+    @Value("${kafka.topic.delivery-create-request}")
+    private String deliveryCreateRequestTopic;
+
+    @Value("${kafka.topic.payment-create-request}")
+    private String paymentCreateRequestTopic;
+
     public void sendPaymentRequest(UUID orderId, BigDecimal amount, String username, String message) {
         // PaymentRequestEvent 생성
         PaymentCreateRequestEvent event = new PaymentCreateRequestEvent(orderId, amount, username, message);
@@ -30,7 +37,7 @@ public class OrderMessagingProducerService {
         try {
             // event 객체를 JSON 문자열로 변환
             String eventJson = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send("payment-create-request", eventJson);
+            kafkaTemplate.send(paymentCreateRequestTopic, eventJson);
         } catch (JsonProcessingException e) {
             log.error("결제 요청 메시지를 직렬화하는 도중 오류가 발생했습니다.", e);
         }
@@ -54,7 +61,7 @@ public class OrderMessagingProducerService {
             try {
                 // event 객체를 JSON 문자열로 변환
                 String eventJson = objectMapper.writeValueAsString(event);
-                kafkaTemplate.send("delivery-create-request", eventJson);
+                kafkaTemplate.send(deliveryCreateRequestTopic, eventJson);
                 temporaryStorageService.removeDeliveryInfo(orderId); // 성공적으로 메시지 전송 후 삭제
             } catch (JsonProcessingException e) {
                 log.error("배송 생성 요청 메시지를 직렬화하는 도중 오류가 발생했습니다.", e);
