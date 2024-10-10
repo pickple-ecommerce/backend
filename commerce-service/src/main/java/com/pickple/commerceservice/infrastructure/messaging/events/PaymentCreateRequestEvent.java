@@ -10,10 +10,12 @@ public class PaymentCreateRequestEvent {
     private UUID orderId;
     private BigDecimal amount;
     private String username;
+    private String message;
 
-    public PaymentCreateRequestEvent(UUID orderId, BigDecimal amount, String username) {
+    public PaymentCreateRequestEvent(UUID orderId, BigDecimal amount, String username, String message) {
         this.orderId = orderId;
         this.amount = amount;
         this.username = username;
+        this.message = message;
     }
 }

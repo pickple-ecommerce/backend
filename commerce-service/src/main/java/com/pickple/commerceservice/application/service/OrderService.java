@@ -48,11 +48,13 @@ public class OrderService {
 
         orderRepository.save(order);
 
+        String message = "dd";
         // 결제 정보 Kafka 메시지 전송
         messagingProducerService.sendPaymentRequest(
                 order.getOrderId(),
                 order.getAmount(),
-                username
+                username,
+                message
         );
 
         // 배송 정보 임시 저장 (Redis)
