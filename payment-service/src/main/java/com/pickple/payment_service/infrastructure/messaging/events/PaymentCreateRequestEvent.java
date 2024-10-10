@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PaymentCreateRequestEvent {
     private UUID orderId;
-    private String userName;
+    private String username;
     private BigDecimal amount;
     private String message = "Request payment creation for a new order.";
 }

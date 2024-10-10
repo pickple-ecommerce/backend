@@ -17,7 +17,7 @@ public class PaymentEventConsumer {
     @KafkaListener(topics="payment-create-request", groupId="payment-group")
     public void handleCreateRequest(String message) {
         PaymentCreateRequestEvent event = EventSerializer.deserialize(message, PaymentCreateRequestEvent.class);
-        paymentService.createPayment(event.getOrderId(), event.getUserName(), event.getAmount());
+        paymentService.createPayment(event.getOrderId(), event.getUsername(), event.getAmount());
     }
 
     @KafkaListener(topics="payment-cancel-request", groupId="payment-group")

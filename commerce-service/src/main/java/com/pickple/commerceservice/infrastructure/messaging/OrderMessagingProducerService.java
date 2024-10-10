@@ -23,9 +23,9 @@ public class OrderMessagingProducerService {
     private final TemporaryStorageService temporaryStorageService;
     private final ObjectMapper objectMapper;
 
-    public void sendPaymentRequest(UUID orderId, BigDecimal amount, String username) {
+    public void sendPaymentRequest(UUID orderId, BigDecimal amount, String username, String message) {
         // PaymentRequestEvent 생성
-        PaymentCreateRequestEvent event = new PaymentCreateRequestEvent(orderId, amount, username);
+        PaymentCreateRequestEvent event = new PaymentCreateRequestEvent(orderId, amount, username, message);
 
         try {
             // event 객체를 JSON 문자열로 변환
