@@ -19,7 +19,7 @@ spring:
         - id: commerce-service
           uri: lb://commerce-service
           predicates:
-            - Path=/api/v1/products/**, /api/v1/stocks/**, /api/v1/orders/**, /api/v1/vendors/**, /actuator/prometheus
+            - Path=/api/v1/products/**, /api/v1/stocks/**, /api/v1/orders/**, /api/v1/pre-orders/**, /api/v1/vendors/**, /actuator/prometheus
         - id: delivery-service
           uri: lb://delivery-service
           predicates:
