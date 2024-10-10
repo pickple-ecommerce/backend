@@ -3,10 +3,13 @@ package com.pickple.commerceservice.application.service;
 import com.pickple.commerceservice.domain.model.Order;
 import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
+import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.repository.OrderRepository;
+import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.commerceservice.presentation.dto.response.OrderCreateResponseDto;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
+import com.pickple.commerceservice.presentation.dto.response.OrderDetailResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final TemporaryStorageService temporaryStorageService;
     private final OrderMessagingProducerService messagingProducerService;
+    private final ProductRepository productRepository;
 
     @Transactional
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username) {
@@ -32,24 +36,33 @@ public class OrderService {
                 .username(username)
                 .build();
 
-        // 주문 세부 정보 생성
+        // Order 저장
+        orderRepository.save(order);
+
+        // OrderDetail 생성
         List<OrderDetail> orderDetails = requestDto.getOrderDetails().stream()
-                .map(detail -> OrderDetail.builder()
-                        .order(order)
-                        .orderQuantity(detail.getOrderQuantity())
-                        .totalPrice(detail.getTotalPrice())
-                        .build())
+                .map(detail -> {
+                    // Product 조회
+                    Product product = productRepository.findById(detail.getProductId())
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + detail.getProductId()));
+
+                    // OrderDetail 생성 및 Product 설정
+                    return OrderDetail.builder()
+                            .order(order)
+                            .product(product)
+                            .orderQuantity(detail.getOrderQuantity())
+                            .totalPrice(detail.getTotalPrice())
+                            .build();
+                })
                 .collect(Collectors.toList());
 
-        order.addOrderDetails(orderDetails); // Order에 OrderDetail 추가
+        order.addOrderDetails(orderDetails);
 
-        // 주문 세부 사항의 금액을 합산하여 총 금액을 설정
         order.calculateTotalAmount();
-
+        // 다시 Order 저장 + OrderDetail 함께 저장
         orderRepository.save(order);
 
         String message = "dd";
-        // 결제 정보 Kafka 메시지 전송
         messagingProducerService.sendPaymentRequest(
                 order.getOrderId(),
                 order.getAmount(),
@@ -57,13 +70,23 @@ public class OrderService {
                 message
         );
 
-        // 배송 정보 임시 저장 (Redis)
         temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
+
+        // DTO 반환
+        List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
+                .map(detail -> OrderDetailResponseDto.builder()
+                        .productId(detail.getProduct().getProductId())
+                        .orderQuantity(detail.getOrderQuantity())
+                        .totalPrice(detail.getTotalPrice())
+                        .build())
+                .collect(Collectors.toList());
 
         return OrderCreateResponseDto.builder()
                 .orderId(order.getOrderId())
+                .username(username)
                 .amount(order.getAmount())
                 .orderStatus(order.getOrderStatus().name())
+                .orderDetails(orderDetailDtos)
                 .build();
     }
 

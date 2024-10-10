@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -23,6 +24,7 @@ public class OrderCreateRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderDetail {
+        private UUID productId;
         private Long orderQuantity; // 주문 수량
         private BigDecimal totalPrice; // 해당 상품 단가
     }
