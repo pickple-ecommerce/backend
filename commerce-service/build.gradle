@@ -30,27 +30,33 @@ ext {
 
 dependencies {
     // Prometheus
-    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    // common-module
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
+    // Common module
     implementation project(':common-module')
-    // jpa
+
+    // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    // security
+
+    // Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    // eureka & feign
+
+    // Eureka & Feign
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    // kafka
-    implementation 'org.springframework.kafka:spring-kafka'
+
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Database
+    runtimeOnly 'org.postgresql:postgresql'
+
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
     annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
@@ -58,8 +64,15 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     // Kafka
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
     implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 }
 

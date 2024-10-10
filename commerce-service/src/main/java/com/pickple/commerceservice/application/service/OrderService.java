@@ -41,7 +41,7 @@ public class OrderService {
         List<OrderDetail> orderDetails = requestDto.getOrderDetails().stream()
                 .map(detail -> {
                     Product product = productRepository.findById(detail.getProductId())
-                            .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + detail.getProductId()));
+                            .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
                     return OrderDetail.builder()
                             .order(order)
                             .product(product)
@@ -87,6 +87,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
                 CommerceErrorCode.ORDER_NOT_FOUND));
         order.assignPaymentId(paymentId);
+        orderRepository.save(order); // order 조회 test 목적
         // 결제 완료 메시지가 오면 호출되는 메서드로, 배송 생성 메시지를 보냄
         messagingProducerService.sendDeliveryCreateRequest(orderId, username);
     }
@@ -96,5 +97,6 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
                 CommerceErrorCode.ORDER_NOT_FOUND));
         order.assignDeliveryId(deliveryId);
+        orderRepository.save(order); // order 조회 test 목적
     }
 }
