@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="p_notifications")
-public class Email extends BaseEntity {
+public class Notification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -47,7 +47,7 @@ public class Email extends BaseEntity {
     @Enumerated(value=EnumType.STRING)
     private NotificationStatusEnum status;
 
-    public Email (EmailCreateRequestEvent event){
+    public Notification(EmailCreateRequestEvent event){
         this.username = event.getUsername();
         this.category = NotificationCategoryEnum.valueOf(event.getCategory());
         this.subject = event.getSubject();

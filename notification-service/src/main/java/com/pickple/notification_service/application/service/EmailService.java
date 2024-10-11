@@ -2,8 +2,8 @@ package com.pickple.notification_service.application.service;
 
 import com.pickple.common_module.exception.CommonErrorCode;
 import com.pickple.common_module.exception.CustomException;
-import com.pickple.notification_service.domain.model.Email;
-import com.pickple.notification_service.domain.repository.EmailRepository;
+import com.pickple.notification_service.domain.model.Notification;
+import com.pickple.notification_service.domain.repository.NotificationRepository;
 import com.pickple.notification_service.exception.NotificationErrorCode;
 import com.pickple.notification_service.infrastructure.messaging.events.EmailCreateRequestEvent;
 import com.pickple.notification_service.infrastructure.messaging.events.NotificationFailureResponse;
@@ -33,7 +33,7 @@ public class EmailService {
     private final NotificationEventProducer notificationEventProducer;
 
     @Autowired
-    private final EmailRepository emailRepository;
+    private final NotificationRepository emailRepository;
 
     // 이메일 전송
     public void sendEmail(EmailCreateRequestEvent event) {
@@ -66,7 +66,7 @@ public class EmailService {
 
     // 이메일 저장
     public void saveEmail(EmailCreateRequestEvent event) {
-        Email email = new Email(event);
+        Notification email = new Notification(event);
 
         try {
             emailRepository.save(email);
