@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,34 +40,39 @@ public class OrderService {
                 .username(username)
                 .build();
 
-        // OrderDetail 생성
+        // OrderDetail 정보 생성
         List<OrderDetail> orderDetails = requestDto.getOrderDetails().stream()
                 .map(detail -> {
                     Product product = productRepository.findById(detail.getProductId())
                             .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
-                    return OrderDetail.builder()
+                    BigDecimal unitPrice = product.getProductPrice();
+                    OrderDetail orderDetail = OrderDetail.builder()
                             .order(order)
                             .product(product)
                             .orderQuantity(detail.getOrderQuantity())
-                            .totalPrice(detail.getTotalPrice())
+                            .unitPrice(unitPrice)
                             .build();
+                    orderDetail.calculateTotalPrice(); // 단가*수량 계산
+                    return orderDetail;
                 })
                 .collect(Collectors.toList());
 
         order.addOrderDetails(orderDetails);
         order.calculateTotalAmount();
 
-        // Order 및 OrderDetail 함께 저장
         orderRepository.save(order);
 
+        // 결제 요청 (kafka)
         messagingProducerService.sendPaymentRequest(
                 order.getOrderId(),
                 order.getAmount(),
                 username
         );
 
+        // 배송 정보 저장 (redis)
         temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
 
+        // OrderDetail Dto로 변환
         List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
                 .map(detail -> OrderDetailResponseDto.builder()
                         .productId(detail.getProduct().getProductId())

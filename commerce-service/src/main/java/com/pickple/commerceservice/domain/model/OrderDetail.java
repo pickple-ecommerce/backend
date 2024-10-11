@@ -23,9 +23,12 @@ public class OrderDetail extends BaseEntity {
     @Column(name = "order_detail_id", updatable = false, nullable = false)
     private UUID orderDetailId;
 
+    @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
+    private BigDecimal unitPrice; // 단가
+
     @Builder.Default
     @Column(name = "total_price", precision = 10, scale = 2, nullable = false)
-    private BigDecimal totalPrice = BigDecimal.ZERO;
+    private BigDecimal totalPrice = BigDecimal.ZERO; // 단가*수량
 
     @Column(name = "order_quantity", nullable = false)
     private Long orderQuantity;
@@ -37,4 +40,8 @@ public class OrderDetail extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    public void calculateTotalPrice() {
+        this.totalPrice = this.unitPrice.multiply(BigDecimal.valueOf(this.orderQuantity));
+    }
 }
