@@ -29,6 +29,9 @@ public class OrderService {
     private final OrderMessagingProducerService messagingProducerService;
     private final ProductRepository productRepository;
 
+    /**
+     * 주문 생성
+     */
     @Transactional
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username) {
         // 주문 정보 생성
@@ -80,23 +83,5 @@ public class OrderService {
                 .orderStatus(order.getOrderStatus().name())
                 .orderDetails(orderDetailDtos)
                 .build();
-    }
-
-    @Transactional
-    public void handlePaymentComplete(UUID orderId, UUID paymentId, String username) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
-                CommerceErrorCode.ORDER_NOT_FOUND));
-        order.assignPaymentId(paymentId);
-        orderRepository.save(order); // order 조회 test 목적
-        // 결제 완료 메시지가 오면 호출되는 메서드로, 배송 생성 메시지를 보냄
-        messagingProducerService.sendDeliveryCreateRequest(orderId, username);
-    }
-
-    @Transactional
-    public void handleDeliveryCreate(UUID orderId, UUID deliveryId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
-                CommerceErrorCode.ORDER_NOT_FOUND));
-        order.assignDeliveryId(deliveryId);
-        orderRepository.save(order); // order 조회 test 목적
     }
 }
