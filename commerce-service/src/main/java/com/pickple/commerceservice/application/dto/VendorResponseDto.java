@@ -1,4 +1,4 @@
-package com.pickple.commerceservice.presentation.dto.response;
+package com.pickple.commerceservice.application.dto;
 
 import com.pickple.commerceservice.domain.model.Vendor;
 import lombok.AllArgsConstructor;

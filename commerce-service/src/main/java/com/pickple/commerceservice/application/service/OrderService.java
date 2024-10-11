@@ -8,16 +8,15 @@ import com.pickple.commerceservice.domain.repository.OrderRepository;
 import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
-import com.pickple.commerceservice.presentation.dto.response.OrderCreateResponseDto;
+import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
-import com.pickple.commerceservice.presentation.dto.response.OrderDetailResponseDto;
+import com.pickple.commerceservice.application.dto.OrderDetailResponseDto;
 import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service

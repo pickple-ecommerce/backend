@@ -2,7 +2,7 @@ package com.pickple.commerceservice.presentation.controller;
 
 import com.pickple.commerceservice.application.service.OrderService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
-import com.pickple.commerceservice.presentation.dto.response.OrderCreateResponseDto;
+import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
