@@ -30,7 +30,7 @@ public class OrderDetail extends BaseEntity {
     @Column(name = "order_quantity", nullable = false)
     private Long orderQuantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
