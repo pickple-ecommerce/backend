@@ -1,4 +1,4 @@
-package com.pickple.notification_service.application.service;
+package com.pickple.notification_service.infrastructure.messaging;
 
 import com.pickple.common_module.infrastructure.messaging.EventSerializer;
 import com.pickple.notification_service.infrastructure.messaging.events.NotificationFailureResponse;

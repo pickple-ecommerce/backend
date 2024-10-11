@@ -24,8 +24,9 @@ public class Notification extends BaseEntity {
     @Column(name="notification_id")
     private UUID notificationId;
 
-    @Column(name="channel_id")
-    private UUID channelId;
+    @ManyToOne
+    @JoinColumn(name="channel_id", referencedColumnName = "id")
+    private Channel channel;
 
     @Column(name="username")
     private String username;
@@ -47,8 +48,9 @@ public class Notification extends BaseEntity {
     @Enumerated(value=EnumType.STRING)
     private NotificationStatusEnum status;
 
-    public Notification(EmailCreateRequestEvent event){
+    public Notification(EmailCreateRequestEvent event, Channel channel){
         this.username = event.getUsername();
+        this.channel = channel;
         this.category = NotificationCategoryEnum.valueOf(event.getCategory());
         this.subject = event.getSubject();
         this.content = event.getContent();

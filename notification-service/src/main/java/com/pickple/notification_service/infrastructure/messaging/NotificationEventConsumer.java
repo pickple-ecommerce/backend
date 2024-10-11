@@ -1,7 +1,7 @@
 package com.pickple.notification_service.infrastructure.messaging;
 
 import com.pickple.common_module.infrastructure.messaging.EventSerializer;
-import com.pickple.notification_service.application.service.EmailService;
+import com.pickple.notification_service.application.service.NotificationService;
 import com.pickple.notification_service.infrastructure.messaging.events.EmailCreateRequestEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 public class NotificationEventConsumer {
 
     @Autowired
-    private EmailService emailService;
+    private NotificationService notificationService;
 
     @KafkaListener(topics="email-create-request", groupId="notification-group")
     public void handleCreateRequest(String message){
         EmailCreateRequestEvent event = EventSerializer.deserialize(message, EmailCreateRequestEvent.class);
-        emailService.sendEmail(event);
+        notificationService.sendEmailNotification(event);
     }
 }
