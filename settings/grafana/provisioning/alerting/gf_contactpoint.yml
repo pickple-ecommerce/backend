@@ -7,5 +7,5 @@ contactPoints:
       - uid: ce0eyk36u28zlb
         type: slack
         settings:
-          url: https://hooks.slack.com/services/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
+          url: ${GF_NOTIFIERS_CONTACTPOINT_URL}
         disableResolveMessage: false

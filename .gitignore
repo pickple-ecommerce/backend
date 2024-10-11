@@ -228,6 +228,4 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle,java,intellij,macos,windows
 
-.idea/dataSources.xml
-.idea/modules.xml
-.idea/sqldialects.xml
+.env
