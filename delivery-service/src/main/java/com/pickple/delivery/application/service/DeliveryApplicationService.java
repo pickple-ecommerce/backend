@@ -1,11 +1,11 @@
 package com.pickple.delivery.application.service;
 
+import static com.pickple.delivery.infrastructure.config.RedisConfig.CACHE_PREFIX;
+
 import com.pickple.common_module.exception.CommonErrorCode;
 import com.pickple.common_module.exception.CustomException;
 import com.pickple.common_module.infrastructure.messaging.EventSerializer;
 import com.pickple.delivery.application.dto.request.DeliveryCreateRequestDto;
-import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
-import com.pickple.delivery.application.dto.DeliveryInfoDto;
 import com.pickple.delivery.application.dto.request.DeliveryUpdateRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryDeleteResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
@@ -13,14 +13,14 @@ import com.pickple.delivery.application.dto.response.DeliveryStatusResponseDto;
 import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
-import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.domain.model.deleted.DeliveryDeleted;
 import com.pickple.delivery.domain.model.deleted.DeliveryDetailDeleted;
+import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
-import com.pickple.delivery.domain.repository.deleted.DeliveryDeletedRepository;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
+import com.pickple.delivery.domain.repository.deleted.DeliveryDeletedRepository;
 import com.pickple.delivery.domain.model.Delivery;
 import com.pickple.delivery.exception.DeliveryErrorCode;
 import com.pickple.delivery.infrastructure.messaging.DeliveryMessageProducerService;
@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -47,6 +48,8 @@ public class DeliveryApplicationService {
     private final DeliveryMessageProducerService deliveryMessageProducerService;
 
     private final DeliveryDeletedRepository deliveryDeletedRepository;
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${kafka.topic.delivery-create-response}")
     private String deliveryCreateResponseTopic;
@@ -83,7 +86,7 @@ public class DeliveryApplicationService {
         delivery.updateDelivery(dto);
         deliveryRepository.save(delivery);
         log.info("배송 정보가 성공적으로 업데이트되었습니다. 배송 ID: {}", delivery.getDeliveryId());
-        return createDeliveryInfoResponseDto(delivery);
+        return DeliveryMapper.convertEntityToInfoResponseDto(delivery);
     }
 
     @Transactional(readOnly = true)
@@ -108,9 +111,17 @@ public class DeliveryApplicationService {
     @Transactional(readOnly = true)
     public DeliveryInfoResponseDto getDeliveryInfo(UUID deliveryId) {
         log.info("배송 정보 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
+
+        DeliveryInfoResponseDto cachedDeliveryInfo = (DeliveryInfoResponseDto) redisTemplate.opsForValue().get(
+                CACHE_PREFIX + "::" + deliveryId
+        );
+        if (cachedDeliveryInfo != null) {
+            return cachedDeliveryInfo;
+        }
+
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
-        return createDeliveryInfoResponseDto(delivery);
+        return DeliveryMapper.convertEntityToInfoResponseDto(delivery);
     }
 
     @Transactional(readOnly = true)
@@ -122,32 +133,40 @@ public class DeliveryApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Delivery> getAllDelivery(Pageable pageable) {
+    public Page<DeliveryInfoResponseDto> getAllDeliveryInfo(Pageable pageable) {
         log.info("배송 전체 정보 조회 요청을 처리합니다. 요청 정보: {}", pageable);
-        return deliveryRepository.findAll(pageable);
+        return deliveryRepository.findInfoAll((pageable));
     }
 
     @Transactional(readOnly = true)
-    public Page<Delivery> getDeliveriesByCarrier(String carrierName, Pageable pageable) {
-        return deliveryRepository.findByCarrierName(carrierName, pageable);
+    public Page<DeliveryInfoResponseDto> getDeliveriesByCarrier(String carrierName,
+            Pageable pageable) {
+        DeliveryCarrier deliveryCarrier;
+        try {
+            deliveryCarrier = DeliveryCarrier.valueOf(carrierName);
+        } catch (Exception e) {
+            throw new CustomException(DeliveryErrorCode.CARRIER_NAME_NOT_SUPPORT);
+        }
+        return deliveryRepository.findByCarrierName(deliveryCarrier.getCompanyName(), pageable);
     }
 
     @Transactional(readOnly = true)
-    public Page<Delivery> getDeliveriesByStatus(DeliveryStatus status, Pageable pageable) {
+    public Page<DeliveryInfoResponseDto> getDeliveriesByStatus(DeliveryStatus status,
+            Pageable pageable) {
         return deliveryRepository.findByDeliveryStatus(status, pageable);
     }
 
     @Transactional(readOnly = true)
-    public Page<Delivery> getDeliveriesByDeliveryType(DeliveryType deliveryType,
+    public Page<DeliveryInfoResponseDto> getDeliveriesByDeliveryType(DeliveryType deliveryType,
             Pageable pageable) {
         return deliveryRepository.findByDeliveryType(deliveryType, pageable);
     }
 
     @Transactional(readOnly = true)
     public DeliveryInfoResponseDto getDeliveriesByTrackingNumber(String trackingNumber) {
-        Delivery delivery = deliveryRepository.findByTrackingNumber(trackingNumber)
-                .orElseThrow(() -> new CustomException(DeliveryErrorCode.TRACKING_NUMBER_NOT_FOUND));
-        return createDeliveryInfoResponseDto(delivery);
+        return deliveryRepository.findByTrackingNumber(trackingNumber)
+                .orElseThrow(
+                        () -> new CustomException(DeliveryErrorCode.TRACKING_NUMBER_NOT_FOUND));
     }
 
     @Transactional
@@ -171,14 +190,6 @@ public class DeliveryApplicationService {
         }
         return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(),
                 deleter);
-    }
-
-    private DeliveryInfoResponseDto createDeliveryInfoResponseDto(Delivery delivery) {
-        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
-        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList = delivery.getDeliveryDetails()
-                .stream().map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
-        return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
-                deliveryDetailInfoDtoList);
     }
 
 }
