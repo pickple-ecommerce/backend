@@ -99,4 +99,13 @@ public class DeliveryMapper {
                 .trackingNumber(request.getTrackingNumber())
                 .build();
     }
+
+    public static DeliveryInfoResponseDto convertEntityToInfoResponseDto(Delivery delivery) {
+        DeliveryInfoDto deliveryInfoDto = DeliveryMapper.convertEntityToInfoDto(delivery);
+        List<DeliveryDetailInfoDto> deliveryDetailInfoDtoList = delivery.getDeliveryDetails()
+                .stream().map(DeliveryDetailMapper::convertEntityToInfoDto).toList();
+        return DeliveryMapper.createDeliveryInfoResponseDto(deliveryInfoDto,
+                deliveryDetailInfoDtoList);
+    }
+
 }
