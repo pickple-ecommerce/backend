@@ -80,7 +80,7 @@ public class EmailService {
     // 이메일 저장
     public void saveEmail(EmailCreateRequestEvent event) {
         // 알림 채널 조회
-        Channel channel = channelRepository.findByName("Email").orElseThrow(
+        Channel channel = channelRepository.findByNameAndIsDeleteIsFalse("Email").orElseThrow(
                 ()-> new CustomException(ChannelErrorCode.CHANNEL_NOT_FOUND)
         );
 

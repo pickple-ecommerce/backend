@@ -1,7 +1,6 @@
 package com.pickple.notification_service.infrastructure.messaging.events;
 
 import com.pickple.common_module.exception.CommonErrorCode;
-import com.pickple.notification_service.domain.model.NotificationStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

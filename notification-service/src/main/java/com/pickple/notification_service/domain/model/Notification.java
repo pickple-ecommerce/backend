@@ -45,8 +45,7 @@ public class Notification extends BaseEntity {
     private String sender;
 
     @Column(name="status")
-    @Enumerated(value=EnumType.STRING)
-    private NotificationStatusEnum status;
+    private String status;
 
     public Notification(EmailCreateRequestEvent event, Channel channel){
         this.username = event.getUsername();
@@ -55,15 +54,11 @@ public class Notification extends BaseEntity {
         this.subject = event.getSubject();
         this.content = event.getContent();
         this.sender = event.getSender();
-        this.status = NotificationStatusEnum.PENDING;
+        this.status = "PENDING";
     }
 
     public void sent () {
-        this.status = NotificationStatusEnum.SENT;
-    }
-
-    public void failed() {
-        this.status = NotificationStatusEnum.FAILED;
+        this.status = "SENT";
     }
 
     public void delete(String deleteBy) {
