@@ -49,7 +49,7 @@ services:
       - eureka-server
 
   user-service:
-    image: user-service-image
+#    image: user-service-image
     build:
       context: ../user-service
       dockerfile: Dockerfile
@@ -68,7 +68,7 @@ services:
       - eureka-server
 
   commerce-service:
-    image: commerce-service-image
+#    image: commerce-service-image
     build:
       context: ../commerce-service
       dockerfile: Dockerfile
@@ -108,7 +108,7 @@ services:
       - eureka-server
 
   delivery-service:
-    image: delivery-service-image
+#    image: delivery-service-image
     build:
       context: ../delivery-service
       dockerfile: Dockerfile
