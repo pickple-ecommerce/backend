@@ -3,6 +3,3 @@ spring:
     name: auth-service
   profiles:
     active: dev
-
-server:
-  port: 19092
