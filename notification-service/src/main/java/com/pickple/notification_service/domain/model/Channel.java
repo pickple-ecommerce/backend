@@ -32,7 +32,7 @@ public class Channel extends BaseEntity {
     @Column(name="description")
     private String description;
 
-    @OneToMany(mappedBy = "Channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Notification> notifications;
 
     public Channel(ChannelCreateReqDto reqDto) {
