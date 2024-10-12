@@ -114,7 +114,7 @@ public class PaymentService {
         );
 
         // 요청한 클라이언트의 결제 내역이 맞는지 확인
-        if(!payment.getUserName().equals(userName)){
+        if(!payment.getUsername().equals(userName)){
             throw new CustomException(CommonErrorCode.AUTHORIZATION_ERROR);
         }
 

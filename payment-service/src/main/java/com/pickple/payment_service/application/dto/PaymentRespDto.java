@@ -15,7 +15,7 @@ import java.util.UUID;
 public class PaymentRespDto {
     private UUID orderId;
     private UUID paymentId;
-    private String userName;
+    private String username;
     private BigDecimal amount;
     private String method;
     private PaymentStatusEnum status;
@@ -24,7 +24,7 @@ public class PaymentRespDto {
         return PaymentRespDto.builder()
                 .orderId(payment.getOrderId())
                 .paymentId(payment.getPaymentId())
-                .userName(payment.getUserName())
+                .username(payment.getUsername())
                 .amount(payment.getAmount())
                 .method(payment.getMethod())
                 .status(payment.getStatus())

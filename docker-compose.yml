@@ -46,15 +46,16 @@ services:
       - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
 
   notification_db:
-    image: cassandra:latest
+    image: postgres:latest
     container_name: notification_db
     environment:
-      - CASSANDRA_CLUSTER_NAME=notification_db
-      - CASSANDRA_CQL_PORT_NUMBER=5436
+      - POSTGRES_DB=notification_db
+      - POSTGRES_USER=pickple
+      - POSTGRES_PASSWORD=1234
     ports:
-      - "5436:9042"
+      - "5436:5432"
     volumes:
-      - ./db-init/notification/init-notification.cql:/docker-entrypoint-initdb.d/init-notification.cql
+      - ./db-init/notification/init-notification.sql:/docker-entrypoint-initdb.d/init-notification.sql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -121,6 +122,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=pickple
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_NOTIFIERS_CONTACTPOINT_URL=${SLACK_WEBHOOK_URL}
     volumes:
       - ./settings/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
