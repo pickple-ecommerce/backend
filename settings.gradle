@@ -1,2 +1,11 @@
 rootProject.name = 'backend'
-include 'common-module', 'delivery-service', 'user-service', 'commerce-service', 'payment-service', 'auth-service', 'gateway'
+
+include 'common-module',
+        'delivery-service',
+        'user-service',
+        'commerce-service',
+        'payment-service',
+        'auth-service',
+        'gateway',
+        'notification-service',
+        'eureka-server'

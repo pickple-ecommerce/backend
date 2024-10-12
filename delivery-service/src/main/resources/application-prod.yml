@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: delivery-service
+  data:
+    mongodb:
+      host: ${DELIVERY_MONGODB_HOST}
+      port: ${DELIVERY_MONGODB_PORT}
+      database: ${DELIVERY_MONGODB_DATABASE}
+      username: ${DELIVERY_MONGODB_USERNAME}
+      password: ${DELIVERY_MONGODB_PASSWORD}
+      authentication-database: admin
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: delivery-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL}
+    register-with-eureka: true
+    fetch-registry: true
+
+kafka:
+  topic:
+    delivery-create-response: delivery-create-response
+    delivery-create-failure: delivery-create-failure
+    delivery-delete-failure: delivery-delete-failure
+
+server:
+  port: ${DELIVERY_SERVER_PORT}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true

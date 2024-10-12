@@ -1,15 +1,15 @@
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:19090/eureka/
+      defaultZone: ${EUREKA_SERVER_URL}
     register-with-eureka: true
     fetch-registry: true
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_db
-    username: user_db
-    password: user_db
+    url: ${USER_DB_URL}
+    username: ${USER_DB_USERNAME}
+    password: ${USER_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -20,7 +20,7 @@ spring:
     show-sql: true
 
 server:
-  port: 19093
+  port: ${USER_SERVER_PORT}
 
 management:
   endpoints:
