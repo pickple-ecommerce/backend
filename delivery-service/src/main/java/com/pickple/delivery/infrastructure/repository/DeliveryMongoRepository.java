@@ -1,5 +1,6 @@
 package com.pickple.delivery.infrastructure.repository;
 
+import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.domain.repository.DeliveryRepository;
@@ -10,6 +11,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 public interface DeliveryMongoRepository extends DeliveryRepository,
         MongoRepository<Delivery, UUID> {
@@ -17,7 +19,6 @@ public interface DeliveryMongoRepository extends DeliveryRepository,
     @Override
     <S extends Delivery> @Nonnull S save(@Nonnull S entity);
 
-    @Override
     @Nonnull Optional<Delivery> findById(@Nonnull UUID deliveryId);
 
     @Override
@@ -26,15 +27,19 @@ public interface DeliveryMongoRepository extends DeliveryRepository,
     @Override
     void deleteById(@Nonnull UUID deliveryId);
 
-    @Override
-    @Nonnull
-    Page<Delivery> findAll(@Nonnull Pageable pageable);
+    @Query(value = "{}", fields = "{ 'deliveryId' : 1, 'orderId' : 1, 'carrierName' : 1, 'deliveryType' : 1, 'trackingNumber' : 1, 'deliveryStatus' : 1, 'deliveryRequirement' : 1, 'recipientName' : 1, 'recipientAddress' : 1, 'recipientContact' : 1, 'deliveryDetails' : 1 }")
+    Page<DeliveryInfoResponseDto> findInfoAll(Pageable pageable);
 
-    Page<Delivery> findByCarrierName(String carrier, Pageable pageable);
+    @Query(value = "{ 'carrierName' : ?0 }", fields = "{ 'deliveryId' : 1, 'orderId' : 1, 'carrierName' : 1, 'deliveryType' : 1, 'trackingNumber' : 1, 'deliveryStatus' : 1, 'deliveryRequirement' : 1, 'recipientName' : 1, 'recipientAddress' : 1, 'recipientContact' : 1, 'deliveryDetails' : 1 }")
+    Page<DeliveryInfoResponseDto> findByCarrierName(String carrierName, Pageable pageable);
 
-    Optional<Delivery> findByTrackingNumber(String trackingNumber);
+    @Query(value = "{ 'trackingNumber' : ?0 }", fields = "{ 'deliveryId' : 1, 'orderId' : 1, 'carrierName' : 1, 'deliveryType' : 1, 'trackingNumber' : 1, 'deliveryStatus' : 1, 'deliveryRequirement' : 1, 'recipientName' : 1, 'recipientAddress' : 1, 'recipientContact' : 1, 'deliveryDetails' : 1 }")
+    Optional<DeliveryInfoResponseDto> findByTrackingNumber(String trackingNumber);
 
-    Page<Delivery> findByDeliveryStatus(DeliveryStatus deliveryStatus, Pageable pageable);
+    @Query(value = "{ 'deliveryStatus' : ?0 }", fields = "{ 'deliveryId' : 1, 'orderId' : 1, 'carrierName' : 1, 'deliveryType' : 1, 'trackingNumber' : 1, 'deliveryStatus' : 1, 'deliveryRequirement' : 1, 'recipientName' : 1, 'recipientAddress' : 1, 'recipientContact' : 1, 'deliveryDetails' : 1 }")
+    Page<DeliveryInfoResponseDto> findByDeliveryStatus(DeliveryStatus deliveryStatus, Pageable pageable);
 
-    Page<Delivery> findByDeliveryType(DeliveryType deliveryType, Pageable pageable);
+    @Query(value = "{ 'deliveryType' : ?0 }", fields = "{ 'deliveryId' : 1, 'orderId' : 1, 'carrierName' : 1, 'deliveryType' : 1, 'trackingNumber' : 1, 'deliveryStatus' : 1, 'deliveryRequirement' : 1, 'recipientName' : 1, 'recipientAddress' : 1, 'recipientContact' : 1, 'deliveryDetails' : 1 }")
+    Page<DeliveryInfoResponseDto> findByDeliveryType(DeliveryType deliveryType, Pageable pageable);
+
 }

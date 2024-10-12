@@ -1,5 +1,6 @@
 package com.pickple.delivery.domain.repository;
 
+import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.domain.model.Delivery;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
@@ -15,7 +16,7 @@ public interface DeliveryRepository {
 
     Optional<Delivery> findById(UUID deliveryId);
 
-    Optional<Delivery> findByTrackingNumber(String trackingNumber);
+    Optional<DeliveryInfoResponseDto> findByTrackingNumber(String trackingNumber);
 
     boolean existsById(@Nonnull UUID deliveryId);
 
@@ -23,10 +24,12 @@ public interface DeliveryRepository {
 
     Page<Delivery> findAll(Pageable pageable);
 
-    Page<Delivery> findByCarrierName(String carrier, Pageable pageable);
+    Page<DeliveryInfoResponseDto> findInfoAll(Pageable pageable);
 
-    Page<Delivery> findByDeliveryStatus(DeliveryStatus deliveryStatus, Pageable pageable);
+    Page<DeliveryInfoResponseDto> findByCarrierName(String carrier, Pageable pageable);
 
-    Page<Delivery> findByDeliveryType(DeliveryType deliveryType, Pageable pageable);
+    Page<DeliveryInfoResponseDto> findByDeliveryStatus(DeliveryStatus deliveryStatus, Pageable pageable);
+
+    Page<DeliveryInfoResponseDto> findByDeliveryType(DeliveryType deliveryType, Pageable pageable);
 
 }

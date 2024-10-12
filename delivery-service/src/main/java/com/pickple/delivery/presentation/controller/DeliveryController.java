@@ -2,7 +2,6 @@ package com.pickple.delivery.presentation.controller;
 
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import com.pickple.delivery.application.dto.response.DeliveryDeleteResponseDto;
-import com.pickple.delivery.application.dto.response.DeliveryDetailCreateResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryInfoResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.application.dto.response.DeliveryStatusResponseDto;
@@ -10,7 +9,6 @@ import com.pickple.delivery.application.mapper.DeliveryDetailMapper;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.application.service.DeliveryApplicationService;
 import com.pickple.delivery.application.service.DeliveryDetailApplicationService;
-import com.pickple.delivery.domain.model.Delivery;
 import com.pickple.delivery.domain.model.enums.DeliveryStatus;
 import com.pickple.delivery.domain.model.enums.DeliveryType;
 import com.pickple.delivery.presentation.request.DeliveryDetailCreateRequest;
@@ -66,19 +64,19 @@ public class DeliveryController {
 
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<Delivery>>> getAllDeliveryInfo(
+    public ResponseEntity<ApiResponse<Page<DeliveryInfoResponseDto>>> getAllDeliveryInfo(
             @PageableDefault(
                     size = 10,
                     sort = {"createdAt", "updatedAt"},
                     direction = Sort.Direction.DESC
             ) Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 조회에 성공하였습니다.",
-                deliveryService.getAllDelivery(pageable)));
+                deliveryService.getAllDeliveryInfo(pageable)));
     }
 
     @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
     @PostMapping("/{delivery_id}/details")
-    public ResponseEntity<ApiResponse<DeliveryDetailCreateResponseDto>> createDeliveryDetail(
+    public ResponseEntity<ApiResponse<DeliveryInfoResponseDto>> createDeliveryDetail(
             @PathVariable("delivery_id") UUID deliveryId,
             @Valid @RequestBody DeliveryDetailCreateRequest request) {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송 경로가 등록되었습니다.",
@@ -116,22 +114,22 @@ public class DeliveryController {
     // 배송사 기준 검색
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping("/carrier")
-    public ResponseEntity<ApiResponse<Page<Delivery>>> getDeliveriesByCarrier(
+    public ResponseEntity<ApiResponse<Page<DeliveryInfoResponseDto>>> getDeliveriesByCarrier(
             @RequestParam String value,
             @PageableDefault(size = 10, sort = {"createdAt",
                     "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Delivery> result = deliveryService.getDeliveriesByCarrier(value, pageable);
+        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByCarrier(value, pageable);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송사 기준 조회에 성공하였습니다.", result));
     }
 
     // 배송 상태 기준 검색
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping("/status")
-    public ResponseEntity<ApiResponse<Page<Delivery>>> getDeliveriesByStatus(
+    public ResponseEntity<ApiResponse<Page<DeliveryInfoResponseDto>>> getDeliveriesByStatus(
             @RequestParam DeliveryStatus value,
             @PageableDefault(size = 10, sort = {"createdAt",
                     "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Delivery> result = deliveryService.getDeliveriesByStatus(value, pageable);
+        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByStatus(value, pageable);
         return ResponseEntity.ok(
                 ApiResponse.success(HttpStatus.OK, "배송 상태 기준 조회에 성공하였습니다.", result));
     }
@@ -139,11 +137,11 @@ public class DeliveryController {
     // 배송 유형 기준 검색
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping("/type")
-    public ResponseEntity<ApiResponse<Page<Delivery>>> getDeliveriesByDeliveryType(
+    public ResponseEntity<ApiResponse<Page<DeliveryInfoResponseDto>>> getDeliveriesByDeliveryType(
             @RequestParam DeliveryType value,
             @PageableDefault(size = 10, sort = {"createdAt",
                     "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Delivery> result = deliveryService.getDeliveriesByDeliveryType(value, pageable);
+        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByDeliveryType(value, pageable);
         return ResponseEntity.ok(
                 ApiResponse.success(HttpStatus.OK, "배송 유형 기준 조회에 성공하였습니다.", result));
     }

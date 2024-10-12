@@ -66,10 +66,6 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
     @Builder.Default
     private List<DeliveryDetail> deliveryDetails = new ArrayList<>();
 
-    @Field("is_deleted")
-    @Builder.Default
-    private Boolean isDeleted = false;
-
     public static Delivery createFrom(DeliveryCreateRequestDto dto) {
         return Delivery.builder()
                 .orderId(dto.getOrderId())
