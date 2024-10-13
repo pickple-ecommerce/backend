@@ -9,11 +9,8 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeliveryCreateRequestEvent {
+public class DeliveryDeleteRequestEvent {
+    private UUID deliveryId;
     private UUID orderId;
-    private String deliveryRequirement;
-    private String recipientName;
-    private String recipientAddress;
-    private String recipientContact;
-    private String username;
+    private String message;
 }
