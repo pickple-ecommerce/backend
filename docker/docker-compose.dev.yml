@@ -19,7 +19,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./db-init/commerce/init-commerce.sql:/docker-entrypoint-initdb.d/init-commerce.sql
+      - ../db-init/commerce/init-commerce.sql:/docker-entrypoint-initdb.d/init-commerce.sql
 
   payment_db:
     image: postgres:latest
@@ -31,7 +31,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - ./db-init/payment/init-payment.sql:/docker-entrypoint-initdb.d/init-payment.sql
+      - ../db-init/payment/init-payment.sql:/docker-entrypoint-initdb.d/init-payment.sql
 
   user_db:
     image: postgres:latest
@@ -43,7 +43,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
+      - ../db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
 
   notification_db:
     image: postgres:latest
@@ -55,7 +55,7 @@ services:
     ports:
       - "5436:5432"
     volumes:
-      - ./db-init/notification/init-notification.sql:/docker-entrypoint-initdb.d/init-notification.sql
+      - ../db-init/notification/init-notification.sql:/docker-entrypoint-initdb.d/init-notification.sql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -104,7 +104,7 @@ services:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./settings/prometheus/config:/etc/prometheus
+      - ../settings/prometheus/config:/etc/prometheus
     ports:
       - 9090:9090
     command:
@@ -124,7 +124,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_NOTIFIERS_CONTACTPOINT_URL=${SLACK_WEBHOOK_URL}
     volumes:
-      - ./settings/grafana/provisioning/:/etc/grafana/provisioning/
+      - ../settings/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
     depends_on:
       - prometheus
