@@ -12,6 +12,7 @@ import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.infrastructure.feign.DeliveryClient;
 import com.pickple.commerceservice.infrastructure.feign.PaymentClient;
+import com.pickple.commerceservice.infrastructure.feign.dto.DeliveryClientDto;
 import com.pickple.commerceservice.infrastructure.feign.dto.PaymentClientDto;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
@@ -34,7 +35,7 @@ public class OrderService {
     private final OrderMessagingProducerService messagingProducerService;
     private final ProductRepository productRepository;
     private final PaymentClient paymentClient;
-//    private final DeliveryClient deliveryClient;
+    private final DeliveryClient deliveryClient;
 
     /**
      * 주문 생성
@@ -106,7 +107,7 @@ public class OrderService {
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
 
         PaymentClientDto paymentInfo = paymentClient.getPaymentInfo(role, username, orderId);
-//        DeliveryClient deliveryClient = deliveryClient.getDeliveryInfo(role, username, orderId);
+        DeliveryClientDto deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId);
 
         List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
                 .map(detail -> OrderDetailResponseDto.builder()
@@ -123,7 +124,7 @@ public class OrderService {
                 .orderStatus(order.getOrderStatus().name())
                 .orderDetails(orderDetailDtos)
                 .paymentInfo(paymentInfo)
-//                .deliveryInfo(deliveryInfo)
+                .deliveryInfo(deliveryInfo)
                 .build();
     }
 }

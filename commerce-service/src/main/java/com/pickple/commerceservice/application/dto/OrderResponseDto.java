@@ -1,5 +1,6 @@
 package com.pickple.commerceservice.application.dto;
 
+import com.pickple.commerceservice.infrastructure.feign.dto.DeliveryClientDto;
 import com.pickple.commerceservice.infrastructure.feign.dto.PaymentClientDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +19,5 @@ public class OrderResponseDto {
     private String orderStatus;
     private List<OrderDetailResponseDto> orderDetails;
     private PaymentClientDto paymentInfo;
+    private DeliveryClientDto deliveryInfo;
 }
