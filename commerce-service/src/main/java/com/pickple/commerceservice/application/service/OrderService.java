@@ -97,6 +97,9 @@ public class OrderService {
                 .build();
     }
 
+    /**
+     * 주문 단건 조회
+     */
     @Transactional(readOnly = true)
     public OrderResponseDto getOrderById(UUID orderId, String role, String username) {
         Order order = orderRepository.findById(orderId)

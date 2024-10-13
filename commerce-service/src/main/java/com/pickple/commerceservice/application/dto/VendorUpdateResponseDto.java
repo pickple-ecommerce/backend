@@ -11,5 +11,4 @@ public class VendorUpdateResponseDto {
     private UUID vendorId;
     private String vendorName;
     private String vendorAddress;
-//    private Long userId;
 }

@@ -34,7 +34,7 @@ public class OrderController {
     }
 
     /**
-     * 주문 조회 API
+     * 주문  단건 조회
      */
     @GetMapping("/{orderId}")
     @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
