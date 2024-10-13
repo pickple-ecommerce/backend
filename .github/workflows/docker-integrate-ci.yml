@@ -27,10 +27,12 @@ jobs:
         run: |
           export SLACK_WEBHOOK_URL="TESTURL"
           docker-compose -f docker/docker-compose.dev.yml up -d
-
-      - name: Wait for containers to be ready
-        run: sleep 10
-          
+      
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
+      
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
