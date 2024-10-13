@@ -18,6 +18,7 @@ import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProduc
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -125,6 +127,59 @@ public class OrderService {
                 .orderDetails(orderDetailDtos)
                 .paymentInfo(paymentInfo)
                 .deliveryInfo(deliveryInfo)
+                .build();
+    }
+
+    /**
+     * 주문 취소 메소드
+     */
+    @Transactional
+    public OrderResponseDto cancelOrder(UUID orderId, String username, String role) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
+
+        order.changeStatus(OrderStatus.CANCELED);
+        orderRepository.save(order);
+
+        // 결제 취소 요청 전송 (Kafka)
+        messagingProducerService.sendPaymentCancelRequest(orderId);
+
+        // 배송 정보 조회 및 삭제 요청 처리
+        try {
+            DeliveryClientDto deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId);
+            messagingProducerService.sendDeliveryDeleteRequest(deliveryInfo.getDeliveryId(), orderId);
+        } catch (Exception e) {
+            log.warn("배송 정보 조회 실패: orderId={}, message: {}", orderId, e.getMessage());
+        }
+
+//        // 재고 롤백
+//        if (order != null) {
+//            rollbackStock(order);
+//        }
+
+        log.info("주문 취소 완료: orderId={}, username={}", orderId, username);
+
+        return mapToOrderResponseDto(order);
+    }
+
+    /**
+     * 주문을 OrderResponseDto로 매핑하는 메서드
+     */
+    private OrderResponseDto mapToOrderResponseDto(Order order) {
+        List<OrderDetailResponseDto> orderDetails = order.getOrderDetails().stream()
+                .map(detail -> OrderDetailResponseDto.builder()
+                        .productId(detail.getProduct().getProductId())
+                        .orderQuantity(detail.getOrderQuantity())
+                        .totalPrice(detail.getTotalPrice())
+                        .build())
+                .collect(Collectors.toList());
+
+        return OrderResponseDto.builder()
+                .orderId(order.getOrderId())
+                .username(order.getUsername())
+                .amount(order.getAmount())
+                .orderStatus(order.getOrderStatus().name())
+                .orderDetails(orderDetails)
                 .build();
     }
 }

@@ -34,7 +34,7 @@ public class OrderController {
     }
 
     /**
-     * 주문  단건 조회
+     * 주문 단건 조회
      */
     @GetMapping("/{orderId}")
     @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
@@ -42,11 +42,22 @@ public class OrderController {
             @PathVariable UUID orderId,
             @RequestHeader("X-User-Roles") String role,
             @RequestHeader("X-User-Name") String username) {
-
         OrderResponseDto orderResponse = orderService.getOrderById(orderId, role, username);
         return ResponseEntity.ok(
                 ApiResponse.success(HttpStatus.OK, "주문 조회 성공", orderResponse)
         );
     }
 
+    /**
+     * 주문 취소
+     */
+    @PostMapping("/{orderId}/cancel")
+    @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
+    public ResponseEntity<ApiResponse<OrderResponseDto>> cancelOrder(
+            @PathVariable UUID orderId,
+            @RequestHeader("X-User-Roles") String role,
+            @RequestHeader("X-User-Name") String username) {
+        OrderResponseDto orderResponse = orderService.cancelOrder(orderId, username, role);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "주문이 성공적으로 취소되었습니다.", orderResponse));
+    }
 }

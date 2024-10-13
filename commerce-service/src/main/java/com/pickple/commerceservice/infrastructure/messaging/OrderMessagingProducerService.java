@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pickple.commerceservice.application.service.TemporaryStorageService;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateRequestEvent;
+import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryDeleteRequestEvent;
+import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCancelRequestEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCreateRequestEvent;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -30,44 +32,69 @@ public class OrderMessagingProducerService {
     @Value("${kafka.topic.payment-create-request}")
     private String paymentCreateRequestTopic;
 
-    public void sendPaymentRequest(UUID orderId, BigDecimal amount, String username) {
-        // PaymentRequestEvent 생성
-        PaymentCreateRequestEvent event = new PaymentCreateRequestEvent(orderId, amount, username);
+    @Value("${kafka.topic.payment-cancel-request}")
+    private String paymentCancelRequestTopic;
 
-        try {
-            // event 객체를 JSON 문자열로 변환
-            String eventJson = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send(paymentCreateRequestTopic, eventJson);
-        } catch (JsonProcessingException e) {
-            log.error("결제 요청 메시지를 직렬화하는 도중 오류가 발생했습니다.", e);
-        }
+    @Value("${kafka.topic.delivery-delete-request}")
+    private String deliveryDeleteRequestTopic;
+
+    /**
+     * 결제 요청 전송
+     */
+    public void sendPaymentRequest(UUID orderId, BigDecimal amount, String username) {
+        PaymentCreateRequestEvent event = new PaymentCreateRequestEvent(orderId, amount, username);
+        sendMessage(paymentCreateRequestTopic, event);
     }
 
+    /**
+     * 배송 생성 요청 전송
+     */
     public void sendDeliveryCreateRequest(UUID orderId, String username) {
-        // 저장된 배송 정보를 가져온 후 배송 생성 요청 메시지를 보냄
-        Object deliveryInfoObj = temporaryStorageService.getDeliveryInfo(orderId);
+        // 저장된 배송 정보를 조회
+        OrderCreateRequestDto.DeliveryInfo deliveryInfo =
+                temporaryStorageService.getDeliveryInfo(orderId);
 
-        if (deliveryInfoObj instanceof OrderCreateRequestDto.DeliveryInfo deliveryInfo) {
-            // 배송 정보가 정상적으로 조회된 경우
-            DeliveryCreateRequestEvent event = new DeliveryCreateRequestEvent(
-                    orderId,
-                    deliveryInfo.getDeliveryRequirement(),
-                    deliveryInfo.getRecipientName(),
-                    deliveryInfo.getAddress(),
-                    deliveryInfo.getContact(),
-                    username
-            );
+        // 배송 생성 이벤트 객체 생성
+        DeliveryCreateRequestEvent event = new DeliveryCreateRequestEvent(
+                orderId,
+                deliveryInfo.getDeliveryRequirement(),
+                deliveryInfo.getRecipientName(),
+                deliveryInfo.getAddress(),
+                deliveryInfo.getContact(),
+                username
+        );
 
-            try {
-                // event 객체를 JSON 문자열로 변환
-                String eventJson = objectMapper.writeValueAsString(event);
-                kafkaTemplate.send(deliveryCreateRequestTopic, eventJson);
-                temporaryStorageService.removeDeliveryInfo(orderId); // 성공적으로 메시지 전송 후 삭제
-            } catch (JsonProcessingException e) {
-                log.error("배송 생성 요청 메시지를 직렬화하는 도중 오류가 발생했습니다.", e);
-            }
-        } else {
-            log.error("주문 ID {}에 대한 배송 정보를 찾을 수 없습니다.", orderId);
+        // Kafka 메시지 전송 및 성공 시 저장된 배송 정보 삭제
+        sendMessage(deliveryCreateRequestTopic, event);
+        temporaryStorageService.removeDeliveryInfo(orderId);
+    }
+
+    /**
+     * 결제 취소 요청 전송
+     */
+    public void sendPaymentCancelRequest(UUID orderId) {
+        PaymentCancelRequestEvent event = new PaymentCancelRequestEvent(orderId, "Order cancellation request.");
+        sendMessage(paymentCancelRequestTopic, event);
+    }
+
+    /**
+     * 배송 취소 요청 전송
+     */
+    public void sendDeliveryDeleteRequest(UUID deliveryId, UUID orderId) {
+        DeliveryDeleteRequestEvent event = new DeliveryDeleteRequestEvent(deliveryId, orderId, "Order cancellation request.");
+        sendMessage(deliveryDeleteRequestTopic, event);
+    }
+
+    /**
+     * 공통 메시지 전송 메소드
+     */
+    private void sendMessage(String topic, Object event) {
+        try {
+            String eventJson = objectMapper.writeValueAsString(event);
+            kafkaTemplate.send(topic, eventJson);
+            log.info("{} 이벤트를 전송했습니다: {}", topic, eventJson);
+        } catch (JsonProcessingException e) {
+            log.error("{} 이벤트 직렬화 실패: {}", topic, e.getMessage());
         }
     }
 }
