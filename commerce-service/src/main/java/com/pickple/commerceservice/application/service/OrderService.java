@@ -1,5 +1,6 @@
 package com.pickple.commerceservice.application.service;
 
+import com.pickple.commerceservice.application.dto.OrderByVendorResponseDto;
 import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.commerceservice.application.dto.OrderDetailResponseDto;
 import com.pickple.commerceservice.application.dto.OrderResponseDto;
@@ -17,8 +18,12 @@ import com.pickple.commerceservice.infrastructure.feign.dto.PaymentClientDto;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.common_module.exception.CustomException;
+import com.pickple.common_module.presentation.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,9 +113,27 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
 
+        // 결제 정보 가져오기
         PaymentClientDto paymentInfo = paymentClient.getPaymentInfo(role, username, orderId);
-        DeliveryClientDto deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId);
 
+        // 배송 정보 가져오기
+        DeliveryClientDto deliveryInfo = null;
+        try {
+            ResponseEntity<ApiResponse<DeliveryClientDto>> deliveryResponse =
+                    deliveryClient.getDeliveryInfo(role, username, orderId);
+
+            // 응답 상태 확인
+            if (deliveryResponse.getStatusCode().is2xxSuccessful() &&
+                    deliveryResponse.getBody() != null) {
+                deliveryInfo = deliveryResponse.getBody().getData();  // data 추출
+            } else {
+                log.warn("유효하지 않은 배송 응답: orderId={}", orderId);
+            }
+        } catch (Exception e) {
+            log.error("배송 정보 조회 실패: orderId={}, message: {}", orderId, e.getMessage());
+        }
+
+        // 주문 상세 정보 매핑
         List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
                 .map(detail -> OrderDetailResponseDto.builder()
                         .productId(detail.getProduct().getProductId())
@@ -119,6 +142,7 @@ public class OrderService {
                         .build())
                 .collect(Collectors.toList());
 
+        // OrderResponseDto 반환
         return OrderResponseDto.builder()
                 .orderId(order.getOrderId())
                 .username(order.getUsername())
@@ -126,7 +150,7 @@ public class OrderService {
                 .orderStatus(order.getOrderStatus().name())
                 .orderDetails(orderDetailDtos)
                 .paymentInfo(paymentInfo)
-                .deliveryInfo(deliveryInfo)
+                .deliveryInfo(deliveryInfo)  // 배송 정보 매핑
                 .build();
     }
 
@@ -146,16 +170,27 @@ public class OrderService {
 
         // 배송 정보 조회 및 삭제 요청 처리
         try {
-            DeliveryClientDto deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId);
-            messagingProducerService.sendDeliveryDeleteRequest(deliveryInfo.getDeliveryId(), orderId);
+            ResponseEntity<ApiResponse<DeliveryClientDto>> deliveryResponse =
+                    deliveryClient.getDeliveryInfo(role, username, orderId);
+
+            if (deliveryResponse.getStatusCode().is2xxSuccessful() &&
+                    deliveryResponse.getBody() != null) {
+
+                DeliveryClientDto deliveryInfo = deliveryResponse.getBody().getData();  // data 추출
+
+                if (deliveryInfo != null && deliveryInfo.getDeliveryId() != null) {
+                    messagingProducerService.sendDeliveryDeleteRequest(deliveryInfo.getDeliveryId(), orderId);
+                    log.info("배송 삭제 요청 전송 완료: deliveryId={}, orderId={}",
+                            deliveryInfo.getDeliveryId(), orderId);
+                } else {
+                    log.warn("배송 정보가 없습니다: orderId={}", orderId);
+                }
+            } else {
+                log.warn("유효하지 않은 배송 응답: orderId={}", orderId);
+            }
         } catch (Exception e) {
             log.warn("배송 정보 조회 실패: orderId={}, message: {}", orderId, e.getMessage());
         }
-
-//        // 재고 롤백
-//        if (order != null) {
-//            rollbackStock(order);
-//        }
 
         log.info("주문 취소 완료: orderId={}, username={}", orderId, username);
 
@@ -181,5 +216,18 @@ public class OrderService {
                 .orderStatus(order.getOrderStatus().name())
                 .orderDetails(orderDetails)
                 .build();
+    }
+
+    /**
+     * Vendor ID로 주문 조회
+     */
+    @Transactional(readOnly = true)
+    public List<OrderByVendorResponseDto> findByVendorId(UUID vendorId, Pageable pageable) {
+        Page<OrderByVendorResponseDto> ordersPage = orderRepository.findOrdersByVendorId(vendorId, pageable);
+
+        log.info("벤더별 주문 조회 - 총 주문 수: {}", ordersPage.getTotalElements());
+        ordersPage.forEach(order -> log.debug("주문 데이터: {}", order));
+
+        return ordersPage.getContent();
     }
 }
