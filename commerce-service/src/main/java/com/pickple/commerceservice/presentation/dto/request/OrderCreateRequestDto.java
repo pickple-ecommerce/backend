@@ -15,9 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderCreateRequestDto {
 
-    private List<OrderDetail> orderDetails; // 주문 세부 항목 리스트
-    private PaymentInfo paymentInfo; // 결제 정보
-    private DeliveryInfo deliveryInfo; // 배송 정보
+    private List<OrderDetail> orderDetails;
+    private DeliveryInfo deliveryInfo;
 
     @Getter
     @Builder
@@ -26,15 +25,7 @@ public class OrderCreateRequestDto {
     public static class OrderDetail {
         private UUID productId;
         private Long orderQuantity; // 주문 수량
-        private BigDecimal totalPrice; // 해당 상품 단가
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PaymentInfo {
-        private BigDecimal amount; // 결제 금액
+        private BigDecimal unitPrice; // 상품 단가
     }
 
     @Getter

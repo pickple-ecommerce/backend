@@ -2,6 +2,7 @@ package com.pickple.commerceservice.infrastructure.messaging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pickple.commerceservice.application.service.OrderEventService;
 import com.pickple.commerceservice.application.service.OrderService;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateResponseEvent;
@@ -21,7 +22,7 @@ import java.util.UUID;
 public class OrderMessagingConsumerService {
 
     private final ObjectMapper objectMapper;
-    private final OrderService orderService;
+    private final OrderEventService orderEventService;
 
     @KafkaListener(topics = "payment-create-response", groupId = "commerce-service")
     public void listenPaymentCreateResponse(ConsumerRecord<String, String> record) {
@@ -47,7 +48,7 @@ public class OrderMessagingConsumerService {
 
         // OrderService를 통해 결제 완료 처리 및 배송 요청 전송
         log.info("결제 완료 메시지를 처리합니다. orderId: {}, paymentId: {}", orderId, paymentId);
-        orderService.handlePaymentComplete(orderId, paymentId, username);
+        orderEventService.handlePaymentComplete(orderId, paymentId, username);
     }
 
     @KafkaListener(topics = "delivery-create-response", groupId = "commerce-service")
@@ -63,6 +64,6 @@ public class OrderMessagingConsumerService {
         UUID orderId = event.getOrderId();
         UUID deliveryId = event.getDeliveryId();
         log.info("배송 생성 메시지를 처리합니다. orderId: {}, deliveryId: {}", orderId, deliveryId);
-        orderService.handleDeliveryCreate(orderId, deliveryId);
+        orderEventService.handleDeliveryCreate(orderId, deliveryId);
     }
 }

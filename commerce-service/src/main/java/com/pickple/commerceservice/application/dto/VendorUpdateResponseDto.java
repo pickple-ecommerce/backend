@@ -1,17 +1,14 @@
-package com.pickple.commerceservice.presentation.dto.response;
+package com.pickple.commerceservice.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
-public class VendorCreateResponseDto {
+public class VendorUpdateResponseDto {
     private UUID vendorId;
     private String vendorName;
     private String vendorAddress;
-    private String username;
 }
