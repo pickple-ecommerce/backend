@@ -16,6 +16,8 @@ public interface DeliveryRepository {
 
     Optional<Delivery> findById(UUID deliveryId);
 
+    Optional<Delivery> findByOrderId(UUID orderId);
+
     Optional<DeliveryInfoResponseDto> findByTrackingNumber(String trackingNumber);
 
     boolean existsById(@Nonnull UUID deliveryId);
