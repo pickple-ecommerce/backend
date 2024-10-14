@@ -22,7 +22,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         List<Product> products = queryFactory
                 .selectFrom(product)
                 .where(product.productName.containsIgnoreCase(keyword)
-                        .and(product.isDelete.eq(false)))  // 논리적 삭제 필드 고려
+                        .and(product.isDelete.eq(false))
+                        .and(product.isPublic.eq(true)))  // 논리적 삭제 필드 고려
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
