@@ -44,7 +44,7 @@ public class DeliveryMapper {
         return DeliveryStartResponseDto.builder()
                 .deliveryId(delivery.getDeliveryId())
                 .carrierName(delivery.getCarrierName())
-                .deliveryType(delivery.getDeliveryType().getTypeName())
+                .deliveryType(delivery.getDeliveryType() != null ? delivery.getDeliveryType().getTypeName() : null)
                 .trackingNumber(delivery.getTrackingNumber())
                 .orderId(delivery.getOrderId())
                 .deliveryStatus(delivery.getDeliveryStatus().getStatus())
