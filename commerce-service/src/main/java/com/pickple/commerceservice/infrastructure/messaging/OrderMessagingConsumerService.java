@@ -22,7 +22,6 @@ import java.util.UUID;
 public class OrderMessagingConsumerService {
 
     private final ObjectMapper objectMapper;
-    private final OrderService orderService;
     private final OrderEventService orderEventService;
 
     @KafkaListener(topics = "payment-create-response", groupId = "commerce-service")

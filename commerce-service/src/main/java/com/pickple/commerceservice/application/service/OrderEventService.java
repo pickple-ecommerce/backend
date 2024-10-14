@@ -1,8 +1,8 @@
 package com.pickple.commerceservice.application.service;
 
 import com.pickple.commerceservice.domain.model.Order;
+import com.pickple.commerceservice.domain.model.OrderStatus;
 import com.pickple.commerceservice.domain.repository.OrderRepository;
-import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
 import com.pickple.common_module.exception.CustomException;
@@ -34,6 +34,7 @@ public class OrderEventService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
                 CommerceErrorCode.ORDER_NOT_FOUND));
         order.assignDeliveryId(deliveryId);
+        order.changeStatus(OrderStatus.COMPLETED); // test 용 원래 배송준비중임
         orderRepository.save(order); // order 조회 test 목적
     }
 }

@@ -1,7 +1,6 @@
 package com.pickple.commerceservice.application.dto;
 
 import com.pickple.commerceservice.domain.model.Product;
-import com.pickple.commerceservice.presentation.dto.response.VendorResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

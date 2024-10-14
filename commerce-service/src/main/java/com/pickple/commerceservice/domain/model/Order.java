@@ -49,6 +49,7 @@ public class Order extends BaseEntity {
         this.orderDetails = details;
     }
 
+    // 총 금액 계산
     public void calculateTotalAmount() {
         this.amount = orderDetails.stream()
                 .map(OrderDetail::getTotalPrice)
@@ -63,4 +64,8 @@ public class Order extends BaseEntity {
         this.deliveryId = deliveryId;
     }
 
+    // 주문 상태 변경
+    public void changeStatus(OrderStatus newStatus) {
+        this.orderStatus = newStatus;
+    }
 }
