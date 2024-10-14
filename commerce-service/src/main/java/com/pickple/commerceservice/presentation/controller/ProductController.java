@@ -1,8 +1,10 @@
 package com.pickple.commerceservice.presentation.controller;
 
 import com.pickple.commerceservice.application.dto.ProductResponseDto;
+import com.pickple.commerceservice.application.dto.ProductSearchResDto;
 import com.pickple.commerceservice.application.service.ProductService;
 import com.pickple.commerceservice.presentation.dto.request.ProductCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.ProductSearchReqDto;
 import com.pickple.commerceservice.presentation.dto.request.ProductUpdateRequestDto;
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import jakarta.validation.Valid;
@@ -73,6 +75,18 @@ public class ProductController {
     public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable UUID productId) {
         productService.softDeleteProduct(productId);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "상품 삭제 성공", null));
+    }
+
+    /**
+     * 상품 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<ProductSearchResDto>>> searchProducts(@RequestParam String keyword,
+                                                                                 @PageableDefault(size = 10, page = 0) Pageable pageable) {
+        ProductSearchReqDto searchDto = new ProductSearchReqDto(keyword);
+        Page<ProductSearchResDto> products = productService.searchProducts(searchDto, pageable);
+
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "상품 검색 성공", products));
     }
 
 }

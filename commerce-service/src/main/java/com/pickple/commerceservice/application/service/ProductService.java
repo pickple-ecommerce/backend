@@ -1,6 +1,7 @@
 package com.pickple.commerceservice.application.service;
 
 import com.pickple.commerceservice.application.dto.ProductResponseDto;
+import com.pickple.commerceservice.application.dto.ProductSearchResDto;
 import com.pickple.commerceservice.application.dto.StockResponseDto;
 import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.model.Vendor;
@@ -9,6 +10,7 @@ import com.pickple.commerceservice.domain.repository.StockRepository;
 import com.pickple.commerceservice.domain.repository.VendorRepository;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.presentation.dto.request.ProductCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.ProductSearchReqDto;
 import com.pickple.commerceservice.presentation.dto.request.ProductUpdateRequestDto;
 import com.pickple.commerceservice.presentation.dto.request.StockCreateRequestDto;
 import com.pickple.common_module.exception.CustomException;
@@ -93,5 +95,11 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
         product.markAsDeleted();
+    }
+
+    // 상품 검색
+    public Page<ProductSearchResDto> searchProducts(ProductSearchReqDto searchDto, Pageable pageable) {
+        Page<Product> products = productRepository.searchByKeyword(searchDto.getKeyword(), pageable);
+        return products.map(ProductSearchResDto::fromEntity);
     }
 }
