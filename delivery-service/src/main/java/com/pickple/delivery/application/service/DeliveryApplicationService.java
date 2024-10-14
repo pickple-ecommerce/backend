@@ -109,6 +109,17 @@ public class DeliveryApplicationService {
     }
 
     @Transactional(readOnly = true)
+    public DeliveryStartResponseDto getDeliveryInfoByOrderId(UUID orderId) {
+        log.info("배송 정보 요청을 처리합니다. 주문 ID: {}", orderId);
+        Delivery delivery = deliveryRepository.findByOrderId(orderId).orElseThrow(
+                () -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND)
+        );
+
+        log.info("배송 정보 요청이 성공적으로 완료되었습니다. 주문 ID: {}", delivery.getOrderId());
+        return DeliveryMapper.convertEntityToStartResponseDto(delivery);
+    }
+
+    @Transactional(readOnly = true)
     public DeliveryInfoResponseDto getDeliveryInfo(UUID deliveryId) {
         log.info("배송 정보 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
 

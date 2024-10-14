@@ -27,6 +27,8 @@ public interface DeliveryMongoRepository extends DeliveryRepository,
     @Override
     void deleteById(@Nonnull UUID deliveryId);
 
+    Optional<Delivery> findByOrderId(UUID orderId);
+
     @Query(value = "{}", fields = "{ 'deliveryId' : 1, 'orderId' : 1, 'carrierName' : 1, 'deliveryType' : 1, 'trackingNumber' : 1, 'deliveryStatus' : 1, 'deliveryRequirement' : 1, 'recipientName' : 1, 'recipientAddress' : 1, 'recipientContact' : 1, 'deliveryDetails' : 1 }")
     Page<DeliveryInfoResponseDto> findInfoAll(Pageable pageable);
 

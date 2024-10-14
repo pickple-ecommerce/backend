@@ -62,6 +62,15 @@ public class DeliveryController {
                 deliveryService.getDeliveryInfo(deliveryId)));
     }
 
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    @GetMapping("/orders/{orderId}")
+    public ResponseEntity<ApiResponse<DeliveryStartResponseDto>> getDeliveryInfoByOrderId(
+            @PathVariable("orderId") UUID orderId) {
+        return ResponseEntity.ok(
+                ApiResponse.success(HttpStatus.OK, "배송 조회에 성공하였습니다.",
+                        deliveryService.getDeliveryInfoByOrderId(orderId)));
+    }
+
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<DeliveryInfoResponseDto>>> getAllDeliveryInfo(
@@ -90,7 +99,8 @@ public class DeliveryController {
             @PathVariable("delivery_id") UUID deliveryId,
             @Valid @RequestBody DeliveryUpdateRequest request) {
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송이 수정되었습니다.",
-                deliveryService.updateDelivery(deliveryId, DeliveryMapper.convertUpdateRequestToDto(request))));
+                deliveryService.updateDelivery(deliveryId,
+                        DeliveryMapper.convertUpdateRequestToDto(request))));
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
@@ -118,7 +128,8 @@ public class DeliveryController {
             @RequestParam String value,
             @PageableDefault(size = 10, sort = {"createdAt",
                     "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByCarrier(value, pageable);
+        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByCarrier(value,
+                pageable);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "배송사 기준 조회에 성공하였습니다.", result));
     }
 
@@ -129,7 +140,8 @@ public class DeliveryController {
             @RequestParam DeliveryStatus value,
             @PageableDefault(size = 10, sort = {"createdAt",
                     "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByStatus(value, pageable);
+        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByStatus(value,
+                pageable);
         return ResponseEntity.ok(
                 ApiResponse.success(HttpStatus.OK, "배송 상태 기준 조회에 성공하였습니다.", result));
     }
@@ -141,7 +153,8 @@ public class DeliveryController {
             @RequestParam DeliveryType value,
             @PageableDefault(size = 10, sort = {"createdAt",
                     "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByDeliveryType(value, pageable);
+        Page<DeliveryInfoResponseDto> result = deliveryService.getDeliveriesByDeliveryType(value,
+                pageable);
         return ResponseEntity.ok(
                 ApiResponse.success(HttpStatus.OK, "배송 유형 기준 조회에 성공하였습니다.", result));
     }
