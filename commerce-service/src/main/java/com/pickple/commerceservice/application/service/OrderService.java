@@ -16,6 +16,7 @@ import com.pickple.commerceservice.infrastructure.feign.dto.DeliveryClientDto;
 import com.pickple.commerceservice.infrastructure.feign.dto.PaymentClientDto;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
 import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final StockService stockService;
     private final TemporaryStorageService temporaryStorageService;
     private final OrderMessagingProducerService messagingProducerService;
     private final ProductRepository productRepository;
@@ -131,6 +134,39 @@ public class OrderService {
     }
 
     /**
+     * 예약 구매 주문 생성
+     */
+    @Transactional
+    public void createPreOrder(PreOrderRequestDto requestDto, String username) {
+        // 상품 조회
+        Product product = productRepository.findById(requestDto.getProductId())
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
+
+        // 재고 확인 및 차감
+        stockService.decreaseStockQuantity(product.getProductId());
+
+        // 주문 및 주문 정보 생성
+        Order order = Order.builder()
+                .username(username)
+                .amount(product.getProductPrice())     // 주문 총액은 곧 상품 가격
+                .build();
+        OrderDetail orderDetail = OrderDetail.builder()
+                .product(product)
+                .unitPrice(product.getProductPrice())
+                .orderQuantity(1L)                     // 항상 수량은 1개
+                .totalPrice(product.getProductPrice()) // 총 가격을 바로 설정
+                .order(order)
+                .build();
+
+        // 주문 상태 변경
+        order.changeStatus(OrderStatus.COMPLETED);
+
+        // 주문 저장
+        order.addOrderDetails(Collections.singletonList(orderDetail));
+        orderRepository.save(order);
+    }
+
+    /**
      * 주문 취소 메소드
      */
     @Transactional
@@ -182,4 +218,5 @@ public class OrderService {
                 .orderDetails(orderDetails)
                 .build();
     }
+
 }

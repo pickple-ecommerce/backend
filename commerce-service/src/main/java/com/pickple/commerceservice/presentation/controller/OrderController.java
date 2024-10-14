@@ -4,6 +4,7 @@ import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.commerceservice.application.dto.OrderResponseDto;
 import com.pickple.commerceservice.application.service.OrderService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class OrderController {
     private final OrderService orderService;
 
     /**
-     * 주문 생성
+     * 일반 주문 생성
      */
     @PostMapping
     @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
@@ -31,6 +32,16 @@ public class OrderController {
         OrderCreateResponseDto responseDto = orderService.createOrder(requestDto, username);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(HttpStatus.CREATED, "주문이 성공적으로 생성되었습니다.", responseDto));
+    }
+
+    /**
+     * 예약 구매 주문 생성
+     */
+    @PostMapping("/pre-orders")
+    public ResponseEntity<ApiResponse<Void>> createPreOrder(@RequestBody PreOrderRequestDto requestDto,
+                                                            @RequestHeader("X-User-Name") String username) {
+        orderService.createPreOrder(requestDto, username);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "예약 구매 주문이 성공적으로 생성되었습니다.", null));
     }
 
     /**
