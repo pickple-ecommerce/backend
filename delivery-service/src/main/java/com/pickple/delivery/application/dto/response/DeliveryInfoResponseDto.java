@@ -1,6 +1,7 @@
 package com.pickple.delivery.application.dto.response;
 
 import com.pickple.delivery.application.dto.DeliveryDetailInfoDto;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
@@ -8,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class DeliveryInfoResponseDto {
+public class DeliveryInfoResponseDto implements Serializable {
 
     private UUID deliveryId;
 

@@ -25,7 +25,7 @@ public class Payment extends BaseEntity {
     private UUID orderId;
 
     @Column(name="username")
-    private String userName;
+    private String username;
 
     @Column(name="amount")
     private BigDecimal amount;
@@ -40,7 +40,7 @@ public class Payment extends BaseEntity {
     public Payment(UUID orderId, String userName, BigDecimal amount) {
         this.orderId = orderId;
         this.amount = amount;
-        this.userName = userName;
+        this.username = userName;
         this.method = "CREDIT-CARD";
         this.status = PaymentStatusEnum.PENDING;
     }

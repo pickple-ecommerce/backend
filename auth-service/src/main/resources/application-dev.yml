@@ -1,3 +1,6 @@
+server:
+  port: 19092
+
 eureka:
   client:
     service-url:
