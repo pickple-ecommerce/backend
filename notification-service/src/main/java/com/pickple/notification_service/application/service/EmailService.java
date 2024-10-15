@@ -8,6 +8,7 @@ import com.pickple.notification_service.domain.repository.ChannelRepository;
 import com.pickple.notification_service.domain.repository.NotificationRepository;
 import com.pickple.notification_service.exception.ChannelErrorCode;
 import com.pickple.notification_service.exception.NotificationErrorCode;
+import com.pickple.notification_service.infrastructure.feign.UserFeignClient;
 import com.pickple.notification_service.infrastructure.messaging.NotificationEventProducer;
 import com.pickple.notification_service.infrastructure.messaging.events.EmailCreateRequestEvent;
 import com.pickple.notification_service.infrastructure.messaging.events.NotificationFailureResponse;
@@ -41,14 +42,19 @@ public class EmailService {
     @Autowired
     private final ChannelRepository channelRepository;
 
+    @Autowired
+    private final UserFeignClient userFeignClient;
+
     // 이메일 전송
     public void sendEmail(EmailCreateRequestEvent event) {
+
+        String toEmail = userFeignClient.getUserEmail(event.getUsername());
 
         try{
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setTo(event.getToEmail());
+            helper.setTo(toEmail);
             helper.setSubject(event.getSubject());
             helper.setText(event.getContent(), true);
             helper.setFrom(event.getSender());
