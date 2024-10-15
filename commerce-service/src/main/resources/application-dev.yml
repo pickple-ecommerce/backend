@@ -50,5 +50,5 @@ kafka:
   topic:
     payment-create-request: payment-create-request
     delivery-create-request: delivery-create-request
-    payment-cancel-request: payment_cancel_request
-    delivery-delete-request: delivery_delete_request
+    payment-cancel-request: payment-cancel-request
+    delivery-delete-request: delivery-delete-request
