@@ -72,6 +72,7 @@ public class StockService {
     public void decreaseStockQuantity(UUID productId) {
         Stock stock = findStockByProductId(productId);
         stock.decreaseStock();  // 수량 1 감소
+        stockRepository.save(stock);
     }
 
     // 주문한 수량만큼 재고 감소 메서드
