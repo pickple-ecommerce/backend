@@ -37,7 +37,6 @@ dependencyManagement {
 	}
 }
 
-task prepareKotlinBuildScriptModel {}
 
 tasks.named('test') {
 	useJUnitPlatform()
