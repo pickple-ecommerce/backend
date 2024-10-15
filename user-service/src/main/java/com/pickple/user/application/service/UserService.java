@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,6 +98,11 @@ public class UserService {
             log.error("회원 가입에서 User 저장 시 오류 발생");
             return false;
         }
+    }
+
+    public String getUserEmailByUsername(String username) {
+        return userRepository.findEmailByUsername(username)
+                .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
     }
 
 }
