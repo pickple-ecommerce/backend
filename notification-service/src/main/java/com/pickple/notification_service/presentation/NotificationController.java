@@ -26,7 +26,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @Value("${SLACK_WORKSPACE_URL")
+    @Value("${SLACK_WORKSPACE_URL}")
     private String slackWorkspaceUrl;
 
     @PreAuthorize("hasAuthority('MASTER')")
