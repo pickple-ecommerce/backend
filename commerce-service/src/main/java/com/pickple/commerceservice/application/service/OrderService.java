@@ -3,6 +3,7 @@ package com.pickple.commerceservice.application.service;
 import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.commerceservice.application.dto.OrderDetailResponseDto;
 import com.pickple.commerceservice.application.dto.OrderResponseDto;
+import com.pickple.commerceservice.application.dto.StockByProductDto;
 import com.pickple.commerceservice.domain.model.Order;
 import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
@@ -10,6 +11,7 @@ import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.repository.OrderRepository;
 import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
+import com.pickple.commerceservice.infrastructure.facade.RedissonLockStockFacade;
 import com.pickple.commerceservice.infrastructure.feign.DeliveryClient;
 import com.pickple.commerceservice.infrastructure.feign.PaymentClient;
 import com.pickple.commerceservice.infrastructure.feign.dto.DeliveryClientDto;
@@ -36,6 +38,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final StockService stockService;
+    private final RedissonLockStockFacade redissonLockStockFacade;
     private final TemporaryStorageService temporaryStorageService;
     private final OrderMessagingProducerService messagingProducerService;
     private final ProductRepository productRepository;
@@ -143,7 +146,12 @@ public class OrderService {
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
 
         // 재고 확인 및 차감
-        stockService.decreaseStockQuantity(product.getProductId());
+        try {
+            redissonLockStockFacade.decreaseStockQuantityWithLock(product.getProductId());
+        } catch (CustomException e) {
+            log.error("주문 생성 실패: 재고가 부족합니다.");
+            throw e;
+        }
 
         // 주문 및 주문 정보 생성
         Order order = Order.builder()
