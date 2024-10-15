@@ -34,7 +34,6 @@ public class OrderEventService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
                 CommerceErrorCode.ORDER_NOT_FOUND));
         order.assignDeliveryId(deliveryId);
-        order.changeStatus(OrderStatus.COMPLETED); // test 용 원래 배송준비중임
         orderRepository.save(order); // order 조회 test 목적
     }
 }
