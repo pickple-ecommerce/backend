@@ -60,7 +60,7 @@ class RedissonLockStockFacadeTest {
     @DisplayName("동시에 100개의 요청에서 재고 감소 테스트")
     void decreaseStockQuantityWithLock() throws InterruptedException{
         // Given
-        when(mockLock.tryLock(10, 1, TimeUnit.SECONDS)).thenReturn(true); // 락 획득 성공 모의
+        when(mockLock.tryLock(15, 1, TimeUnit.SECONDS)).thenReturn(true); // 락 획득 성공 모의
 
         // StockService의 decreaseStockQuantity 메서드를 직접 처리하는 로직 추가
         doAnswer(invocation -> {

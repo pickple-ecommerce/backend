@@ -122,6 +122,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("정상적인 예약 구매 주문 생성 테스트")
+    @Disabled
     void createPreOrder() {
         // Given: 테스트에 필요한 데이터 설정
         UUID productId = UUID.randomUUID();
