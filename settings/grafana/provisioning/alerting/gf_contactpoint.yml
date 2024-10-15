@@ -7,5 +7,22 @@ contactPoints:
       - uid: ce0eyk36u28zlb
         type: slack
         settings:
+          text: |-
+            {{ define "alerts.message" -}}
+              {{ if .Alerts.Firing -}}
+                {{ len .Alerts.Firing }} firing alert(s)
+                {{ template "alerts.summarize" .Alerts.Firing }}
+              {{- end }}
+              {{- if .Alerts.Resolved -}}
+                {{ len .Alerts.Resolved }} resolved alert(s)
+                {{ template "alerts.summarize" .Alerts.Resolved }}
+              {{- end }}
+            {{- end }}
+            
+            {{ define "alerts.summarize" -}}
+              {{ range . -}}
+              - {{ index .Annotations "summary" }}
+              {{ end }}
+            {{ end }}
           url: ${GF_NOTIFIERS_CONTACTPOINT_URL}
         disableResolveMessage: false
