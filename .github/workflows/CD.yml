@@ -2,8 +2,7 @@ name: Deploy to AWS ECR
 
 on:
   push:
-    branches:
-      - develop
+    branches: [ "feature/connect-ecr" ]
   workflow_run:
     workflows: ["build-ci", "docker-integrate-ci", "integrate-ci"]
     types:
