@@ -10,6 +10,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      SLACK_WORKSPACE_URL: ${{ secrets.SLACK_WORKSPACE_URL }}
+      WEBHOOK_FOR_SERVER: ${{ secrets.WEBHOOK_FOR_SERVER }}
+      WEBHOOK_FOR_TRAFFIC: ${{ secrets.WEBHOOK_FOR_TRAFFIC }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
