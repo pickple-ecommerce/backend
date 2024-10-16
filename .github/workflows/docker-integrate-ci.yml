@@ -23,7 +23,7 @@ jobs:
           export SLACK_WEBHOOK_URL="TESTURL"
           docker compose -f docker/docker-compose.dev.yml up -d
       
-      - name: Sleep for 30 seconds
+      - name: Sleep for 10 seconds
         uses: jakejarvis/wait-action@master
         with:
           time: '10s'
