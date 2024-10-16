@@ -19,8 +19,10 @@ jobs:
         
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+    
     - name: Grant execute permission for Gradle Wrapper in root directory
       run: chmod +x ./gradlew
+      
     - name: Build with Gradle Wrapper
       run: ./gradlew bootjar
 
@@ -31,12 +33,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # 로그인
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    # docker compose 를 이용해서 여러 이미지를 모두 빌드하고, 별도의 script를 사용해서 이미지를 push 합니다.
     - name: Build, Tag and Push docker image to AWS ECR
       run: |
         docker compose -f docker/docker-compose.service.yml build
@@ -51,3 +51,78 @@ jobs:
         ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
         ECR_NAMESPACE: ${{ secrets.ECR_NAMESPACE }}
         IMAGE_TAG: "latest"
+        REDIS_HOST: ${{ secrets.REDIS_HOST }}
+        REDIS_PORT: ${{ secrets.REDIS_PORT }}
+        KAFKA_BOOTSTRAP_SERVERS: ${{ secrets.KAFKA_BOOTSTRAP_SERVERS }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        EUREKA_SERVER_PORT: ${{ secrets.EUREKA_SERVER_PORT }}
+        EUREKA_SERVER_URL: ${{ secrets.EUREKA_SERVER_URL }}
+        EUREKA_HOSTNAME: ${{ secrets.EUREKA_HOSTNAME }}
+        GATEWAY_SERVER_PORT: ${{ secrets.GATEWAY_SERVER_PORT }}
+        AUTH_SERVER_PORT: ${{ secrets.AUTH_SERVER_PORT }}
+        USER_SERVER_PORT: ${{ secrets.USER_SERVER_PORT }}
+        USER_DB_URL: ${{ secrets.USER_DB_URL }}
+        USER_DB_USERNAME: ${{ secrets.USER_DB_USERNAME }}
+        USER_DB_PASSWORD: ${{ secrets.USER_DB_PASSWORD }}
+        NOTIFICATION_SERVER_PORT: ${{ secrets.NOTIFICATION_SERVER_PORT }}
+        NOTIFICATION_DB_URL: ${{ secrets.NOTIFICATION_DB_URL }}
+        NOTIFICATION_DB_USERNAME: ${{ secrets.NOTIFICATION_DB_USERNAME }}
+        NOTIFICATION_DB_PASSWORD: ${{ secrets.NOTIFICATION_DB_PASSWORD }}
+        MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+        MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+        PAYMENT_SERVER_PORT: ${{ secrets.PAYMENT_SERVER_PORT }}
+        PAYMENT_DB_URL: ${{ secrets.PAYMENT_DB_URL }}
+        PAYMENT_DB_USERNAME: ${{ secrets.PAYMENT_DB_USERNAME }}
+        PAYMENT_DB_PASSWORD: ${{ secrets.PAYMENT_DB_PASSWORD }}
+        DELIVERY_SERVER_PORT: ${{ secrets.DELIVERY_SERVER_PORT }}
+        DELIVERY_MONGODB_HOST: ${{ secrets.DELIVERY_MONGODB_HOST }}
+        DELIVERY_MONGODB_PORT: ${{ secrets.DELIVERY_MONGODB_PORT }}
+        DELIVERY_MONGODB_DATABASE: ${{ secrets.DELIVERY_MONGODB_DATABASE }}
+        DELIVERY_MONGODB_USERNAME: ${{ secrets.DELIVERY_MONGODB_USERNAME }}
+        DELIVERY_MONGODB_PASSWORD: ${{ secrets.DELIVERY_MONGODB_PASSWORD }}
+        COMMERCE_SERVER_PORT: ${{ secrets.COMMERCE_SERVER_PORT }}
+        COMMERCE_DB_URL: ${{ secrets.COMMERCE_DB_URL }}
+        COMMERCE_DB_USERNAME: ${{ secrets.COMMERCE_DB_USERNAME }}
+        COMMERCE_DB_PASSWORD: ${{ secrets.COMMERCE_DB_PASSWORD }}
+        MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
+        MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
+        MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+        COMMERCE_DB: ${{ secrets.COMMERCE_DB }}
+        COMMERCE_USER: ${{ secrets.COMMERCE_USER }}
+        COMMERCE_PASSWORD: ${{ secrets.COMMERCE_PASSWORD }}
+        COMMERCE_PORT: ${{ secrets.COMMERCE_PORT }}
+        PAYMENT_DB: ${{ secrets.PAYMENT_DB }}
+        PAYMENT_USER: ${{ secrets.PAYMENT_USER }}
+        PAYMENT_PASSWORD: ${{ secrets.PAYMENT_PASSWORD }}
+        PAYMENT_PORT: ${{ secrets.PAYMENT_PORT }}
+        USER_DB: ${{ secrets.USER_DB }}
+        USER_USER: ${{ secrets.USER_USER }}
+        USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+        USER_PORT: ${{ secrets.USER_PORT }}
+        NOTIFICATION_DB: ${{ secrets.NOTIFICATION_DB }}
+        NOTIFICATION_USER: ${{ secrets.NOTIFICATION_USER }}
+        NOTIFICATION_PASSWORD: ${{ secrets.NOTIFICATION_PASSWORD }}
+        NOTIFICATION_PORT: ${{ secrets.NOTIFICATION_PORT }}
+        ZOOKEEPER_CLIENT_PORT: ${{ secrets.ZOOKEEPER_CLIENT_PORT }}
+        ZOOKEEPER_SERVER_ID: ${{ secrets.ZOOKEEPER_SERVER_ID }}
+        KAFKA_ADVERTISED_LISTENERS: ${{ secrets.KAFKA_ADVERTISED_LISTENERS }}
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${{ secrets.KAFKA_LISTENER_SECURITY_PROTOCOL_MAP }}
+        KAFKA_INTER_BROKER_LISTENER_NAME: ${{ secrets.KAFKA_INTER_BROKER_LISTENER_NAME }}
+        KAFKA_ZOOKEEPER_CONNECT: ${{ secrets.KAFKA_ZOOKEEPER_CONNECT }}
+        KAFKA_BROKER_ID: ${{ secrets.KAFKA_BROKER_ID }}
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ secrets.KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR }}
+        KAFKA_CLUSTER_NAME: ${{ secrets.KAFKA_CLUSTER_NAME }}
+        KAFKA_CLUSTER_BOOTSTRAP_SERVERS: ${{ secrets.KAFKA_CLUSTER_BOOTSTRAP_SERVERS }}
+        KAFKA_CLUSTER_ZOOKEEPER: ${{ secrets.KAFKA_CLUSTER_ZOOKEEPER }}
+        GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+        GRAFANA_ALLOW_SIGN_UP: ${{ secrets.GRAFANA_ALLOW_SIGN_UP }}
+        WEBHOOK_FOR_SERVER: ${{ secrets.WEBHOOK_FOR_SERVER }}
+        WEBHOOK_FOR_TRAFFIC: ${{ secrets.WEBHOOK_FOR_TRAFFIC }}
+        SLACK_WORKSPACE_URL: ${{ secrets.SLACK_WORKSPACE_URL }}
+        ZOOKEEPER_PORT: ${{ secrets.ZOOKEEPER_PORT }}
+        KAFKA_PORT_EXTERNAL: ${{ secrets.KAFKA_PORT_EXTERNAL }}
+        KAFKA_PORT_DOCKER: ${{ secrets.KAFKA_PORT_DOCKER }}
+        KAFKA_UI_PORT: ${{ secrets.KAFKA_UI_PORT }}
+        PROMETHEUS_PORT: ${{ secrets.PROMETHEUS_PORT }}
+        GRAFANA_PORT: ${{ secrets.GRAFANA_PORT }}
+        NODE_EXPORTER_PORT: ${{ secrets.NODE_EXPORTER_PORT }}
