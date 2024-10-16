@@ -62,3 +62,6 @@ management:
       show-details: always
     prometheus:
       enabled: true
+
+slack:
+  workspaceUrl: https://join.slack.com/t/alarmtest-i2m1651/shared_invite/zt-2s6tgzzj5-suMbSSEuc4Fyv7PTrp8ffg
