@@ -168,4 +168,13 @@ public class DeliveryController {
                 deliveryService.getDeliveriesByTrackingNumber(value)));
     }
 
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    @PostMapping("/{delivery_id}/end")
+    public ResponseEntity<ApiResponse<Void>> endDelivery(
+            @PathVariable("delivery_id") UUID deliveryId) {
+        deliveryService.endDelivery(deliveryId);
+        return ResponseEntity.ok(
+                ApiResponse.success(HttpStatus.OK, "배송이 완료되었습니다.", null));
+    }
+
 }

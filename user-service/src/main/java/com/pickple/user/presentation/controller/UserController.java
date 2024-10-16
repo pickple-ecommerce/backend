@@ -111,4 +111,9 @@ public class UserController {
         return userService.getUserByUsername(username);
     }
 
+    @GetMapping("/get-user-email/{username}")
+    String getUserEmail(@PathVariable("username") String username) {
+        return userService.getUserEmailByUsername(username);
+    }
+
 }

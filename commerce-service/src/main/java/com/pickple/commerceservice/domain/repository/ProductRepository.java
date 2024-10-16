@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, UUID> {
+public interface ProductRepository extends JpaRepository<Product, UUID>, ProductRepositoryCustom {
     // isDelete가 false이고, isPublic이 true인 상품들만 조회
     Page<Product> findAllByIsDeleteFalseAndIsPublicTrue(Pageable pageable);
 
