@@ -7,6 +7,7 @@ import com.pickple.notification_service.application.service.NotificationService;
 import com.pickple.notification_service.presentation.request.ChannelCreateReqDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,9 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
+    @Value("${slack.workspaceUrl}")
+    private String slackWorkspaceUrl;
+
     @PreAuthorize("hasAuthority('MASTER')")
     @DeleteMapping("/{notification_id}")
     public ResponseEntity<Void> deleteNotification(@PathVariable("notification_id") UUID notificationId) {
@@ -34,7 +38,7 @@ public class NotificationController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER', 'MASTER', 'VENDOR_MANAGER')")
-    @GetMapping("/notificationHistory/{username}")
+    @GetMapping("/notification-history/{username}")
     public ResponseEntity<ApiResponse<Page<NotificationRespDto>>> notificationHistory (
             @PathVariable("username") String username,
             @RequestParam(value="page", defaultValue="0") int page,
@@ -54,7 +58,7 @@ public class NotificationController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @GetMapping("/getAllNotifications")
+    @GetMapping("/get-all-notifications")
     public ResponseEntity<ApiResponse<Page<NotificationRespDto>>> getAllNotifications(
             @RequestParam(value="page", defaultValue="0") int page,
             @RequestParam(value="size", defaultValue = "10") int size,
@@ -89,6 +93,18 @@ public class NotificationController {
         notificationService.deleteChannel(channelId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @GetMapping("/slack-for-admin")
+    public ResponseEntity<ApiResponse<String>> getSlackUrl(){
+        ApiResponse<String> response = ApiResponse.success(
+                HttpStatus.OK,
+                "관리자용 슬랙 워크 스페이스 url 입니다.",
+                slackWorkspaceUrl
+        );
+
+        return ResponseEntity.ok(response);
     }
 
 }

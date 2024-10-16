@@ -41,6 +41,7 @@ public class DeliveryDetailApplicationService {
         log.info("새로운 DeliveryDetail 을 생성합니다. 요청 정보: {}", dto);
         DeliveryDetail deliveryDetail = DeliveryDetail.createFrom(dto);
         delivery.addDeliveryDetail(deliveryDetail);
+        deliveryRepository.save(delivery);
         return DeliveryMapper.convertEntityToInfoResponseDto(delivery);
     }
 

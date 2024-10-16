@@ -17,6 +17,7 @@ public enum DeliveryErrorCode implements ErrorCode {
     DELIVERY_DELETE_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "Delivery 삭제에 실패하였습니다."),
     DELIVERY_SAVE_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 저장에 실패하였습니다."),
     DELIVERY_ALREADY_START(HttpStatus.BAD_REQUEST, "이미 시작된 배송입니다."),
+    DELIVERY_ALREADY_END(HttpStatus.BAD_REQUEST, "이미 완료된 배송입니다."),
     DELIVERY_NOT_STARTED(HttpStatus.BAD_REQUEST, "배송이 아직 시작되지 않았습니다."),
     DELIVERY_ALREADY_DELIVERED(HttpStatus.BAD_REQUEST, "이미 완료된 배송입니다.");
 
