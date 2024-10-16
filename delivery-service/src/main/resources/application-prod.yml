@@ -36,6 +36,7 @@ kafka:
     delivery-create-response: delivery-create-response
     delivery-create-failure: delivery-create-failure
     delivery-delete-failure: delivery-delete-failure
+    delivery-end-response: delivery-end-response
 
 server:
   port: ${DELIVERY_SERVER_PORT}

@@ -13,6 +13,7 @@ import com.pickple.delivery.application.dto.response.DeliveryStatusResponseDto;
 import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
+import com.pickple.delivery.application.events.DeliveryEndEvent;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
 import com.pickple.delivery.domain.model.deleted.DeliveryDeleted;
 import com.pickple.delivery.domain.model.deleted.DeliveryDetailDeleted;
@@ -53,6 +54,9 @@ public class DeliveryApplicationService {
 
     @Value("${kafka.topic.delivery-create-response}")
     private String deliveryCreateResponseTopic;
+
+    @Value("${kafka.topic.delivery-end-response}")
+    private String deliveryEndRequestTopic;
 
     @Transactional
     public void createDelivery(@Valid DeliveryCreateRequestDto dto) {
@@ -106,6 +110,30 @@ public class DeliveryApplicationService {
 
         log.info("배송 시작 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
         return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
+    }
+
+    @Transactional
+    public void endDelivery(UUID deliveryId) {
+        log.info("배송 완료 요청을 처리합니다. 배송 ID: {}", deliveryId);
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
+                () -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND)
+        );
+
+        if (delivery.getDeliveryStatus() == DeliveryStatus.PENDING) {
+            throw new CustomException(DeliveryErrorCode.DELIVERY_NOT_STARTED);
+        }
+        if (delivery.getDeliveryStatus() == DeliveryStatus.DELIVERED) {
+            throw new CustomException(DeliveryErrorCode.DELIVERY_ALREADY_DELIVERED);
+        }
+
+        delivery.endDelivery();
+        deliveryRepository.save(delivery);
+
+        deliveryMessageProducerService.sendMessage(deliveryEndRequestTopic,
+                EventSerializer.serialize(
+                        new DeliveryEndEvent(delivery.getOrderId(), deliveryId)
+                ));
+        log.info("배송 완료 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
     }
 
     @Transactional(readOnly = true)
