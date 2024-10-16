@@ -9,10 +9,7 @@ import com.pickple.notification_service.domain.repository.NotificationRepository
 import com.pickple.notification_service.exception.ChannelErrorCode;
 import com.pickple.notification_service.exception.NotificationErrorCode;
 import com.pickple.notification_service.infrastructure.feign.UserFeignClient;
-import com.pickple.notification_service.infrastructure.messaging.NotificationEventProducer;
 import com.pickple.notification_service.infrastructure.messaging.events.EmailCreateRequestEvent;
-import com.pickple.notification_service.infrastructure.messaging.events.NotificationFailureResponse;
-import com.pickple.notification_service.infrastructure.messaging.events.NotificationSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
