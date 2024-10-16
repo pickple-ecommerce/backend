@@ -27,9 +27,13 @@ public class OrderEventService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(
                 CommerceErrorCode.ORDER_NOT_FOUND));
         order.assignPaymentId(paymentId);
+
+        String actualUsername = order.getUsername(); // 실제 사용자 이름
+
         orderRepository.save(order); // order 조회 test 목적
+
         // 결제 완료 메시지가 오면 호출되는 메서드로, 배송 생성 메시지를 보냄
-        messagingProducerService.sendDeliveryCreateRequest(orderId, username);
+        messagingProducerService.sendDeliveryCreateRequest(orderId, actualUsername); // 실제 사용자 이름을 전달
     }
 
     /**
