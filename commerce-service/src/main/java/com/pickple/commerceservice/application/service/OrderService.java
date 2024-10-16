@@ -1,9 +1,6 @@
 package com.pickple.commerceservice.application.service;
 
-import com.pickple.commerceservice.application.dto.OrderByVendorResponseDto;
-import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
-import com.pickple.commerceservice.application.dto.OrderResponseDto;
-import com.pickple.commerceservice.application.dto.OrderSummaryResponseDto;
+import com.pickple.commerceservice.application.dto.*;
 import com.pickple.commerceservice.domain.model.Order;
 import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
@@ -62,12 +59,20 @@ public class OrderService {
                 .map(detail -> {
                     Product product = productRepository.findById(detail.getProductId())
                             .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
+
+                    // 재고 확인
+                    StockByProductDto stockDto = stockService.getStockByProductId(product.getProductId());
+                    if (stockDto.getStockQuantity() < detail.getOrderQuantity()) {
+                        throw new CustomException(CommerceErrorCode.INSUFFICIENT_STOCK);
+                    }
+
                     OrderDetail orderDetail = OrderDetail.builder()
                             .order(order)
                             .product(product)
                             .orderQuantity(detail.getOrderQuantity())
                             .unitPrice(product.getProductPrice())
                             .build();
+
                     orderDetail.calculateTotalPrice(); // 단가*수량 계산
                     return orderDetail;
                 })
