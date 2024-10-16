@@ -5,6 +5,7 @@ import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.commerceservice.application.dto.OrderResponseDto;
 import com.pickple.commerceservice.application.dto.OrderSummaryResponseDto;
 import com.pickple.commerceservice.application.service.OrderService;
+import com.pickple.commerceservice.domain.model.OrderStatus;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
 import com.pickple.common_module.presentation.dto.ApiResponse;
@@ -88,7 +89,7 @@ public class OrderController {
     }
 
     /**
-     * 업체 별 주문 조회
+     * 업체별 주문 조회
      */
     @GetMapping("/{vendorId}/vendor")
     @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
@@ -99,7 +100,7 @@ public class OrderController {
         Page<OrderByVendorResponseDto> orders = orderService.findByVendorId(vendorId, pageable);
 
         return ResponseEntity.ok(
-                ApiResponse.success(HttpStatus.OK, "벤더별 주문 조회 성공", orders));
+                ApiResponse.success(HttpStatus.OK, "업체별 주문 조회 성공", orders));
     }
 
     /**
@@ -129,6 +130,22 @@ public class OrderController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(HttpStatus.OK, "사용자의 주문 조회 성공", orders)
+        );
+    }
+
+    /**
+     * 주문 검색
+     */
+    @GetMapping("/search/status")
+    @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
+    public ResponseEntity<ApiResponse<Page<OrderSummaryResponseDto>>> getOrdersByStatus(
+            @RequestParam("status") OrderStatus orderStatus,
+            @PageableDefault(size = 10, sort = {"createdAt", "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<OrderSummaryResponseDto> orders = orderService.findOrdersByOrderStatus(orderStatus, pageable);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(HttpStatus.OK, "주문 상태별 조회 성공", orders)
         );
     }
 }

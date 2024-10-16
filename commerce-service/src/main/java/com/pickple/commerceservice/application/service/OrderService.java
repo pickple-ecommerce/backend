@@ -4,7 +4,6 @@ import com.pickple.commerceservice.application.dto.OrderByVendorResponseDto;
 import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.commerceservice.application.dto.OrderResponseDto;
 import com.pickple.commerceservice.application.dto.OrderSummaryResponseDto;
-import com.pickple.commerceservice.application.dto.StockByProductDto;
 import com.pickple.commerceservice.domain.model.Order;
 import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
@@ -28,7 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -171,7 +169,7 @@ public class OrderService {
     }
 
     /**
-     * Vendor ID로 주문 조회
+     * 업체별 주문 조회
      */
     @Transactional(readOnly = true)
     public Page<OrderByVendorResponseDto> findByVendorId(UUID vendorId, Pageable pageable) {
@@ -194,7 +192,15 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<OrderSummaryResponseDto> getOrdersByUsername(String username, Pageable pageable) {
         return orderRepository.findByUsernameAndIsDeleteFalse(username, pageable)
-                .map(OrderSummaryResponseDto::fromEntity);  // DTO 변환
+                .map(OrderSummaryResponseDto::fromEntity);
     }
 
+    /**
+     * 주문 검색 (주문 상태)
+     */
+    @Transactional(readOnly = true)
+    public Page<OrderSummaryResponseDto> findOrdersByOrderStatus(OrderStatus orderStatus, Pageable pageable) {
+        return orderRepository.findOrdersByOrderStatus(orderStatus, pageable)
+                .map(OrderSummaryResponseDto::fromEntity);
+    }
 }
