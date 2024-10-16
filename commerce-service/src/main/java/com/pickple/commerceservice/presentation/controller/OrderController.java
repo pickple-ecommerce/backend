@@ -1,18 +1,24 @@
 package com.pickple.commerceservice.presentation.controller;
 
+import com.pickple.commerceservice.application.dto.OrderByVendorResponseDto;
 import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
 import com.pickple.commerceservice.application.dto.OrderResponseDto;
 import com.pickple.commerceservice.application.service.OrderService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
+import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
 import com.pickple.common_module.presentation.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
@@ -21,7 +27,7 @@ public class OrderController {
     private final OrderService orderService;
 
     /**
-     * 주문 생성
+     * 일반 주문 생성
      */
     @PostMapping
     @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
@@ -31,6 +37,16 @@ public class OrderController {
         OrderCreateResponseDto responseDto = orderService.createOrder(requestDto, username);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(HttpStatus.CREATED, "주문이 성공적으로 생성되었습니다.", responseDto));
+    }
+
+    /**
+     * 예약 구매 주문 생성
+     */
+    @PostMapping("/pre-orders")
+    public ResponseEntity<ApiResponse<Void>> createPreOrder(@RequestBody PreOrderRequestDto requestDto,
+                                                            @RequestHeader("X-User-Name") String username) {
+        orderService.createPreOrder(requestDto, username);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "예약 구매 주문이 성공적으로 생성되었습니다.", null));
     }
 
     /**
@@ -59,5 +75,20 @@ public class OrderController {
             @RequestHeader("X-User-Name") String username) {
         OrderResponseDto orderResponse = orderService.cancelOrder(orderId, username, role);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "주문이 성공적으로 취소되었습니다.", orderResponse));
+    }
+
+    /**
+     * Vendor ID로 주문 조회
+     */
+    @GetMapping("/{vendorId}/vendor")
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    public ResponseEntity<ApiResponse<List<OrderByVendorResponseDto>>> getOrdersByVendorId(
+            @PathVariable UUID vendorId, Pageable pageable) {
+
+        List<OrderByVendorResponseDto> orders = orderService.findByVendorId(vendorId, pageable);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(HttpStatus.OK, "벤더별 주문 조회 성공", orders)
+        );
     }
 }
