@@ -26,110 +26,10 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 19004,
   "graphTooltip": 0,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
-    {
-      "datasource": {
-        "default": true,
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 97,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum(rate(http_server_requests_seconds_count[5m]))",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Traffic Dashboard",
-      "type": "timeseries"
-    },
     {
       "collapsed": false,
       "datasource": {
@@ -140,7 +40,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 0
       },
       "id": 54,
       "panels": [],
@@ -199,7 +99,7 @@
         "h": 3,
         "w": 6,
         "x": 0,
-        "y": 9
+        "y": 1
       },
       "id": 52,
       "maxDataPoints": 100,
@@ -290,7 +190,7 @@
         "h": 6,
         "w": 5,
         "x": 6,
-        "y": 9
+        "y": 1
       },
       "id": 58,
       "maxDataPoints": 100,
@@ -388,7 +288,7 @@
         "h": 6,
         "w": 5,
         "x": 11,
-        "y": 9
+        "y": 1
       },
       "id": 60,
       "maxDataPoints": 100,
@@ -492,7 +392,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 9
+        "y": 1
       },
       "id": 66,
       "options": {
@@ -568,7 +468,7 @@
         "h": 3,
         "w": 6,
         "x": 0,
-        "y": 12
+        "y": 4
       },
       "id": 56,
       "maxDataPoints": 100,
@@ -675,7 +575,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 15
+        "y": 7
       },
       "id": 95,
       "options": {
@@ -792,7 +692,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 15
+        "y": 7
       },
       "id": 96,
       "options": {
@@ -854,7 +754,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 14
       },
       "id": 48,
       "panels": [
@@ -1596,7 +1496,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 15
       },
       "id": 72,
       "panels": [
@@ -1825,7 +1725,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 16
       },
       "id": 34,
       "panels": [
@@ -2398,7 +2298,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 17
       },
       "id": 18,
       "panels": [
@@ -2621,7 +2521,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 18
       },
       "id": 8,
       "panels": [
@@ -3181,7 +3081,7 @@
       {
         "current": {
           "isNone": true,
-          "selected": true,
+          "selected": false,
           "text": "None",
           "value": ""
         },
@@ -3212,7 +3112,7 @@
       {
         "current": {
           "isNone": true,
-          "selected": true,
+          "selected": false,
           "text": "None",
           "value": ""
         },
@@ -3238,9 +3138,10 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": "host.docker.internal:19090",
-          "value": "host.docker.internal:19090"
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
         },
         "datasource": {
           "type": "prometheus",

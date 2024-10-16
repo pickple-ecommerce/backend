@@ -1,4 +1,5 @@
 apiVersion: 1
+
 contactPoints:
   - orgId: 1
     name: server-channel
@@ -9,6 +10,10 @@ contactPoints:
           icon_emoji: ':warning:'
           url: ${GF_SERVER_CHANNEL}
           username: Server Up/Down Warn
+          text: |
+            *Alert:* {{ .CommonAnnotations.summary }}
+            *Description:* {{ .CommonAnnotations.description }}
+            *Severity:* {{ .Labels.severity }}
         disableResolveMessage: true
 
 
@@ -21,4 +26,8 @@ contactPoints:
           icon_emoji: ':fire:'
           url: ${GF_TRAFFIC_CHANNEL}
           username: Traffic Warn
+          text: |
+            *Alert:* {{ .CommonAnnotations.summary }}
+            *Description:* {{ .CommonAnnotations.description }}
+            *Severity:* {{ .Labels.severity }}
         disableResolveMessage: false

@@ -59,17 +59,24 @@ groups:
         execErrState: Error
         for: 1m
         labels:
-          alertname : "ServerDown"
-          instance : "Eureka-Server"
+          alertname : ServerAlert
+          instance : eureka-server
+          severity: critical
         annotations:
-          summary: "서버 상태 경고"
-          description: "eureka 서버가 응답하지 않습니다."
+          summary: 서버 상태 경고
+          description: eureka 서버가 응답하지 않습니다.
         isPaused: false
         notification_settings:
           receiver: server-channel
-      - uid: ae0x4um0gqigwc
-        title: traffic-alert
-        condition: A
+
+  - orgId: 1
+    name: traffic
+    folder: pickple
+    interval: 1m
+    rules:
+      - uid: fe10lhibcuolcd
+        title: hot-traffic-alert
+        condition: C
         data:
           - refId: A
             relativeTimeRange:
@@ -79,7 +86,7 @@ groups:
             model:
               disableTextWrap: false
               editorMode: builder
-              expr: http_server_requests_seconds_count{job="eureka-server"}
+              expr: rate(http_server_requests_seconds_count{job="eureka-server"}[1m])
               fullMetaSearch: false
               includeNullMetadata: true
               instant: true
@@ -98,7 +105,7 @@ groups:
               conditions:
                 - evaluator:
                     params:
-                      - 100
+                      - 40000
                     type: gt
                   operator:
                     type: and
@@ -107,6 +114,7 @@ groups:
                       - C
                   reducer:
                     params: []
+                    type: last
                   type: query
               datasource:
                 type: __expr__
@@ -120,10 +128,72 @@ groups:
         execErrState: Error
         for: 3m
         annotations:
-          summary: 트래픽 초과 경고
-          description: 트래픽이 n 이상을 초과하였습니다.
+          description: 트래픽이 40,000건을 초과했습니다. (80%)
+          summary: 트래픽 경고 (위험)
         labels:
-          alertname: TrafficOver
+          alertname: TrafficAlert
+          instance: eureka-server
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: traffic-channel
+      - uid: ae0x4um0gqigwc
+        title: traffic-alert
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            model:
+              disableTextWrap: false
+              editorMode: builder
+              expr: rate(http_server_requests_seconds_count{job="eureka-server"}[1m])
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+              useBackend: false
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 25000
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: [ ]
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 3m
+        annotations:
+          summary: 트래픽 경고
+          description: 트래픽이 25,000건을 초과하였습니다. (50%)
+        labels:
+          alertname: TrafficAlert
           instance: eureka-server
         isPaused: false
         notification_settings:
