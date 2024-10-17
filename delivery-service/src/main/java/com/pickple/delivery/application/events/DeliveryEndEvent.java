@@ -12,4 +12,6 @@ public class DeliveryEndEvent {
 
     private UUID deliveryId;
 
+    private String status;
+
 }

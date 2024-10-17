@@ -62,7 +62,7 @@ public class DeliveryApplicationService {
     private String deliveryCreateResponseTopic;
 
     @Value("${kafka.topic.delivery-end-response}")
-    private String deliveryEndRequestTopic;
+    private String deliveryEndResponseTopic;
 
     @Value("${kafka.topic.email-create-request}")
     private String emailCreateRequestTopic;
@@ -157,9 +157,9 @@ public class DeliveryApplicationService {
         delivery.endDelivery();
         deliveryRepository.save(delivery);
 
-        deliveryMessageProducerService.sendMessage(deliveryEndRequestTopic,
+        deliveryMessageProducerService.sendMessage(deliveryEndResponseTopic,
                 EventSerializer.serialize(
-                        new DeliveryEndEvent(delivery.getOrderId(), deliveryId)
+                        new DeliveryEndEvent(delivery.getOrderId(), deliveryId, "DELIVERED")
                 ));
 
         sendNotification(delivery, "배송 완료 알림", "배송이 완료되었습니다.");
@@ -258,6 +258,10 @@ public class DeliveryApplicationService {
             log.error("배송 삭제에 실패하였습니다.: {}", e.getMessage());
             throw new CustomException(DeliveryErrorCode.DELIVERY_SAVE_FAILURE);
         }
+        deliveryMessageProducerService.sendMessage(deliveryEndResponseTopic,
+                EventSerializer.serialize(
+                        new DeliveryEndEvent(delivery.getOrderId(), deliveryId, "DELETED")
+                ));
         return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(),
                 deleter);
     }
