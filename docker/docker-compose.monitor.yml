@@ -10,8 +10,6 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--config.file=/etc/prometheus/prometheus.yml'
     restart: always
-    networks:
-      - t4y
 
   grafana:
     image: grafana/grafana
@@ -28,8 +26,6 @@ services:
     restart: always
     depends_on:
       - prometheus
-    networks:
-      - t4y
 
   loki:
     image: grafana/loki:latest
@@ -40,22 +36,3 @@ services:
       - ../settings/grafana/loki/loki-config.yml:/etc/loki/local-config.yml
     command: -config.file=/etc/loki/local-config.yml
     restart: always
-
-  node_exporter:
-    image: prom/node-exporter
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    ports:
-      - "${NODE_EXPORTER_PORT}:9100"
-    networks:
-      - t4y
-
-networks:
-  t4y:
