@@ -148,4 +148,16 @@ public class OrderController {
                 ApiResponse.success(HttpStatus.OK, "주문 상태별 조회 성공", orders)
         );
     }
+
+    /**
+     * 배송 아이디로 username 검색
+     */
+    @GetMapping("/deliveries/{deliveryId}/username")
+    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    public String getUsernameByDeliveryId(
+            @PathVariable("deliveryId") UUID deliveryId,
+            @RequestHeader("X-User-Roles") String role,
+            @RequestHeader("X-User-Name") String username) {
+        return orderService.findUsernameByDeliveryId(deliveryId);
+    }
 }

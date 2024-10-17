@@ -3,6 +3,7 @@ package com.pickple.commerceservice.domain.repository;
 import com.pickple.commerceservice.domain.model.Order;
 import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     @Query("SELECT o FROM Order o WHERE o.isDelete = false AND o.orderStatus = :orderStatus")
     Page<Order> findOrdersByOrderStatus(OrderStatus orderStatus, Pageable pageable);
+
+    Optional<Order> findByDeliveryId(UUID deliveryId);
 
 }
