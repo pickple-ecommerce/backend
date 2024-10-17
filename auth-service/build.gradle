@@ -28,6 +28,15 @@ ext {
 }
 
 dependencies {
+	// zipkin
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+
+	// loki 추가
+	implementation 'com.github.loki4j:loki-logback-appender:1.5.1'
+
+	implementation project(':common-module')
+
 	// Prometheus
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'

@@ -33,6 +33,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    // zipkin
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+
+    // loki 추가
+    implementation 'com.github.loki4j:loki-logback-appender:1.5.1'
+
     implementation project(':common-module')
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
