@@ -122,7 +122,8 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=pickple
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_NOTIFIERS_CONTACTPOINT_URL=${SLACK_WEBHOOK_URL}
+      - GF_SERVER_CHANNEL=${WEBHOOK_FOR_SERVER}
+      - GF_TRAFFIC_CHANNEL=${WEBHOOK_FOR_TRAFFIC}
     volumes:
       - ../settings/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
@@ -130,6 +131,16 @@ services:
       - prometheus
     networks:
       - t4y
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ../settings/grafana/loki/loki-config.yml:/etc/loki/local-config.yml
+    command: -config.file=/etc/loki/local-config.yml
+    restart: always
 
   node_exporter:
     image: prom/node-exporter

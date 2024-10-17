@@ -68,6 +68,16 @@ services:
     networks:
       - t4y
 
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "${LOKI_PORT}:3100"
+    volumes:
+      - ../settings/grafana/loki/loki-config.yml:/etc/loki/local-config.yml
+    command: -config.file=/etc/loki/local-config.yml
+    restart: always
+
   node_exporter:
     image: prom/node-exporter
     volumes:
