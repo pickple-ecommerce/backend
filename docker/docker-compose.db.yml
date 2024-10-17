@@ -18,8 +18,8 @@ services:
       - POSTGRES_PASSWORD=${COMMERCE_PASSWORD}
     ports:
       - "${COMMERCE_PORT}:5432"
-    volumes:
-      - ./db-init/commerce/init-commerce.sql:/docker-entrypoint-initdb.d/init-commerce.sql
+#    volumes:
+#      - ./db-init/commerce/init-commerce.sql:/docker-entrypoint-initdb.d/init-commerce.sql
 
   payment_db:
     image: postgres:latest
