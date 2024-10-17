@@ -51,7 +51,7 @@ jobs:
     - name: Build, Tag and Push docker image to AWS ECR
       run: |
         docker compose -f docker/docker-compose.service.yml --env-file docker/.env build
-        services=("eureka-server" "gateway" "auth-service" "user-service" "commerce-service" "payment-service" "delivery-service" "notification-service")
+        services=("eureka" "gateway" "auth" "user" "commerce" "payment" "delivery" "notification")
         for service in "${services[@]}"; do
           docker tag ${ECR_REGISTRY}/${ECR_NAMESPACE}/$service:latest $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
           docker push $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
