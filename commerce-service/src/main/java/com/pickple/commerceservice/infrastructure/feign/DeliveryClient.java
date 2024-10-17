@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.UUID;
 
-@FeignClient(name = "delivery-service", url = "http://${feign.host.delivery}:19096")
+@FeignClient(name = "delivery-service")
 public interface DeliveryClient {
 
     @GetMapping("/api/v1/deliveries/orders/{orderId}")

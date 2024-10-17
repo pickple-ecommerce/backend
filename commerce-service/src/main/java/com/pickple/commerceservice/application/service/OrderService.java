@@ -209,4 +209,14 @@ public class OrderService {
         return orderRepository.findOrdersByOrderStatus(orderStatus, pageable)
                 .map(OrderSummaryResponseDto::fromEntity);
     }
+
+    /**
+     * 배송아이디로 username 검색
+     */
+    @Transactional(readOnly = true)
+    public String findUsernameByDeliveryId(UUID deliveryId) {
+        return orderRepository.findByDeliveryId(deliveryId).orElseThrow(
+                () -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND)
+        ).getUsername();
+    }
 }
