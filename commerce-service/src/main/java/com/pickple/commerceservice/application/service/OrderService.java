@@ -158,6 +158,7 @@ public class OrderService {
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
 
         order.changeStatus(OrderStatus.CANCELED);
+        order.markAsDeleted();
         orderRepository.save(order);
 
         // 결제 취소 요청 전송 (Kafka)

@@ -75,7 +75,7 @@ public class OrderController {
     /**
      * 주문 취소
      */
-    @PostMapping("/{orderId}/cancel")
+    @DeleteMapping("/{orderId}")
     @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
     public ResponseEntity<ApiResponse<OrderResponseDto>> cancelOrder(
             @PathVariable UUID orderId,

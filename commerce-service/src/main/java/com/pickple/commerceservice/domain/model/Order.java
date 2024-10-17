@@ -68,4 +68,9 @@ public class Order extends BaseEntity {
     public void changeStatus(OrderStatus newStatus) {
         this.orderStatus = newStatus;
     }
+
+    // soft delete
+    public void markAsDeleted() {
+        this.isDelete = true;
+    }
 }
