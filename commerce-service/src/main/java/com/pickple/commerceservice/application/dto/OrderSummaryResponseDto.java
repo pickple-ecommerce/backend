@@ -7,31 +7,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderCreateResponseDto {
+public class OrderSummaryResponseDto {
 
     private UUID orderId;
     private String username;
     private BigDecimal amount;
     private String orderStatus;
-    private List<OrderDetailResponseDto> orderDetails;
+    private UUID paymentId;
+    private UUID deliveryId;
 
-    public static OrderCreateResponseDto fromEntity(Order order) {
-        return OrderCreateResponseDto.builder()
+    public static OrderSummaryResponseDto fromEntity(Order order) {
+        return OrderSummaryResponseDto.builder()
                 .orderId(order.getOrderId())
                 .username(order.getUsername())
                 .amount(order.getAmount())
                 .orderStatus(order.getOrderStatus().name())
-                .orderDetails(order.getOrderDetails().stream()
-                        .map(OrderDetailResponseDto::fromEntity)
-                        .collect(Collectors.toList()))
+                .paymentId(order.getPaymentId())
+                .deliveryId(order.getDeliveryId())
                 .build();
     }
 }
+

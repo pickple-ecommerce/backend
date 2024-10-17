@@ -1,7 +1,8 @@
 package com.pickple.commerceservice.domain.repository;
 
-import com.pickple.commerceservice.application.dto.OrderByVendorResponseDto;
 import com.pickple.commerceservice.domain.model.Order;
+import com.pickple.commerceservice.domain.model.OrderDetail;
+import com.pickple.commerceservice.domain.model.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,14 +11,16 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID> {
-    @Query("SELECT new com.pickple.commerceservice.application.dto.OrderByVendorResponseDto(" +
-            "o.orderId, o.username, o.amount, " +
-            "CAST(o.orderStatus AS string), " +  // Enum을 문자열로 변환
-            "od.product.productId, od.orderQuantity) " +
-            "FROM Order o " +
+
+    @Query("SELECT od FROM Order o " +
             "JOIN o.orderDetails od " +
             "JOIN od.product p " +
             "WHERE o.isDelete = false AND p.vendor.vendorId = :vendorId")
-    Page<OrderByVendorResponseDto> findOrdersByVendorId(UUID vendorId, Pageable pageable);
+    Page<OrderDetail> findOrdersByVendorId(UUID vendorId, Pageable pageable);
+
+    Page<Order> findByUsernameAndIsDeleteFalse(String username, Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE o.isDelete = false AND o.orderStatus = :orderStatus")
+    Page<Order> findOrdersByOrderStatus(OrderStatus orderStatus, Pageable pageable);
 
 }

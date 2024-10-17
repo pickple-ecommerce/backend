@@ -6,6 +6,7 @@ import com.pickple.commerceservice.application.service.OrderEventService;
 import com.pickple.commerceservice.application.service.OrderService;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateResponseEvent;
+import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryEndResponseEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCreateResponseEvent;
 import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -65,5 +66,24 @@ public class OrderMessagingConsumerService {
         UUID deliveryId = event.getDeliveryId();
         log.info("배송 생성 메시지를 처리합니다. orderId: {}, deliveryId: {}", orderId, deliveryId);
         orderEventService.handleDeliveryCreate(orderId, deliveryId);
+    }
+
+    @KafkaListener(topics = "delivery-end-response", groupId = "commerce-service")
+    public void listenDeliveryEndResponse(String message) {
+        DeliveryEndResponseEvent event;
+        try {
+            // 메시지를 DeliveryEndResponseEvent로 역직렬화
+            event = objectMapper.readValue(message, DeliveryEndResponseEvent.class);
+        } catch (JsonProcessingException e) {
+            log.error("배송 완료 응답 메시지를 역직렬화하는 도중 오류가 발생했습니다.", e);
+            throw new CustomException(CommerceErrorCode.INVALID_DELIVERY_MESSAGE_FORMAT);
+        }
+
+        UUID orderId = event.getOrderId();
+        UUID deliveryId = event.getDeliveryId();
+
+        // 배송 완료 메시지를 처리
+        log.info("배송 완료 메시지를 처리합니다. orderId: {}, deliveryId: {}", orderId, deliveryId);
+        orderEventService.handleDeliveryEnd(orderId);
     }
 }
