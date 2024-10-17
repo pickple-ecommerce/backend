@@ -117,6 +117,13 @@ public class DeliveryApplicationService {
         String carrierId = dto.getDeliveryCarrier().getCompanyId();
         delivery.startDelivery(carrierId, dto.getDeliveryType(), dto);
 
+        sendNotification(delivery, "배송 시작 알림", "배송이 시작되었습니다.");
+
+        log.info("배송 시작 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
+        return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
+    }
+
+    private void sendNotification(Delivery delivery, String subject, String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String sender = (String) authentication.getPrincipal();
         String role =  authentication.getAuthorities().stream().findFirst().get().getAuthority();
@@ -125,15 +132,12 @@ public class DeliveryApplicationService {
 
         NotificationSendEvent notificationSendEvent = NotificationSendEvent.builder()
                 .username(username)
-                .subject("배송 시작 알림")
-                .content("배송이 시작되었습니다.")
+                .subject(subject)
+                .content(content)
                 .sender(sender)
                 .build();
         deliveryMessageProducerService.sendMessage(emailCreateRequestTopic,
                 EventSerializer.serialize(notificationSendEvent));
-
-        log.info("배송 시작 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
-        return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
     }
 
     @Transactional
@@ -157,6 +161,8 @@ public class DeliveryApplicationService {
                 EventSerializer.serialize(
                         new DeliveryEndEvent(delivery.getOrderId(), deliveryId)
                 ));
+
+        sendNotification(delivery, "배송 완료 알림", "배송이 완료되었습니다.");
         log.info("배송 완료 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
     }
 
