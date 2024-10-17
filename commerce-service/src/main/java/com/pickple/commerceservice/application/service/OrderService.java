@@ -1,10 +1,6 @@
 package com.pickple.commerceservice.application.service;
 
-import com.pickple.commerceservice.application.dto.OrderByVendorResponseDto;
-import com.pickple.commerceservice.application.dto.OrderCreateResponseDto;
-import com.pickple.commerceservice.application.dto.OrderDetailResponseDto;
-import com.pickple.commerceservice.application.dto.OrderResponseDto;
-import com.pickple.commerceservice.application.dto.StockByProductDto;
+import com.pickple.commerceservice.application.dto.*;
 import com.pickple.commerceservice.domain.model.Order;
 import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
@@ -21,16 +17,13 @@ import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProduc
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
 import com.pickple.common_module.exception.CustomException;
-import com.pickple.common_module.presentation.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -66,13 +59,20 @@ public class OrderService {
                 .map(detail -> {
                     Product product = productRepository.findById(detail.getProductId())
                             .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
-                    BigDecimal unitPrice = product.getProductPrice();
+
+                    // 재고 확인
+                    StockByProductDto stockDto = stockService.getStockByProductId(product.getProductId());
+                    if (stockDto.getStockQuantity() < detail.getOrderQuantity()) {
+                        throw new CustomException(CommerceErrorCode.INSUFFICIENT_STOCK);
+                    }
+
                     OrderDetail orderDetail = OrderDetail.builder()
                             .order(order)
                             .product(product)
                             .orderQuantity(detail.getOrderQuantity())
-                            .unitPrice(unitPrice)
+                            .unitPrice(product.getProductPrice())
                             .build();
+
                     orderDetail.calculateTotalPrice(); // 단가*수량 계산
                     return orderDetail;
                 })
@@ -83,32 +83,14 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        // 결제 요청 (kafka)
-        messagingProducerService.sendPaymentRequest(
-                order.getOrderId(),
-                order.getAmount(),
-                username
-        );
+        // 결제 요청 (Kafka)
+        messagingProducerService.sendPaymentRequest(order.getOrderId(), order.getAmount(), username);
 
-        // 배송 정보 저장 (redis)
+        // 배송 정보 저장 (Redis)
         temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
 
-        // OrderDetail Dto로 변환
-        List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
-                .map(detail -> OrderDetailResponseDto.builder()
-                        .productId(detail.getProduct().getProductId())
-                        .orderQuantity(detail.getOrderQuantity())
-                        .totalPrice(detail.getTotalPrice())
-                        .build())
-                .collect(Collectors.toList());
-
-        return OrderCreateResponseDto.builder()
-                .orderId(order.getOrderId())
-                .username(username)
-                .amount(order.getAmount())
-                .orderStatus(order.getOrderStatus().name())
-                .orderDetails(orderDetailDtos)
-                .build();
+        // OrderCreateResponseDto 반환 (fromEntity 메서드 활용)
+        return OrderCreateResponseDto.fromEntity(order);
     }
 
     /**
@@ -119,45 +101,14 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
 
-        // 결제 정보 가져오기
+        // 결제 정보 가져오기 (Feign)
         PaymentClientDto paymentInfo = paymentClient.getPaymentInfo(role, username, orderId);
 
-        // 배송 정보 가져오기
-        DeliveryClientDto deliveryInfo = null;
-        try {
-            ResponseEntity<ApiResponse<DeliveryClientDto>> deliveryResponse =
-                    deliveryClient.getDeliveryInfo(role, username, orderId);
+        // 배송 정보 가져오기 (Feign) - 예외 처리 로직은 DeliveryClient 내부에서 처리됨
+        DeliveryClientDto deliveryInfo = deliveryClient.fetchDeliveryInfo(role, username, orderId);
 
-            // 응답 상태 확인
-            if (deliveryResponse.getStatusCode().is2xxSuccessful() &&
-                    deliveryResponse.getBody() != null) {
-                deliveryInfo = deliveryResponse.getBody().getData();  // data 추출
-            } else {
-                log.warn("유효하지 않은 배송 응답: orderId={}", orderId);
-            }
-        } catch (Exception e) {
-            log.error("배송 정보 조회 실패: orderId={}, message: {}", orderId, e.getMessage());
-        }
-
-        // 주문 상세 정보 매핑
-        List<OrderDetailResponseDto> orderDetailDtos = order.getOrderDetails().stream()
-                .map(detail -> OrderDetailResponseDto.builder()
-                        .productId(detail.getProduct().getProductId())
-                        .orderQuantity(detail.getOrderQuantity())
-                        .totalPrice(detail.getTotalPrice())
-                        .build())
-                .collect(Collectors.toList());
-
-        // OrderResponseDto 반환
-        return OrderResponseDto.builder()
-                .orderId(order.getOrderId())
-                .username(order.getUsername())
-                .amount(order.getAmount())
-                .orderStatus(order.getOrderStatus().name())
-                .orderDetails(orderDetailDtos)
-                .paymentInfo(paymentInfo)
-                .deliveryInfo(deliveryInfo)  // 배송 정보 매핑
-                .build();
+        // OrderResponseDto 반환 (fromEntity 메서드 활용)
+        return OrderResponseDto.fromEntity(order, paymentInfo, deliveryInfo);
     }
 
     /**
@@ -207,71 +158,65 @@ public class OrderService {
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
 
         order.changeStatus(OrderStatus.CANCELED);
+        order.markAsDeleted();
         orderRepository.save(order);
 
         // 결제 취소 요청 전송 (Kafka)
         messagingProducerService.sendPaymentCancelRequest(orderId);
 
-        // 배송 정보 조회 및 삭제 요청 처리
-        try {
-            ResponseEntity<ApiResponse<DeliveryClientDto>> deliveryResponse =
-                    deliveryClient.getDeliveryInfo(role, username, orderId);
-
-            if (deliveryResponse.getStatusCode().is2xxSuccessful() &&
-                    deliveryResponse.getBody() != null) {
-
-                DeliveryClientDto deliveryInfo = deliveryResponse.getBody().getData();  // data 추출
-
-                if (deliveryInfo != null && deliveryInfo.getDeliveryId() != null) {
-                    messagingProducerService.sendDeliveryDeleteRequest(deliveryInfo.getDeliveryId(), orderId);
-                    log.info("배송 삭제 요청 전송 완료: deliveryId={}, orderId={}",
-                            deliveryInfo.getDeliveryId(), orderId);
-                } else {
-                    log.warn("배송 정보가 없습니다: orderId={}", orderId);
-                }
-            } else {
-                log.warn("유효하지 않은 배송 응답: orderId={}", orderId);
-            }
-        } catch (Exception e) {
-            log.warn("배송 정보 조회 실패: orderId={}, message: {}", orderId, e.getMessage());
+        // 배송 정보 삭제 요청 처리
+        DeliveryClientDto deliveryInfo = deliveryClient.fetchDeliveryInfo(role, username, orderId);
+        if (deliveryInfo != null && deliveryInfo.getDeliveryId() != null) {
+            messagingProducerService.sendDeliveryDeleteRequest(deliveryInfo.getDeliveryId(), orderId);
         }
 
-        log.info("주문 취소 완료: orderId={}, username={}", orderId, username);
-
-        return mapToOrderResponseDto(order);
+        // OrderResponseDto 반환 (fromEntity 메서드 활용)
+        return OrderResponseDto.fromEntity(order, null, null);
     }
 
     /**
-     * 주문을 OrderResponseDto로 매핑하는 메서드
-     */
-    private OrderResponseDto mapToOrderResponseDto(Order order) {
-        List<OrderDetailResponseDto> orderDetails = order.getOrderDetails().stream()
-                .map(detail -> OrderDetailResponseDto.builder()
-                        .productId(detail.getProduct().getProductId())
-                        .orderQuantity(detail.getOrderQuantity())
-                        .totalPrice(detail.getTotalPrice())
-                        .build())
-                .collect(Collectors.toList());
-
-        return OrderResponseDto.builder()
-                .orderId(order.getOrderId())
-                .username(order.getUsername())
-                .amount(order.getAmount())
-                .orderStatus(order.getOrderStatus().name())
-                .orderDetails(orderDetails)
-                .build();
-    }
-
-    /**
-     * Vendor ID로 주문 조회
+     * 업체별 주문 조회
      */
     @Transactional(readOnly = true)
-    public List<OrderByVendorResponseDto> findByVendorId(UUID vendorId, Pageable pageable) {
-        Page<OrderByVendorResponseDto> ordersPage = orderRepository.findOrdersByVendorId(vendorId, pageable);
+    public Page<OrderByVendorResponseDto> findByVendorId(UUID vendorId, Pageable pageable) {
+        return orderRepository.findOrdersByVendorId(vendorId, pageable)
+                .map(OrderByVendorResponseDto::fromEntity);
+    }
 
-        log.info("벤더별 주문 조회 - 총 주문 수: {}", ordersPage.getTotalElements());
-        ordersPage.forEach(order -> log.debug("주문 데이터: {}", order));
+    /**
+     * 전체 주문 조회
+     */
+    @Transactional(readOnly = true)
+    public Page<OrderSummaryResponseDto> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable)
+                .map(OrderSummaryResponseDto::fromEntity);
+    }
 
-        return ordersPage.getContent();
+    /**
+     * 내 주문 조회
+     */
+    @Transactional(readOnly = true)
+    public Page<OrderSummaryResponseDto> getOrdersByUsername(String username, Pageable pageable) {
+        return orderRepository.findByUsernameAndIsDeleteFalse(username, pageable)
+                .map(OrderSummaryResponseDto::fromEntity);
+    }
+
+    /**
+     * 주문 검색 (주문 상태)
+     */
+    @Transactional(readOnly = true)
+    public Page<OrderSummaryResponseDto> findOrdersByOrderStatus(OrderStatus orderStatus, Pageable pageable) {
+        return orderRepository.findOrdersByOrderStatus(orderStatus, pageable)
+                .map(OrderSummaryResponseDto::fromEntity);
+    }
+
+    /**
+     * 배송아이디로 username 검색
+     */
+    @Transactional(readOnly = true)
+    public String findUsernameByDeliveryId(UUID deliveryId) {
+        return orderRepository.findByDeliveryId(deliveryId).orElseThrow(
+                () -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND)
+        ).getUsername();
     }
 }

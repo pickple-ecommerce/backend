@@ -1,5 +1,6 @@
 package com.pickple.commerceservice.application.dto;
 
+import com.pickple.commerceservice.domain.model.OrderDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +11,8 @@ import java.util.UUID;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderByVendorResponseDto {
     private UUID orderId;
     private String username;
@@ -19,4 +20,15 @@ public class OrderByVendorResponseDto {
     private String orderStatus;
     private UUID productId;
     private Long orderQuantity;
+
+    public static OrderByVendorResponseDto fromEntity(OrderDetail orderDetail) {
+        return OrderByVendorResponseDto.builder()
+                .orderId(orderDetail.getOrder().getOrderId())
+                .username(orderDetail.getOrder().getUsername())
+                .amount(orderDetail.getOrder().getAmount())
+                .orderStatus(orderDetail.getOrder().getOrderStatus().name())
+                .productId(orderDetail.getProduct().getProductId())
+                .orderQuantity(orderDetail.getOrderQuantity())
+                .build();
+    }
 }

@@ -105,7 +105,7 @@ public class DeliveryController {
 
     @PreAuthorize("hasAuthority('MASTER')")
     @DeleteMapping("/{delivery_id}")
-    public ResponseEntity<ApiResponse<DeliveryDeleteResponseDto>> deleteDeliveryDetail(
+    public ResponseEntity<ApiResponse<DeliveryDeleteResponseDto>> deleteDelivery(
             @PathVariable("delivery_id") UUID deliveryId) {
         String deleter = (String) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
