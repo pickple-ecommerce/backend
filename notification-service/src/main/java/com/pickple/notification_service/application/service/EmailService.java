@@ -9,10 +9,7 @@ import com.pickple.notification_service.domain.repository.NotificationRepository
 import com.pickple.notification_service.exception.ChannelErrorCode;
 import com.pickple.notification_service.exception.NotificationErrorCode;
 import com.pickple.notification_service.infrastructure.feign.UserFeignClient;
-import com.pickple.notification_service.infrastructure.messaging.NotificationEventProducer;
 import com.pickple.notification_service.infrastructure.messaging.events.EmailCreateRequestEvent;
-import com.pickple.notification_service.infrastructure.messaging.events.NotificationFailureResponse;
-import com.pickple.notification_service.infrastructure.messaging.events.NotificationSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +31,6 @@ public class EmailService {
     private String from;
 
     private final JavaMailSender mailSender;
-
-    private final NotificationEventProducer notificationEventProducer;
 
     @Autowired
     private final NotificationRepository emailRepository;
@@ -63,18 +58,10 @@ public class EmailService {
             mailSender.send(message);
 
         } catch (MessagingException e) {
-
-            NotificationFailureResponse failureResponse = new NotificationFailureResponse(event.getUsername());
-            notificationEventProducer.sendFailureEvent(failureResponse);
-
             log.error(e.getMessage(), e);
             throw new CustomException(NotificationErrorCode.EMAIL_CREATE_ERROR);
 
         } catch(Exception e){
-
-            NotificationFailureResponse failureResponse = new NotificationFailureResponse(event.getUsername());
-            notificationEventProducer.sendFailureEvent(failureResponse);
-
             log.error(e.getMessage(), e);
             throw new CustomException(NotificationErrorCode.EMAIL_SENDING_ERROR);
 
@@ -97,10 +84,6 @@ public class EmailService {
             emailRepository.save(email);
 
         }catch (Exception e){
-
-            NotificationFailureResponse failure = new NotificationFailureResponse(email.getUsername());
-            notificationEventProducer.sendFailureEvent(failure);
-
             log.error(e.getMessage(), e);
             throw new CustomException(CommonErrorCode.DATABASE_ERROR);
 
@@ -109,9 +92,6 @@ public class EmailService {
         // 상태 변경
         email.sent();
         emailRepository.save(email);
-
-        NotificationSuccessResponse success = new NotificationSuccessResponse(email.getNotificationId());
-        notificationEventProducer.sendSuccessEvent(success);
     }
 
 

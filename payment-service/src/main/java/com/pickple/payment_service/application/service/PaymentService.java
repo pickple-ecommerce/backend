@@ -54,7 +54,6 @@ public class PaymentService {
             throw new CustomException(PaymentErrorCode.PAYMENT_CREATE_FAILED);
         }
 
-        // TODO: 결제 대기 처리 후, 결제가 완료되면 Order 쪽에 결제 생성 메시지를 보내야 합니다.
         // 결제 완료 처리
         payment.success();
         paymentRepository.save(payment);
