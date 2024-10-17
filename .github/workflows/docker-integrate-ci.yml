@@ -29,7 +29,6 @@ jobs:
       
       - name: Docker Compose로 서비스 실행
         run: |
-          export SLACK_WEBHOOK_URL="TESTURL"
           docker-compose -f docker/docker-compose.dev.yml up -d
       
       - name: Sleep for 30 seconds

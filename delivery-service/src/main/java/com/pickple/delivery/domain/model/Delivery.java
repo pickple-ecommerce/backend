@@ -84,6 +84,10 @@ public class Delivery extends BaseEntity implements Persistable<UUID> {
         this.trackingNumber = dto.getTrackingNumber();
     }
 
+    public void endDelivery() {
+        this.deliveryStatus = DeliveryStatus.DELIVERED;
+    }
+
     public void addDeliveryDetail(DeliveryDetail detail) {
         this.deliveryDetails.add(detail);
     }
