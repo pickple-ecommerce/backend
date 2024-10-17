@@ -44,20 +44,20 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
         path: temp-config-secrets
 
-    - name: Move .env file to docker folder
-      run: |
-        cp temp-config-secrets/env-service/.env docker/.env
-
-    - name: Build, Tag and Push docker image to AWS ECR
-      run: |
-        docker compose -f docker/docker-compose.service.yml --env-file docker/.env build
-        services=("eureka" "gateway" "auth" "user" "commerce" "payment" "delivery" "notification")
-        for service in "${services[@]}"; do
-          docker tag ${ECR_REGISTRY}/${ECR_NAMESPACE}/$service:latest $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
-          echo "$service image is built and pushed to AWS ECR"
-        done
-      env:
-        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-        ECR_NAMESPACE: ${{ secrets.ECR_NAMESPACE }}
-        IMAGE_TAG: "latest"
+#    - name: Move .env file to docker folder
+#      run: |
+#        cp temp-config-secrets/env-service/.env docker/.env
+#
+#    - name: Build, Tag and Push docker image to AWS ECR
+#      run: |
+#        docker compose -f docker/docker-compose.service.yml --env-file docker/.env build
+#        services=("eureka" "gateway" "auth" "user" "commerce" "payment" "delivery" "notification")
+#        for service in "${services[@]}"; do
+#          docker tag ${ECR_REGISTRY}/${ECR_NAMESPACE}/$service:latest $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
+#          docker push $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
+#          echo "$service image is built and pushed to AWS ECR"
+#        done
+#      env:
+#        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+#        ECR_NAMESPACE: ${{ secrets.ECR_NAMESPACE }}
+#        IMAGE_TAG: "latest"
