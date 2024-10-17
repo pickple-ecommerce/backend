@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.UUID;
 
-@FeignClient(name = "payment-service", url = "http://${feign.host.payment}:19095")
+@FeignClient(name = "payment-service")
 public interface PaymentClient {
 
     @GetMapping("/api/v1/payments/getPaymentInfo/{order_id}")

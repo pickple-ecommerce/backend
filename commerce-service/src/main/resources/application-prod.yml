@@ -53,8 +53,3 @@ kafka:
     delivery-create-request: delivery-create-request
     payment-cancel-request: payment-cancel-request
     delivery-delete-request: delivery-delete-request
-
-feign:
-  host:
-    delivery: delivery-service
-    payment: payment-service
