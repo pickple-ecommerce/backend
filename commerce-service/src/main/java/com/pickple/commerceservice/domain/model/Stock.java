@@ -25,9 +25,13 @@ public class Stock extends BaseEntity {
     @Column(name = "stock_quantity", nullable = false)
     private Long stockQuantity;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     public void updateStockQuantity(Long newQuantity) {
         if (newQuantity == null || newQuantity < 0) {

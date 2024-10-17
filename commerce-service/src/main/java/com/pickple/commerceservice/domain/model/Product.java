@@ -42,7 +42,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Stock stock;
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) // PreOrderDetails와 1:1 매핑 추가

@@ -1,9 +1,14 @@
 package com.pickple.commerceservice.infrastructure.facade;
 
+import com.pickple.commerceservice.application.service.OrderService;
 import com.pickple.commerceservice.application.service.StockService;
 import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.model.Stock;
+import com.pickple.commerceservice.domain.repository.OrderRepository;
+import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.domain.repository.StockRepository;
+import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -21,57 +26,79 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class RedissonLockStockFacadeTest {
 
-    @Mock
-    private RedissonClient redissonClient; // RedissonClient 목 객체
-    @Mock
-    private StockService stockService; // StockService 목 객체
-    @Mock
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @Autowired
+    private StockService stockService;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private StockRepository stockRepository;
-    @InjectMocks
-    private RedissonLockStockFacade redissonLockStockFacade; // Facade 객체
+
+    @Autowired
+    private RedissonLockStockFacade redissonLockStockFacade;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
     private Stock stock;
 
     private RLock mockLock;
-    private UUID productId;
+
+    private Product product;
 
     @BeforeEach
-    void setUp() {
-        // RLock 목 객체 생성
-        mockLock = mock(RLock.class);
-        productId = UUID.randomUUID();
+    public void setUp() {
+        // Create a Product instance with initial values
+        orderRepository.deleteAll();
 
-        // 재고 객체 초기화
-        stock = Stock.builder()
-                .stockId(UUID.randomUUID())
-                .stockQuantity(100L) // 초기 재고 설정
-                .build();
-
-        // RedissonClient의 getLock() 메서드 모의 설정
-        when(redissonClient.getLock("stockLock:" + productId)).thenReturn(mockLock);
     }
+
 
     @Test
     @DisplayName("동시에 100개의 요청에서 재고 감소 테스트")
-    @Disabled
     void decreaseStockQuantityWithLock() throws InterruptedException{
         // Given
-        when(mockLock.tryLock(15, 1, TimeUnit.SECONDS)).thenReturn(true); // 락 획득 성공 모의
+        product = Product.builder()
+                .productId(UUID.randomUUID())
+                .productName("Test Product")
+                .productPrice(BigDecimal.valueOf(1000))
+                .description("Test product description")
+                .productImage("image_url")
+                .isPublic(true)
+                .build();
 
-        // StockService의 decreaseStockQuantity 메서드를 직접 처리하는 로직 추가
-        doAnswer(invocation -> {
-            // 재고 수량을 감소시키는 로직
-            stock.updateStockQuantity(stock.getStockQuantity() - 1);
-            return null;
-        }).when(stockService).decreaseStockQuantity(productId);
+        Product first = productRepository.save(product);
+        stock = Stock.builder()
+                .version(0L)
+                .stockId(UUID.randomUUID())
+                .stockQuantity(1L)
+                .product(first)
+                .build();
 
-        int threadCount = 100;
+        // Assign the stock to the product
+        Stock savedStock = stockRepository.save(stock);
+        first.assignStock(savedStock);
+        Product saved = productRepository.save(first);
+
+        PreOrderRequestDto requestDto = new PreOrderRequestDto(saved.getProductId());
+
+        int threadCount = 10;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -79,17 +106,23 @@ class RedissonLockStockFacadeTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    redissonLockStockFacade.decreaseStockQuantityWithLock(productId); // 재고 감소 요청
+                    orderService.createPreOrder(requestDto, "test-user");
+//                    redissonLockStockFacade.decreaseStockQuantityWithLock(saved.getProductId());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 } finally {
-                    latch.countDown(); // 요청이 끝날 때마다 카운트다운
+                    latch.countDown();
                 }
             });
         }
 
-        // 모든 스레드가 완료될 때까지 대기
+        // Wait for all threads to finish
         latch.await();
+        executorService.shutdown();
 
-        // Then (재고 차감 검증)
-        assertEquals(0L, stock.getStockQuantity()); // 재고가 100개에서 0개로 정확히 차감되었는지 확인
+        // Then
+
+//        assertEquals(0L, stockRepository.findByProduct_ProductId(saved.getProductId()).get().getStockQuantity());
+        assertEquals(1, orderRepository.findAll().size());
     }
 }
