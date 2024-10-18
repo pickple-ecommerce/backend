@@ -1,6 +1,8 @@
 services:
   eureka-server:
-    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/eureka
+    build:
+      context: ../eureka-server
+      dockerfile: Dockerfile
     container_name: eureka-server
     ports:
       - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
@@ -9,7 +11,9 @@ services:
       - EUREKA_HOSTNAME=${EUREKA_HOSTNAME}
 
   gateway:
-    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/gateway
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
     container_name: gateway
     ports:
       - "${GATEWAY_SERVER_PORT}:${GATEWAY_SERVER_PORT}"

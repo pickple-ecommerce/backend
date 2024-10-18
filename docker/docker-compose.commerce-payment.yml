@@ -1,6 +1,8 @@
 services:
   commerce-service:
-    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/commerce
+    build:
+      context: ../commerce-service
+      dockerfile: Dockerfile
     container_name: commerce-service
     ports:
       - "${COMMERCE_SERVER_PORT}:${COMMERCE_SERVER_PORT}"
@@ -16,7 +18,9 @@ services:
       - REDIS_PORT=${REDIS_PORT}
 
   payment-service:
-    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/payment
+    build:
+      context: ../payment-service
+      dockerfile: Dockerfile
     container_name: payment-service
     ports:
       - "${PAYMENT_SERVER_PORT}:${PAYMENT_SERVER_PORT}"

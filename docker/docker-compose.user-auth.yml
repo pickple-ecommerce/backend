@@ -1,6 +1,8 @@
 services:
   auth-service:
-    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/auth
+    build:
+      context: ../auth-service
+      dockerfile: Dockerfile
     container_name: auth-service
     ports:
       - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
@@ -13,7 +15,9 @@ services:
       - REDIS_PORT=${REDIS_PORT}
 
   user-service:
-    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/user
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
     container_name: user-service
     ports:
       - "${USER_SERVER_PORT}:${USER_SERVER_PORT}"
