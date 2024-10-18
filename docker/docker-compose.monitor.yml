@@ -1,0 +1,38 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ../settings/prometheus/config:/etc/prometheus
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    command:
+      - '--storage.tsdb.path=/prometheus'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=${GRAFANA_ALLOW_SIGN_UP}
+      - GF_SERVER_CHANNEL=${WEBHOOK_FOR_SERVER}
+      - GF_TRAFFIC_CHANNEL=${WEBHOOK_FOR_TRAFFIC}
+    volumes:
+      - ../settings/grafana/provisioning/:/etc/grafana/provisioning/
+    restart: always
+    depends_on:
+      - prometheus
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "${LOKI_PORT}:3100"
+    volumes:
+      - ../settings/grafana/loki/loki-config.yml:/etc/loki/local-config.yml
+    command: -config.file=/etc/loki/local-config.yml
+    restart: always
