@@ -3,7 +3,7 @@ services:
     build:
       context: ../auth-service
       dockerfile: Dockerfile
-    container_name: auth-service
+    container_name: auth
     ports:
       - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
     environment:
@@ -18,7 +18,7 @@ services:
     build:
       context: ../user-service
       dockerfile: Dockerfile
-    container_name: user-service
+    container_name: user
     ports:
       - "${USER_SERVER_PORT}:${USER_SERVER_PORT}"
     environment:

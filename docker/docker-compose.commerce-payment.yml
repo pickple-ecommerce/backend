@@ -3,7 +3,7 @@ services:
     build:
       context: ../commerce-service
       dockerfile: Dockerfile
-    container_name: commerce-service
+    container_name: commerce
     ports:
       - "${COMMERCE_SERVER_PORT}:${COMMERCE_SERVER_PORT}"
     environment:
@@ -21,7 +21,7 @@ services:
     build:
       context: ../payment-service
       dockerfile: Dockerfile
-    container_name: payment-service
+    container_name: payment
     ports:
       - "${PAYMENT_SERVER_PORT}:${PAYMENT_SERVER_PORT}"
     environment:

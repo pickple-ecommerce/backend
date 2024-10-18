@@ -3,7 +3,7 @@ services:
     build:
       context: ../delivery-service
       dockerfile: Dockerfile
-    container_name: delivery-service
+    container_name: delivery
     ports:
       - "${DELIVERY_SERVER_PORT}:${DELIVERY_SERVER_PORT}"
     environment:
@@ -23,7 +23,7 @@ services:
     build:
       context: ../notification-service
       dockerfile: Dockerfile
-    container_name: notification-service
+    container_name: notification
     ports:
       - "${NOTIFICATION_SERVER_PORT}:${NOTIFICATION_SERVER_PORT}"
     environment:
