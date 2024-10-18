@@ -2,13 +2,13 @@ name: Deploy Commence, Payment to AWS ECR
 
 on:
   push:
-    branches: [ "feature/connect-ecr" ]
+    branches: [ "main" ]
     paths:
       - 'commerce-service/**'
       - 'payment-service/**'
 
 jobs:
-  deploy:
+  build:
     name: Deploy to ECR
     runs-on: ubuntu-latest
     steps:
@@ -72,3 +72,36 @@ jobs:
           ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
           ECR_NAMESPACE: ${{ secrets.ECR_NAMESPACE }}
           IMAGE_TAG: "latest"
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy Docker compose file to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_COMMERCE_PAYMENT_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          source: "./docker/docker-compose.commerce-payment.yml"
+          target: "/home/ec2-user"
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        with:
+          host: ${{ secrets.AWS_COMMERCE_PAYMENT_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
+          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, ECR_REGISTRY, ECR_NAMESPACE
+          script: |
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+            docker compose -f docker-compose.commerce-payment.yml down
+            docker compose -f docker-compose.commerce-payment.yml pull
+            docker compose -f docker-compose.commerce-payment.yml --env-file ./config-secrets/env-commerce-payment/.env up -d
