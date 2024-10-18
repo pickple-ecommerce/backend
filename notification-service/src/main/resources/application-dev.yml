@@ -2,10 +2,10 @@ spring:
   application:
     name: notification-service
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
+    open-in-view: false
   datasource:
     url: jdbc:postgresql://localhost:5436/notification_db
     username: pickple
@@ -64,4 +64,5 @@ management:
       enabled: true
 
 slack:
-  workspaceUrl: ${SLACK_WORKSPACE_URL}
+  workspaceUrl: fdfd
+

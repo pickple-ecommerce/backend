@@ -7,10 +7,10 @@ spring:
     password: ${NOTIFICATION_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
+    open-in-view: false
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
