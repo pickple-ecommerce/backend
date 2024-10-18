@@ -64,5 +64,5 @@ management:
       enabled: true
 
 slack:
-  workspaceUrl: fdfd
+  workspaceUrl: ${SLACK_WORKSPACE_URL}
 
