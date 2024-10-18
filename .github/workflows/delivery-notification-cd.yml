@@ -1,0 +1,74 @@
+name: Deploy Delivery, Notification to AWS ECR
+
+on:
+  push:
+    branches: [ "feature/connect-ecr" ]
+    paths:
+      - 'delivery-service/**'
+      - 'notification-service/**'
+
+jobs:
+  deploy:
+    name: Deploy to ECR
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      - name: Grant execute permission for Gradle Wrapper in delivery-service directory
+        run: chmod +x delivery-service/gradlew
+
+      - name: Build delivery-service with Gradle Wrapper
+        working-directory: delivery-service
+        run: ./gradlew bootJar
+
+      - name: Grant execute permission for Gradle Wrapper in notification-service directory
+        run: chmod +x notification-service/gradlew
+
+      - name: Build notification-service with Gradle Wrapper
+        working-directory: notification-service
+        run: ./gradlew bootJar
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Download .env file from private repo
+        uses: actions/checkout@v2
+        with:
+          repository: pickple-ecommerce/config-secrets
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: temp-config-secrets
+
+      - name: Move .env file to docker folder
+        run: |
+          cp temp-config-secrets/env-delivery-notification/.env docker/.env
+
+      - name: Build, Tag and Push docker image to AWS ECR
+        run: |
+          docker compose -f docker/docker-compose.delivery-notification.yml --env-file docker/.env build
+          services=("delivery" "notification")
+          for service in "${services[@]}"; do
+            docker tag ${ECR_REGISTRY}/${ECR_NAMESPACE}/$service:latest $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
+            docker push $ECR_REGISTRY/${ECR_NAMESPACE}/$service:$IMAGE_TAG
+            echo "$service image is built and pushed to AWS ECR"
+          done
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          ECR_NAMESPACE: ${{ secrets.ECR_NAMESPACE }}
+          IMAGE_TAG: "latest"
