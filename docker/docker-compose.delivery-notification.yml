@@ -1,5 +1,6 @@
 services:
   delivery-service:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/delivery:latest
     build:
       context: ../delivery-service
       dockerfile: Dockerfile
@@ -20,6 +21,7 @@ services:
       - REDIS_PORT=${REDIS_PORT}
 
   notification-service:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/notification:latest
     build:
       context: ../notification-service
       dockerfile: Dockerfile
