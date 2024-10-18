@@ -85,7 +85,7 @@ jobs:
           host: ${{ secrets.AWS_EUREKA_GATEWAY_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
-          source: "/docker/docker-compose.eureka-gateway.yml"
+          source: "./docker/docker-compose.eureka-gateway.yml"
           target: "/home/ec2-user/docker-compose.yml"
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
