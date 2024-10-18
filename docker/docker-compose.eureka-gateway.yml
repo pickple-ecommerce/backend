@@ -1,5 +1,6 @@
 services:
   eureka-server:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/eureka:latest
     build:
       context: ../eureka-server
       dockerfile: Dockerfile
@@ -11,6 +12,7 @@ services:
       - EUREKA_HOSTNAME=${EUREKA_HOSTNAME}
 
   gateway:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/gateway:latest
     build:
       context: ../gateway
       dockerfile: Dockerfile
