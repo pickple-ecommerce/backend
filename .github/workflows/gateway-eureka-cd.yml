@@ -89,15 +89,12 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           path: temp-config-secrets
 
-      - name: Verify docker folder exists
-        run: ls -la docker
-
       - name: Move .env file to docker folder
         run: |
           cp temp-config-secrets/env-eureka-gateway/.env docker/.env
 
-      - name: Verify .env file exists
-        run: ls -la docker/.env
+      - name: Verify file exists
+        run: ls -a docker/
 
       - name: Copy Docker compose file to EC2
         uses: appleboy/scp-action@v0.1.7
