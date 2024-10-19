@@ -12,8 +12,9 @@ jobs:
     name: Deploy to ECR
     runs-on: ubuntu-latest
     steps:
+      - name: Check out main repository
+        uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -52,7 +53,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Download .env file from private repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: pickple-ecommerce/config-secrets
           token: ${{ secrets.ACCESS_TOKEN }}
