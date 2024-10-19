@@ -58,7 +58,7 @@ jobs:
 
       - name: Move .env file to docker folder
         run: |
-          cp temp-config-secrets/env-eureka-gateway/.env docker/.env
+          cp temp-config-secrets/.env docker/.env
 
       - name: Build, Tag and Push docker image to AWS ECR
         run: |
@@ -91,7 +91,7 @@ jobs:
 
       - name: Move .env file to docker folder
         run: |
-          cp temp-config-secrets/env-eureka-gateway/.env docker/.env
+          cp temp-config-secrets/.env docker/.env
 
       - name: Copy Docker compose file to EC2
         uses: appleboy/scp-action@v0.1.7
