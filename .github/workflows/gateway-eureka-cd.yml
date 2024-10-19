@@ -128,4 +128,4 @@ jobs:
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
             docker compose -f docker-compose.eureka-gateway.yml down
             docker compose -f docker-compose.eureka-gateway.yml pull
-            docker compose -f docker-compose.eureka-gateway.yml up
+            docker compose -f docker-compose.eureka-gateway.yml up -d
