@@ -105,7 +105,7 @@ jobs:
           host: ${{ secrets.AWS_EUREKA_GATEWAY_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
-          source: "/home/runner/work/backend/backend/docker/.env"
+          source: "/home/runner/work/backend/backend/docker/docker-compose.eureka-gateway.yml"
           target: "/home/ec2-user"
           strip_components: 6
 
