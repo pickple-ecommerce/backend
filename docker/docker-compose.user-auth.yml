@@ -1,0 +1,33 @@
+services:
+  auth-service:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/auth:latest
+    build:
+      context: ../auth-service
+      dockerfile: Dockerfile
+    container_name: auth
+    ports:
+      - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - AUTH_SERVER_PORT=${AUTH_SERVER_PORT}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+
+  user-service:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/user:latest
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
+    container_name: user
+    ports:
+      - "${USER_SERVER_PORT}:${USER_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - USER_SERVER_PORT=${USER_SERVER_PORT}
+      - USER_DB_URL=${USER_DB_URL}
+      - USER_DB_USERNAME=${USER_DB_USERNAME}
+      - USER_DB_PASSWORD=${USER_DB_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}

@@ -1,7 +1,7 @@
 
 services:
   eureka-server:
-#    image: eureka-server-image
+    #    image: eureka-server-image
     build:
       context: ../eureka-server
       dockerfile: Dockerfile
@@ -13,7 +13,7 @@ services:
       - EUREKA_HOSTNAME=${EUREKA_HOSTNAME}
 
   gateway:
-#    image: gateway-image
+    #    image: gateway-image
     build:
       context: ../gateway
       dockerfile: Dockerfile
@@ -31,7 +31,7 @@ services:
       - eureka-server
 
   auth-service:
-#    image: auth-service-image
+    #    image: auth-service-image
     build:
       context: ../auth-service
       dockerfile: Dockerfile
@@ -49,7 +49,7 @@ services:
       - eureka-server
 
   user-service:
-#    image: user-service-image
+    #    image: user-service-image
     build:
       context: ../user-service
       dockerfile: Dockerfile
@@ -68,7 +68,7 @@ services:
       - eureka-server
 
   commerce-service:
-#    image: commerce-service-image
+    #    image: commerce-service-image
     build:
       context: ../commerce-service
       dockerfile: Dockerfile
@@ -89,7 +89,7 @@ services:
       - eureka-server
 
   payment-service:
-#    image: payment-service-image
+    #    image: payment-service-image
     build:
       context: ../payment-service
       dockerfile: Dockerfile
@@ -108,7 +108,7 @@ services:
       - eureka-server
 
   delivery-service:
-#    image: delivery-service-image
+    #    image: delivery-service-image
     build:
       context: ../delivery-service
       dockerfile: Dockerfile
@@ -131,7 +131,7 @@ services:
       - eureka-server
 
   notification-service:
-#    image: notification-service-image
+    #    image: notification-service-image
     build:
       context: ../notification-service
       dockerfile: Dockerfile
