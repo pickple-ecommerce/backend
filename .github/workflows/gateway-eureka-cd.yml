@@ -78,6 +78,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download .env file from private repo
+        uses: actions/checkout@v2
+        with:
+          repository: pickple-ecommerce/config-secrets
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: temp-config-secrets
+
+      - name: Move .env file to docker folder
+        run: |
+          cp temp-config-secrets/env-eureka-gateway/.env docker/.env
+
       - uses: actions/checkout@v4
       - name: Copy Docker compose file to EC2
         uses: appleboy/scp-action@v0.1.7
