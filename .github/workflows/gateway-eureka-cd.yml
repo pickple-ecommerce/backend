@@ -93,7 +93,6 @@ jobs:
         run: |
           cp temp-config-secrets/env-eureka-gateway/.env docker/.env
 
-      - uses: actions/checkout@v4
       - name: Copy Docker compose file to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
