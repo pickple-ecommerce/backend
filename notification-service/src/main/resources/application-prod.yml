@@ -62,3 +62,6 @@ management:
       show-details: always
     prometheus:
       enabled: true
+
+slack:
+  workspaceUrl: ${SLACK_WORKSPACE_URL}
