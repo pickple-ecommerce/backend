@@ -105,9 +105,8 @@ jobs:
           host: ${{ secrets.AWS_EUREKA_GATEWAY_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
-          source: "/home/runner/work/backend/backend/docker/docker-compose.eureka-gateway.yml"
+          source: "./docker/docker-compose.eureka-gateway.yml"
           target: "/home/ec2-user"
-          strip_components: 6
 
       - name: Copy .env file to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -115,9 +114,8 @@ jobs:
           host: ${{ secrets.AWS_EUREKA_GATEWAY_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
-          source: "/home/runner/work/backend/backend/docker/.env"
+          source: "./docker/.env"
           target: "/home/ec2-user"
-          strip_components: 6
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
