@@ -82,7 +82,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out main repository
+        uses: actions/checkout@v4
+
+      - name: Download .env file from private repo
+        uses: actions/checkout@v4
+        with:
+          repository: pickple-ecommerce/config-secrets
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: temp-config-secrets
+
+      - name: Move .env file to docker folder
+        run: |
+          cp temp-config-secrets/env-user-auth/.env docker/.env
+
       - name: Copy Docker compose file to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -91,6 +104,16 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           source: "./docker/docker-compose.user-auth.yml"
           target: "/home/ec2-user"
+
+      - name: Copy .env file to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_USER_AUTH_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          source: "./docker/.env"
+          target: "/home/ec2-user"
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         env:
@@ -106,6 +129,6 @@ jobs:
           envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, ECR_REGISTRY, ECR_NAMESPACE
           script: |
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
-            docker compose -f docker-compose.user-auth.yml down
-            docker compose -f docker-compose.user-auth.yml pull
-            docker compose -f docker-compose.user-auth.yml --env-file ./config-secrets/env-user-auth/.env up -d
+            docker compose -f ./docker/docker-compose.user-auth.yml down
+            docker compose -f ./docker/docker-compose.user-auth.yml pull
+            docker compose -f ./docker/docker-compose.user-auth.yml up -d
