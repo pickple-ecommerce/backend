@@ -2,10 +2,7 @@ name: Deploy User, Auth to AWS ECR
 
 on:
   push:
-    branches: [ "main" ]
-    paths:
-      - 'auth-service/**'
-      - 'user-service/**'
+    branches: [ "test/test-cd" ]
 
 jobs:
   build:
