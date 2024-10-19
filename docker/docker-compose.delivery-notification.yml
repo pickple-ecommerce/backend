@@ -19,6 +19,7 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
+      - LOKI_URL=${LOKI_URL}
 
   notification-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/notification:latest
@@ -39,3 +40,4 @@ services:
       - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
       - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
       - SLACK_WORKSPACE_URL=${SLACK_WORKSPACE_URL}
+      - LOKI_URL=${LOKI_URL}
