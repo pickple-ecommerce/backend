@@ -7,7 +7,6 @@ eureka:
     fetch-registry: false
   instance:
     hostname: ${EUREKA_HOSTNAME}
-    prefer-ip-address: true
 
 management:
   endpoints:
