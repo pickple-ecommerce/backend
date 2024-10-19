@@ -1,6 +1,7 @@
 services:
   auth-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/auth:latest
+    network_mode: host
     build:
       context: ../auth-service
       dockerfile: Dockerfile
@@ -18,6 +19,7 @@ services:
 
   user-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/user:latest
+    network_mode: host
     build:
       context: ../user-service
       dockerfile: Dockerfile

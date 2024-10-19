@@ -4,6 +4,8 @@ eureka:
       defaultZone: http://eureka-server:19090/eureka/
     register-with-eureka: true
     fetch-registry: true
+  instance:
+    prefer-ip-address: true
 
 spring:
   data:

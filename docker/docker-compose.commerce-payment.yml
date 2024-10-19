@@ -1,6 +1,7 @@
 services:
   commerce-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/commerce:latest
+    network_mode: host
     build:
       context: ../commerce-service
       dockerfile: Dockerfile
@@ -21,6 +22,7 @@ services:
 
   payment-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/payment:latest
+    network_mode: host
     build:
       context: ../payment-service
       dockerfile: Dockerfile
