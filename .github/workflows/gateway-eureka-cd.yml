@@ -2,10 +2,10 @@ name: Deploy Gateway, Eureka to AWS ECR
 
 on:
   push:
-    branches: [ "main" ]
-    paths:
-      - 'gateway/**'
-      - 'eureka-server/**'
+    branches: [ "feature/connect-ecr" ]
+#    paths:
+#      - 'gateway/**'
+#      - 'eureka-server/**'
 
 jobs:
   build:
@@ -78,6 +78,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download .env file from private repo
+        uses: actions/checkout@v2
+        with:
+          repository: pickple-ecommerce/config-secrets
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: temp-config-secrets
+
+      - name: Move .env file to docker folder
+        run: |
+          cp temp-config-secrets/env-eureka-gateway/.env docker/.env
+
       - uses: actions/checkout@v4
       - name: Copy Docker compose file to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -87,6 +98,17 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           source: "./docker/docker-compose.eureka-gateway.yml"
           target: "/home/ec2-user"
+
+      - uses: actions/checkout@v4
+      - name: Copy .env file to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_EUREKA_GATEWAY_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          source: "./docker/.env"
+          target: "/home/ec2-user"
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         env:
@@ -104,4 +126,4 @@ jobs:
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
             docker compose -f docker-compose.eureka-gateway.yml down
             docker compose -f docker-compose.eureka-gateway.yml pull
-            docker compose -f docker-compose.eureka-gateway.yml --env-file ./config-secrets/env-eureka-gateway/.env up -d
+            docker compose -f docker-compose.eureka-gateway.yml up
