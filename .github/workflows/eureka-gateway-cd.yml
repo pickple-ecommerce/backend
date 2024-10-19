@@ -105,9 +105,10 @@ jobs:
           host: ${{ secrets.AWS_EUREKA_GATEWAY_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
-          source: "/home/runner/work/backend/backend/docker/docker-compose.eureka-gateway.yml"
+          source: "./docker/docker-compose.eureka-gateway.yml"
           target: "/home/ec2-user"
-          strip_components: 5
+          strip_components: 1  # 첫 번째 디렉토리 수준 제거
+          overwrite: true      # 덮어쓰기 허용
 
 #      - name: Copy .env file to EC2
 #        uses: appleboy/scp-action@v0.1.7
