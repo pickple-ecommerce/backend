@@ -24,12 +24,12 @@ public class StockRetryService {
     // 예약 구매: 재고 1 감소 메서드
     @Retryable(
             retryFor = {StaleObjectStateException.class, OptimisticLockException.class, ObjectOptimisticLockingFailureException.class},
-            maxAttempts = 1500,
+            maxAttempts = 500,
             backoff = @Backoff(100)
     )
     @Transactional
     public void decreaseStockQuantityWithRetry(UUID productId) {
-        Stock stock = stockRepository.findByProduct_ProductId(productId)
+        Stock stock = stockRepository.findByProduct_ProductIdWithLock(productId)
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
         stock.decreaseStock();  // 수량 1 감소
         stockRepository.save(stock);
