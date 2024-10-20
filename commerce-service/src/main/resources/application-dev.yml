@@ -1,6 +1,9 @@
 spring:
   application:
     name: commerce-service
+  sleuth:
+    service-name: ${spring.application.name}
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -45,6 +48,13 @@ management:
       show-details: always
     prometheus:
       enabled: true
+
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
+  tracing:
+    sampling:
+      probability: 1.0
 
 kafka:
   topic:
