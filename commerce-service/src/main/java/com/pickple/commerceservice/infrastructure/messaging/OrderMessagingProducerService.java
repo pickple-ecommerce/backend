@@ -1,7 +1,5 @@
 package com.pickple.commerceservice.infrastructure.messaging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pickple.commerceservice.application.service.TemporaryStorageService;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateRequestEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryDeleteRequestEvent;
@@ -22,9 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderMessagingProducerService {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final TemporaryStorageService temporaryStorageService;
-    private final ObjectMapper objectMapper;
 
     @Value("${kafka.topic.delivery-create-request}")
     private String deliveryCreateRequestTopic;
@@ -89,12 +86,7 @@ public class OrderMessagingProducerService {
      * 공통 메시지 전송 메소드
      */
     private void sendMessage(String topic, Object event) {
-        try {
-            String eventJson = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send(topic, eventJson);
-            log.info("{} 이벤트를 전송했습니다: {}", topic, eventJson);
-        } catch (JsonProcessingException e) {
-            log.error("{} 이벤트 직렬화 실패: {}", topic, e.getMessage());
-        }
+        kafkaTemplate.send(topic, event); // 객체를 직접 전송
+        log.info("{} 이벤트를 전송했습니다: {}", topic, event);
     }
 }
