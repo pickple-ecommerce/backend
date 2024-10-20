@@ -31,7 +31,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - ../db-init/payment/init-payment.sql:/docker-entrypoint-initdb.d/init-payment.sql
+      - ./db-init/payment/init-payment.sql:/docker-entrypoint-initdb.d/init-payment.sql
 
   user_db:
     image: postgres:latest
@@ -43,7 +43,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ../db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
+      - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
 
   notification_db:
     image: postgres:latest
@@ -55,7 +55,7 @@ services:
     ports:
       - "5436:5432"
     volumes:
-      - ../db-init/notification/init-notification.sql:/docker-entrypoint-initdb.d/init-notification.sql
+      - ./db-init/notification/init-notification.sql:/docker-entrypoint-initdb.d/init-notification.sql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -122,7 +122,8 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=pickple
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_NOTIFIERS_CONTACTPOINT_URL=${SLACK_WEBHOOK_URL}
+      - GF_SERVER_CHANNEL=${WEBHOOK_FOR_SERVER}
+      - GF_TRAFFIC_CHANNEL=${WEBHOOK_FOR_TRAFFIC}
     volumes:
       - ../settings/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
@@ -130,6 +131,16 @@ services:
       - prometheus
     networks:
       - t4y
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ../settings/grafana/loki/loki-config.yml:/etc/loki/local-config.yml
+    command: -config.file=/etc/loki/local-config.yml
+    restart: always
 
   node_exporter:
     image: prom/node-exporter

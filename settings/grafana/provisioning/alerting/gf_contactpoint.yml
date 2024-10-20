@@ -2,27 +2,32 @@ apiVersion: 1
 
 contactPoints:
   - orgId: 1
-    name: Slack
+    name: server-channel
     receivers:
-      - uid: ce0eyk36u28zlb
+      - uid: ce0x6iqtr6i2pf
         type: slack
         settings:
-          text: |-
-            {{ define "alerts.message" -}}
-              {{ if .Alerts.Firing -}}
-                {{ len .Alerts.Firing }} firing alert(s)
-                {{ template "alerts.summarize" .Alerts.Firing }}
-              {{- end }}
-              {{- if .Alerts.Resolved -}}
-                {{ len .Alerts.Resolved }} resolved alert(s)
-                {{ template "alerts.summarize" .Alerts.Resolved }}
-              {{- end }}
-            {{- end }}
-            
-            {{ define "alerts.summarize" -}}
-              {{ range . -}}
-              - {{ index .Annotations "summary" }}
-              {{ end }}
-            {{ end }}
-          url: ${GF_NOTIFIERS_CONTACTPOINT_URL}
+          icon_emoji: ':warning:'
+          url: ${GF_SERVER_CHANNEL}
+          username: Server Up/Down Warn
+          text: |
+            *Alert:* {{ .CommonAnnotations.summary }}
+            *Description:* {{ .CommonAnnotations.description }}
+            *Severity:* {{ .Labels.severity }}
+        disableResolveMessage: true
+
+
+  - orgId: 1
+    name: traffic-channel
+    receivers:
+      - uid: ae0x12fed8r29f
+        type: slack
+        settings:
+          icon_emoji: ':fire:'
+          url: ${GF_TRAFFIC_CHANNEL}
+          username: Traffic Warn
+          text: |
+            *Alert:* {{ .CommonAnnotations.summary }}
+            *Description:* {{ .CommonAnnotations.description }}
+            *Severity:* {{ .Labels.severity }}
         disableResolveMessage: false

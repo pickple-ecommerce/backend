@@ -14,7 +14,9 @@ import com.pickple.delivery.application.events.DeliveryCreateResponseEvent;
 import com.pickple.delivery.application.dto.request.DeliveryStartRequestDto;
 import com.pickple.delivery.application.dto.response.DeliveryStartResponseDto;
 import com.pickple.delivery.application.events.DeliveryEndEvent;
+import com.pickple.delivery.application.events.NotificationSendEvent;
 import com.pickple.delivery.application.mapper.DeliveryMapper;
+import com.pickple.delivery.application.port.OrderClient;
 import com.pickple.delivery.domain.model.deleted.DeliveryDeleted;
 import com.pickple.delivery.domain.model.deleted.DeliveryDetailDeleted;
 import com.pickple.delivery.domain.model.enums.DeliveryCarrier;
@@ -34,6 +36,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -52,11 +56,16 @@ public class DeliveryApplicationService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
+    private final OrderClient orderClient;
+
     @Value("${kafka.topic.delivery-create-response}")
     private String deliveryCreateResponseTopic;
 
     @Value("${kafka.topic.delivery-end-response}")
-    private String deliveryEndRequestTopic;
+    private String deliveryEndResponseTopic;
+
+    @Value("${kafka.topic.email-create-request}")
+    private String emailCreateRequestTopic;
 
     @Transactional
     public void createDelivery(@Valid DeliveryCreateRequestDto dto) {
@@ -108,8 +117,27 @@ public class DeliveryApplicationService {
         String carrierId = dto.getDeliveryCarrier().getCompanyId();
         delivery.startDelivery(carrierId, dto.getDeliveryType(), dto);
 
+        sendNotification(delivery, "배송 시작 알림", "배송이 시작되었습니다.");
+
         log.info("배송 시작 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
         return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
+    }
+
+    private void sendNotification(Delivery delivery, String subject, String content) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String sender = (String) authentication.getPrincipal();
+        String role =  authentication.getAuthorities().stream().findFirst().get().getAuthority();
+        String username = orderClient.getUsernameByDeliveryId(
+                delivery.getDeliveryId(), role, sender);
+
+        NotificationSendEvent notificationSendEvent = NotificationSendEvent.builder()
+                .username(username)
+                .subject(subject)
+                .content(content)
+                .sender(sender)
+                .build();
+        deliveryMessageProducerService.sendMessage(emailCreateRequestTopic,
+                EventSerializer.serialize(notificationSendEvent));
     }
 
     @Transactional
@@ -129,10 +157,12 @@ public class DeliveryApplicationService {
         delivery.endDelivery();
         deliveryRepository.save(delivery);
 
-        deliveryMessageProducerService.sendMessage(deliveryEndRequestTopic,
+        deliveryMessageProducerService.sendMessage(deliveryEndResponseTopic,
                 EventSerializer.serialize(
-                        new DeliveryEndEvent(delivery.getOrderId(), deliveryId)
+                        new DeliveryEndEvent(delivery.getOrderId(), deliveryId, "DELIVERED")
                 ));
+
+        sendNotification(delivery, "배송 완료 알림", "배송이 완료되었습니다.");
         log.info("배송 완료 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
     }
 
@@ -151,9 +181,10 @@ public class DeliveryApplicationService {
     public DeliveryInfoResponseDto getDeliveryInfo(UUID deliveryId) {
         log.info("배송 정보 조회 요청을 처리합니다. 배송 ID: {}", deliveryId);
 
-        DeliveryInfoResponseDto cachedDeliveryInfo = (DeliveryInfoResponseDto) redisTemplate.opsForValue().get(
-                CACHE_PREFIX + "::" + deliveryId
-        );
+        DeliveryInfoResponseDto cachedDeliveryInfo = (DeliveryInfoResponseDto) redisTemplate.opsForValue()
+                .get(
+                        CACHE_PREFIX + "::" + deliveryId
+                );
         if (cachedDeliveryInfo != null) {
             return cachedDeliveryInfo;
         }
@@ -227,6 +258,10 @@ public class DeliveryApplicationService {
             log.error("배송 삭제에 실패하였습니다.: {}", e.getMessage());
             throw new CustomException(DeliveryErrorCode.DELIVERY_SAVE_FAILURE);
         }
+        deliveryMessageProducerService.sendMessage(deliveryEndResponseTopic,
+                EventSerializer.serialize(
+                        new DeliveryEndEvent(delivery.getOrderId(), deliveryId, "DELETED")
+                ));
         return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(),
                 deleter);
     }

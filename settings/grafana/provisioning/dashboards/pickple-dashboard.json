@@ -26,10 +26,371 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 19004,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 3,
   "links": [],
   "liveNow": false,
   "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 97,
+      "panels": [],
+      "title": "Application Logs",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "labels"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Line"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 98,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "builder",
+          "expr": "{service=\"user-service\"} |= `${log_level}`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "user-service logs",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "labels"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Line"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 101,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "builder",
+          "expr": "{service=\"delivery-service\"} |= `${log_level}`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "delivery-service logs",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "labels"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Line"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 102,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "builder",
+          "expr": "{service=\"auth-service\"} |= `${log_level}`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "auth-service logs",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "labels"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Line"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 100,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "builder",
+          "expr": "{service=\"notification-service\"} |= `${log_level}`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "notification-service logs",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "labels"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Line"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 99,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "builder",
+          "expr": "{service=\"payment-service\"} |= `${log_level}`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "payment-service logs",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "labels"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Line"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 103,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "builder",
+          "expr": "{service=\"commerce-service\"} |= `${log_level}`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "commerce-service logs",
+      "type": "logs"
+    },
     {
       "collapsed": false,
       "datasource": {
@@ -40,7 +401,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 25
       },
       "id": 54,
       "panels": [],
@@ -82,8 +443,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -99,7 +459,7 @@
         "h": 3,
         "w": 6,
         "x": 0,
-        "y": 1
+        "y": 26
       },
       "id": 52,
       "maxDataPoints": 100,
@@ -169,8 +529,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -190,7 +549,7 @@
         "h": 6,
         "w": 5,
         "x": 6,
-        "y": 1
+        "y": 26
       },
       "id": 58,
       "maxDataPoints": 100,
@@ -267,8 +626,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(50, 172, 45, 0.97)",
-                "value": null
+                "color": "rgba(50, 172, 45, 0.97)"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -288,7 +646,7 @@
         "h": 6,
         "w": 5,
         "x": 11,
-        "y": 1
+        "y": 26
       },
       "id": 60,
       "maxDataPoints": 100,
@@ -375,8 +733,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -392,7 +749,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 1
+        "y": 26
       },
       "id": 66,
       "options": {
@@ -451,8 +808,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -468,7 +824,7 @@
         "h": 3,
         "w": 6,
         "x": 0,
-        "y": 4
+        "y": 29
       },
       "id": 56,
       "maxDataPoints": 100,
@@ -558,8 +914,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -575,7 +930,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 32
       },
       "id": 95,
       "options": {
@@ -675,8 +1030,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -692,7 +1046,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 32
       },
       "id": 96,
       "options": {
@@ -754,7 +1108,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 39
       },
       "id": 48,
       "panels": [
@@ -819,7 +1173,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 31
           },
           "id": 85,
           "links": [],
@@ -948,7 +1302,7 @@
             "h": 8,
             "w": 6,
             "x": 0,
-            "y": 23
+            "y": 39
           },
           "id": 88,
           "links": [],
@@ -1080,7 +1434,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 31
+            "y": 47
           },
           "id": 68,
           "links": [],
@@ -1207,7 +1561,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 39
+            "y": 55
           },
           "id": 82,
           "links": [],
@@ -1316,7 +1670,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 39
+            "y": 55
           },
           "id": 83,
           "links": [],
@@ -1425,7 +1779,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 46
+            "y": 62
           },
           "id": 78,
           "links": [],
@@ -1496,7 +1850,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 40
       },
       "id": 72,
       "panels": [
@@ -1561,7 +1915,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 16
+            "y": 32
           },
           "id": 74,
           "links": [],
@@ -1662,7 +2016,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 16
+            "y": 32
           },
           "id": 76,
           "links": [],
@@ -1725,7 +2079,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 41
       },
       "id": 34,
       "panels": [
@@ -1770,7 +2124,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 43
+            "y": 59
           },
           "id": 44,
           "links": [],
@@ -1869,7 +2223,7 @@
             "h": 8,
             "w": 20,
             "x": 4,
-            "y": 43
+            "y": 59
           },
           "id": 36,
           "links": [],
@@ -1976,7 +2330,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 47
+            "y": 63
           },
           "id": 46,
           "links": [],
@@ -2029,7 +2383,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 51
+            "y": 67
           },
           "hiddenSeries": false,
           "id": 38,
@@ -2116,7 +2470,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 51
+            "y": 67
           },
           "hiddenSeries": false,
           "id": 42,
@@ -2203,7 +2557,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 51
+            "y": 67
           },
           "hiddenSeries": false,
           "id": 40,
@@ -2298,7 +2652,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 42
       },
       "id": 18,
       "panels": [
@@ -2363,7 +2717,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 34
           },
           "id": 4,
           "links": [],
@@ -2459,7 +2813,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 41
           },
           "id": 2,
           "links": [],
@@ -2521,7 +2875,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 43
       },
       "id": 8,
       "panels": [
@@ -2586,7 +2940,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 19
+            "y": 35
           },
           "id": 6,
           "links": [],
@@ -2702,7 +3056,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 19
+            "y": 35
           },
           "id": 10,
           "links": [],
@@ -2806,7 +3160,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 26
+            "y": 42
           },
           "id": 14,
           "links": [],
@@ -2910,7 +3264,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 26
+            "y": 42
           },
           "id": 16,
           "links": [],
@@ -3014,7 +3368,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 26
+            "y": 42
           },
           "id": 20,
           "links": [],
@@ -3073,9 +3427,7 @@
   ],
   "refresh": "",
   "schemaVersion": 39,
-  "tags": [
-    "app"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
@@ -3256,6 +3608,39 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "WARN",
+          "value": "WARN"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Log Label",
+        "multi": false,
+        "name": "log_level",
+        "options": [
+          {
+            "selected": false,
+            "text": "INFO",
+            "value": "INFO"
+          },
+          {
+            "selected": true,
+            "text": "WARN",
+            "value": "WARN"
+          },
+          {
+            "selected": false,
+            "text": "ERROR",
+            "value": "ERROR"
+          }
+        ],
+        "query": "INFO, WARN, ERROR",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
@@ -3289,8 +3674,8 @@
     ]
   },
   "timezone": "",
-  "title": "Spring Boot 3.x Statistics",
-  "uid": "spring_boot_21",
+  "title": "Spring Boot 3.x Statistics Copy",
+  "uid": "ae17d50shquwwa",
   "version": 1,
   "weekStart": ""
 }
