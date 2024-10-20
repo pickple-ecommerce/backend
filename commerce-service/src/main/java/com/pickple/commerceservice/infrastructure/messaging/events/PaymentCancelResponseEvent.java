@@ -9,9 +9,8 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeliveryEndResponseEvent {
-
+public class PaymentCancelResponseEvent {
     private UUID orderId;
-    private UUID deliveryId;
-    private String status;
+    private UUID paymentId; // 결제 ID
+    private String status;  // 결제 취소 상태 (예: 'CANCELED', 'FAILED')
 }
