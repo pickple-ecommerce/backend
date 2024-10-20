@@ -68,6 +68,11 @@ public class OrderEventService {
             PaymentCancelRequestEvent cancelEvent = new PaymentCancelRequestEvent(orderId, "재고 부족으로 취소 요청");
             kafkaTemplate.send("payment-cancel-request", cancelEvent);
             log.error("재고 부족으로 결제 취소 요청을 전송했습니다: orderId {}", orderId);
+
+            // 주문 상태를 CANCELED로 변경
+            order.changeStatus(OrderStatus.CANCELED);
+            orderRepository.save(order);
+
             return;
         }
 
