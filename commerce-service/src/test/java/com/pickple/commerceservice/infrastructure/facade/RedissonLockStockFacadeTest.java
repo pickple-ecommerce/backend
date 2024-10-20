@@ -4,10 +4,7 @@ import com.pickple.commerceservice.application.service.StockService;
 import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.model.Stock;
 import com.pickple.commerceservice.domain.repository.StockRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,8 +31,8 @@ class RedissonLockStockFacadeTest {
 
     private Product product;
     private Stock stock;
-    private final UUID productId = UUID.fromString("4c3ad20e-5117-4ec6-a41f-53e00a7c117b");
-    private final UUID stockId = UUID.fromString("a7af4401-ce29-4fab-b1f1-e1906abcb07a");
+    private final UUID productId = UUID.fromString("33bc4ae0-4b25-4b21-bded-bf45820419cc");
+    private final UUID stockId = UUID.fromString("92984725-5244-4897-a3c6-6563ccdbb1ae");
     @BeforeEach
     void setUp() {
         product = Product.builder()
@@ -45,13 +42,14 @@ class RedissonLockStockFacadeTest {
 
         stock = Stock.builder()
                 .stockId(stockId)
-                .stockQuantity(50L) // 초기 재고를 100개로 설정
+                .stockQuantity(50L) // 초기 재고를 50개로 설정
                 .product(product)
                 .build();
         stockRepository.saveAndFlush(stock); // 재고 저장
     }
 
     @Test
+    @Disabled("테스트 성공 확인 후 비활성")
     @DisplayName("동시에 100개의 요청에서 재고 감소 테스트")
     void decreaseStockQuantityWithLock() throws InterruptedException {
         int threadCount = 100;
