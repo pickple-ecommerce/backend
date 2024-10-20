@@ -98,4 +98,20 @@ public class StockService {
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.STOCK_DATA_NOT_FOUND_FOR_PRODUCT));
     }
 
+    // 주문한 수량만큼 재고 복구 메서드
+    @Transactional
+    public void increaseStockQuantityForOrder(OrderDetail orderDetail) {
+        UUID productId = orderDetail.getProduct().getProductId();
+        Long quantityToIncrease = orderDetail.getOrderQuantity();
+
+        // 해당 상품 재고 조회
+        Stock stock = findStockByProductId(productId);
+
+        // 재고 수량 복구
+        long currentQuantity = stock.getStockQuantity();
+        stock.updateStockQuantity(currentQuantity + quantityToIncrease);
+
+        stockRepository.save(stock);
+    }
+
 }
