@@ -29,6 +29,10 @@ public class Stock extends BaseEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Version
+    @Column(name = "version")
+    private Long version = 0L;
+
     public void updateStockQuantity(Long newQuantity) {
         if (newQuantity == null || newQuantity < 0) {
             throw new CustomException(CommerceErrorCode.STOCK_UNDER_ZERO);
