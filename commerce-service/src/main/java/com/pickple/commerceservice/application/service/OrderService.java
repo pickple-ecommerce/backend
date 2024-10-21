@@ -14,6 +14,7 @@ import com.pickple.commerceservice.infrastructure.feign.PaymentClient;
 import com.pickple.commerceservice.infrastructure.feign.dto.DeliveryClientDto;
 import com.pickple.commerceservice.infrastructure.feign.dto.PaymentClientDto;
 import com.pickple.commerceservice.infrastructure.messaging.OrderMessagingProducerService;
+import com.pickple.commerceservice.infrastructure.redis.TemporaryStorageService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
 import com.pickple.common_module.exception.CustomException;
@@ -24,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
