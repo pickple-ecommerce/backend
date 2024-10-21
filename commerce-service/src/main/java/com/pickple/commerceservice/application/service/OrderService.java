@@ -133,19 +133,19 @@ public class OrderService {
                 .username(username)
                 .amount(product.getProductPrice())     // 주문 총액은 곧 상품 가격
                 .build();
-        OrderDetail orderDetail = OrderDetail.builder()
-                .product(product)
-                .unitPrice(product.getProductPrice())
-                .orderQuantity(1L)                     // 항상 수량은 1개
-                .totalPrice(product.getProductPrice()) // 총 가격을 바로 설정
-                .order(order)
-                .build();
+//        OrderDetail orderDetail = OrderDetail.builder()
+//                .product(product)
+//                .unitPrice(product.getProductPrice())
+//                .orderQuantity(1L)                     // 항상 수량은 1개
+//                .totalPrice(product.getProductPrice()) // 총 가격을 바로 설정
+//                .order(order)
+//                .build();
 
         // 주문 상태 변경
         order.changeStatus(OrderStatus.COMPLETED);
 
         // 주문 저장
-        order.addOrderDetails(Collections.singletonList(orderDetail));
+//        order.addOrderDetails(Collections.singletonList(orderDetail));
         orderRepository.save(order);
     }
 

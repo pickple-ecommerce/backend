@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableRetry
 @SpringBootApplication
 @EnableScheduling
 @EnableFeignClients(basePackages = "com.pickple.commerceservice.infrastructure.feign")
