@@ -3,10 +3,12 @@ package com.pickple.commerceservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
+@EnableRetry
 @EnableScheduling
+@SpringBootApplication
 @EnableFeignClients(basePackages = "com.pickple.commerceservice.infrastructure.feign")
 public class CommerceServiceApplication {
 
