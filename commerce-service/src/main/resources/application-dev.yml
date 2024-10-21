@@ -62,3 +62,4 @@ kafka:
     delivery-create-request: delivery-create-request
     payment-cancel-request: payment-cancel-request
     delivery-delete-request: delivery-delete-request
+    notification-create-request: notification-create-request
