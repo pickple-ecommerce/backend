@@ -13,7 +13,6 @@ import java.util.UUID;
 public class PaymentClientDto {
     private UUID orderId;
     private UUID paymentId;
-    private String userName;
     private BigDecimal amount;
     private String method;
     private String status;
