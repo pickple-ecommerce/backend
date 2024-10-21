@@ -25,7 +25,6 @@ public class OrderCreateRequestDto {
     public static class OrderDetail {
         private UUID productId;
         private Long orderQuantity; // 주문 수량
-        private BigDecimal unitPrice; // 상품 단가
     }
 
     @Getter
