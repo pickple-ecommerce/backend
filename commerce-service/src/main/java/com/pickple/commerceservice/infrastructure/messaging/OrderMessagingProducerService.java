@@ -1,13 +1,12 @@
 package com.pickple.commerceservice.infrastructure.messaging;
 
-import com.pickple.commerceservice.application.service.TemporaryStorageService;
+import com.pickple.commerceservice.infrastructure.redis.TemporaryStorageService;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateRequestEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryDeleteRequestEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCancelRequestEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCreateRequestEvent;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderMessagingProducerService {
@@ -47,9 +45,8 @@ public class OrderMessagingProducerService {
      * 배송 생성 요청 전송
      */
     public void sendDeliveryCreateRequest(UUID orderId, String username) {
-        // 저장된 배송 정보를 조회
-        OrderCreateRequestDto.DeliveryInfo deliveryInfo =
-                temporaryStorageService.getDeliveryInfo(orderId);
+        // Redis에 저장된 배송 정보 조회
+        OrderCreateRequestDto.DeliveryInfo deliveryInfo = temporaryStorageService.getDeliveryInfo(orderId);
 
         // 배송 생성 이벤트 객체 생성
         DeliveryCreateRequestEvent event = new DeliveryCreateRequestEvent(
@@ -61,8 +58,9 @@ public class OrderMessagingProducerService {
                 username
         );
 
-        // Kafka 메시지 전송 및 성공 시 저장된 배송 정보 삭제
+        // delivery-create-request 메시지 전송
         sendMessage(deliveryCreateRequestTopic, event);
+        // Redis에 저장된 배송 정보 삭제
         temporaryStorageService.removeDeliveryInfo(orderId);
     }
 
@@ -86,7 +84,6 @@ public class OrderMessagingProducerService {
      * 공통 메시지 전송 메소드
      */
     private void sendMessage(String topic, Object event) {
-        kafkaTemplate.send(topic, event); // 객체를 직접 전송
-        log.info("{} 이벤트를 전송했습니다: {}", topic, event);
+        kafkaTemplate.send(topic, event);
     }
 }
