@@ -104,8 +104,13 @@ public class OrderService {
         // 결제 정보 가져오기 (Feign)
         PaymentClientDto paymentInfo = paymentClient.getPaymentInfo(role, username, orderId);
 
-        // 배송 정보 가져오기 (Feign) - 예외 처리 로직은 DeliveryClient 내부에서 처리됨
-        DeliveryClientDto deliveryInfo = deliveryClient.fetchDeliveryInfo(role, username, orderId);
+        // 배송 정보 가져오기 (Feign)
+        DeliveryClientDto deliveryInfo = null;
+        try {
+            deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId).getData();
+        } catch (Exception e) {
+            log.warn("Failed to fetch delivery info for order {}: {}", orderId, e.getMessage());
+        }
 
         // OrderResponseDto 반환 (fromEntity 메서드 활용)
         return OrderResponseDto.fromEntity(order, paymentInfo, deliveryInfo);
@@ -165,9 +170,10 @@ public class OrderService {
         messagingProducerService.sendPaymentCancelRequest(orderId);
 
         // 배송 정보 삭제 요청 처리
-        DeliveryClientDto deliveryInfo = deliveryClient.fetchDeliveryInfo(role, username, orderId);
+        DeliveryClientDto deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId).getData();
+
         if (deliveryInfo != null && deliveryInfo.getDeliveryId() != null) {
-            messagingProducerService.sendDeliveryDeleteRequest(deliveryInfo.getDeliveryId(), orderId);
+            messagingProducerService.sendDeliveryDeleteRequest(deliveryInfo.getDeliveryId(), orderId, username);
         }
 
         // OrderResponseDto 반환 (fromEntity 메서드 활용)
