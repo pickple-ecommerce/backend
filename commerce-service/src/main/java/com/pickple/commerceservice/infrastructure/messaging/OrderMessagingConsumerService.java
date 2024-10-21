@@ -77,7 +77,7 @@ public class OrderMessagingConsumerService {
         UUID orderId = event.getOrderId();
         String status = event.getStatus();
 
-        if ("COMPLETED".equalsIgnoreCase(status)) {
+        if ("DELIVERED".equalsIgnoreCase(status)) {
             orderEventService.handleDeliveryEnd(orderId);
         } else {
             orderEventService.handleDeliveryCancel(orderId);

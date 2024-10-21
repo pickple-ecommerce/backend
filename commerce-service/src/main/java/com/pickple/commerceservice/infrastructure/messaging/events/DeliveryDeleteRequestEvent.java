@@ -12,5 +12,5 @@ import java.util.UUID;
 public class DeliveryDeleteRequestEvent {
     private UUID deliveryId;
     private UUID orderId;
-    private String message;
+    private String deleter;
 }

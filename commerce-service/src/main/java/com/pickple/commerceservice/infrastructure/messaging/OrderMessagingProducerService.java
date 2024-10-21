@@ -75,8 +75,8 @@ public class OrderMessagingProducerService {
     /**
      * 배송 취소 요청 전송
      */
-    public void sendDeliveryDeleteRequest(UUID deliveryId, UUID orderId) {
-        DeliveryDeleteRequestEvent event = new DeliveryDeleteRequestEvent(deliveryId, orderId, "Order cancellation request.");
+    public void sendDeliveryDeleteRequest(UUID deliveryId, UUID orderId, String username) {
+        DeliveryDeleteRequestEvent event = new DeliveryDeleteRequestEvent(deliveryId, orderId, username);
         sendMessage(deliveryDeleteRequestTopic, event);
     }
 
