@@ -1,10 +1,7 @@
 package com.pickple.commerceservice.infrastructure.messaging;
 
+import com.pickple.commerceservice.infrastructure.messaging.events.*;
 import com.pickple.commerceservice.infrastructure.redis.TemporaryStorageService;
-import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateRequestEvent;
-import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryDeleteRequestEvent;
-import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCancelRequestEvent;
-import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCreateRequestEvent;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +29,9 @@ public class OrderMessagingProducerService {
 
     @Value("${kafka.topic.delivery-delete-request}")
     private String deliveryDeleteRequestTopic;
+
+    @Value("${kafka.topic.notification-create-request}")
+    private String notificationCreateRequestTopic;
 
     /**
      * 결제 요청 전송
@@ -78,6 +78,26 @@ public class OrderMessagingProducerService {
     public void sendDeliveryDeleteRequest(UUID deliveryId, UUID orderId, String username) {
         DeliveryDeleteRequestEvent event = new DeliveryDeleteRequestEvent(deliveryId, orderId, username);
         sendMessage(deliveryDeleteRequestTopic, event);
+    }
+
+    /**
+     * 알림 생성 요청 전송
+     */
+    public void sendNotificationCreateRequest(String username, String sender, String subject, String content, String category) {
+        // sender가 null일 경우 기본값으로 "System" 설정
+        if (sender == null || sender.isEmpty()) {
+            sender = "System";
+        }
+
+        NotificationCreateRequestEvent event = new NotificationCreateRequestEvent(
+                username,
+                sender,
+                subject,
+                content,
+                category
+        );
+
+        sendMessage(notificationCreateRequestTopic, event);
     }
 
     /**
