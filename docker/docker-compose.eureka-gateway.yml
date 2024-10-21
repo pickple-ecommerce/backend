@@ -12,6 +12,7 @@ services:
       - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
       - EUREKA_HOSTNAME=${EUREKA_HOSTNAME}
       - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}
 
   gateway:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/gateway:latest
@@ -30,5 +31,6 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}
     depends_on:
       - eureka-server
