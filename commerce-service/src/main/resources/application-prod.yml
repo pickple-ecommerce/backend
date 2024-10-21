@@ -32,6 +32,8 @@ eureka:
       defaultZone: ${EUREKA_SERVER_URL}
     register-with-eureka: true
     fetch-registry: true
+  instance:
+    prefer-ip-address: true
 
 server:
   port: ${COMMERCE_SERVER_PORT}
@@ -46,6 +48,12 @@ management:
       show-details: always
     prometheus:
       enabled: true
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 0.2
 
 kafka:
   topic:

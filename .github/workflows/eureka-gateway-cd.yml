@@ -2,10 +2,7 @@ name: Deploy Gateway, Eureka to AWS ECR
 
 on:
   push:
-    branches: [ "feature/connect-ecr" ]
-    paths:
-      - 'gateway/**'
-      - 'eureka-server/**'
+    branches: [ "test/test-cd" ]
 
 jobs:
   build:

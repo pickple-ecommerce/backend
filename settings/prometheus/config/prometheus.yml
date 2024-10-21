@@ -75,12 +75,3 @@ scrape_configs:
       - targets: ['host.docker.internal:19097']
         labels:
           service: 'notification'
-
-  - job_name: 'node-exporter'
-    metrics_path: '/metrics'
-    scheme: 'http'
-
-    static_configs:
-      - targets: ['host.docker.internal:9100']
-        labels:
-          service: 'node-exporter'
