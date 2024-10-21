@@ -24,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.UUID;
@@ -83,8 +85,25 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        // 결제 요청 (Kafka)
-        messagingProducerService.sendPaymentRequest(order.getOrderId(), order.getAmount(), username);
+        // 트랜잭션이 완료된 후 결제 요청을 전송
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+
+                // 결제 요청 (Kafka)
+                messagingProducerService.sendPaymentRequest(order.getOrderId(), order.getAmount(), username);
+
+                // 주문 완료 알림 전송
+                messagingProducerService.sendNotificationCreateRequest(
+                        username,
+                        "System",
+                        "주문 완료",
+                        "주문이 성공적으로 완료되었습니다. 주문 번호: " + order.getOrderId(),
+                        "ORDER"
+                );
+
+            }
+        });
 
         // 배송 정보 저장 (Redis)
         temporaryStorageService.storeDeliveryInfoWithTTL(order.getOrderId(), requestDto.getDeliveryInfo());
