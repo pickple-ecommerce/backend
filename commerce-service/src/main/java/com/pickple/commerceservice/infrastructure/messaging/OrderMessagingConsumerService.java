@@ -2,11 +2,10 @@ package com.pickple.commerceservice.infrastructure.messaging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pickple.commerceservice.application.service.OrderEventService;
-import com.pickple.commerceservice.application.service.OrderService;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateResponseEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryEndResponseEvent;
+import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCancelResponseEvent;
 import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCreateResponseEvent;
 import com.pickple.common_module.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -29,27 +28,26 @@ public class OrderMessagingConsumerService {
     public void listenPaymentCreateResponse(ConsumerRecord<String, String> record) {
         PaymentCreateResponseEvent event;
         try {
-            // JSON 문자열을 PaymentCreateResponseEvent 객체로 변환
-            event = objectMapper.readValue(record.value(),
-                    PaymentCreateResponseEvent.class);
+            event = objectMapper.readValue(record.value(), PaymentCreateResponseEvent.class);
         } catch (JsonProcessingException e) {
             log.error("결제 응답 메시지를 역직렬화하는 도중 오류가 발생했습니다.", e);
-            throw new CustomException(CommerceErrorCode.INVALID_PAYMENT_MESSAGE_FORMAT);
+            return;  // 예외 발생 시 메시지 처리를 종료
         }
 
-        // 결제 상태가 "COMPLETED"가 아닐 경우 처리
-        if (!("COMPLETED".equalsIgnoreCase(event.getStatus()))) {
+        if (!"COMPLETED".equalsIgnoreCase(event.getStatus())) {
             log.warn("결제 실패 또는 다른 상태: {}", event.getStatus());
-            throw new CustomException(CommerceErrorCode.PAYMENT_CREATE_FAILED);
+            return;  // 결제 실패 시에도 메시지 처리를 중단
         }
 
         UUID orderId = event.getOrderId();
         UUID paymentId = event.getPaymentId();
-        String username = event.getMethod(); // 필요에 따라 method 대신 다른 필드 사용 가능
 
-        // OrderService를 통해 결제 완료 처리 및 배송 요청 전송
-        log.info("결제 완료 메시지를 처리합니다. orderId: {}, paymentId: {}", orderId, paymentId);
-        orderEventService.handlePaymentComplete(orderId, paymentId, username);
+        try {
+            orderEventService.handlePaymentComplete(orderId, paymentId);
+        } catch (CustomException e) {
+            // 재고 부족 시 예외를 던지지 않고 로그만 남기고 처리를 종료
+            log.error("결제 처리 중 재고 부족으로 결제가 취소되었습니다. orderId: {}, paymentId: {}", orderId, paymentId);
+        }
     }
 
     @KafkaListener(topics = "delivery-create-response", groupId = "commerce-service")
@@ -65,25 +63,58 @@ public class OrderMessagingConsumerService {
         UUID orderId = event.getOrderId();
         UUID deliveryId = event.getDeliveryId();
         log.info("배송 생성 메시지를 처리합니다. orderId: {}, deliveryId: {}", orderId, deliveryId);
-        orderEventService.handleDeliveryCreate(orderId, deliveryId);
+        orderEventService.handleDeliveryComplete(orderId, deliveryId);
     }
 
-    @KafkaListener(topics = "delivery-end-response", groupId = "commerce-service")
-    public void listenDeliveryEndResponse(String message) {
-        DeliveryEndResponseEvent event;
+@KafkaListener(topics = "delivery-end-response", groupId = "commerce-service")
+public void listenDeliveryEndResponse(String message) {
+    DeliveryEndResponseEvent event;
+    try {
+        // 메시지를 DeliveryEndResponseEvent로 역직렬화
+        event = objectMapper.readValue(message, DeliveryEndResponseEvent.class);
+    } catch (JsonProcessingException e) {
+        log.error("배송 완료 응답 메시지를 역직렬화하는 도중 오류가 발생했습니다.", e);
+        throw new CustomException(CommerceErrorCode.INVALID_DELIVERY_MESSAGE_FORMAT);
+    }
+
+    UUID orderId = event.getOrderId();
+    UUID deliveryId = event.getDeliveryId();
+    String status = event.getStatus();  // status 값 가져오기
+
+    // 배송 완료 메시지를 처리
+    log.info("배송 완료 메시지를 처리합니다. orderId: {}, deliveryId: {}, status: {}", orderId, deliveryId, status);
+
+    // status에 따라 처리
+    if ("COMPLETED".equalsIgnoreCase(status)) {
+        orderEventService.handleOrderComplete(orderId);  // 배송 완료 처리
+    } else if ("DELETED".equalsIgnoreCase(status)) {
+        orderEventService.handleOrderCancel(orderId);  // 주문 취소 처리
+    } else {
+        log.warn("알 수 없는 상태: {}", status);
+    }
+
+    }
+
+    @KafkaListener(topics = "payment-cancel-response", groupId = "commerce-service")
+    public void listenPaymentCancelResponse(String message) {
+        PaymentCancelResponseEvent event;
         try {
-            // 메시지를 DeliveryEndResponseEvent로 역직렬화
-            event = objectMapper.readValue(message, DeliveryEndResponseEvent.class);
+            // 메시지를 PaymentCancelResponseEvent로 역직렬화
+            event = objectMapper.readValue(message, PaymentCancelResponseEvent.class);
         } catch (JsonProcessingException e) {
-            log.error("배송 완료 응답 메시지를 역직렬화하는 도중 오류가 발생했습니다.", e);
-            throw new CustomException(CommerceErrorCode.INVALID_DELIVERY_MESSAGE_FORMAT);
+            log.error("결제 취소 응답 메시지를 역직렬화하는 도중 오류가 발생했습니다.", e);
+            throw new CustomException(CommerceErrorCode.INVALID_PAYMENT_MESSAGE_FORMAT);
         }
 
         UUID orderId = event.getOrderId();
-        UUID deliveryId = event.getDeliveryId();
+        String status = event.getStatus();  // status 값 가져오기
 
-        // 배송 완료 메시지를 처리
-        log.info("배송 완료 메시지를 처리합니다. orderId: {}, deliveryId: {}", orderId, deliveryId);
-        orderEventService.handleDeliveryEnd(orderId);
+        // 결제 취소 상태에 따라 처리
+        if ("CANCELED".equalsIgnoreCase(status)) {
+            orderEventService.handlePaymentCancel(orderId);  // 결제 취소 처리
+        } else {
+            log.warn("결제 취소 실패 또는 알 수 없는 상태: {}", status);
+        }
     }
+
 }

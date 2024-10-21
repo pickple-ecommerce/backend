@@ -87,7 +87,7 @@ public class OrderService {
         messagingProducerService.sendPaymentRequest(order.getOrderId(), order.getAmount(), username);
 
         // 배송 정보 저장 (Redis)
-        temporaryStorageService.storeDeliveryInfo(order.getOrderId(), requestDto.getDeliveryInfo());
+        temporaryStorageService.storeDeliveryInfoWithTTL(order.getOrderId(), requestDto.getDeliveryInfo());
 
         // OrderCreateResponseDto 반환 (fromEntity 메서드 활용)
         return OrderCreateResponseDto.fromEntity(order);
@@ -218,5 +218,27 @@ public class OrderService {
         return orderRepository.findByDeliveryId(deliveryId).orElseThrow(
                 () -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND)
         ).getUsername();
+    }
+
+    /**
+     * order timeout
+     */
+    @Transactional
+    public void handleOrderTimeout(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
+
+        // 결제가 이루어지지 않았고
+        if (order.getPaymentId() == null) {
+            log.info("주문이 결제되지 않았으므로 취소 처리됩니다. orderId: {}", orderId);
+
+            // 결제 취소 요청 전송 (Kafka)
+            messagingProducerService.sendPaymentCancelRequest(orderId);
+
+            // 주문 상태를 CANCELED로 변경
+            order.changeStatus(OrderStatus.CANCELED);
+            order.markAsDeleted();
+            orderRepository.save(order);
+        }
     }
 }
