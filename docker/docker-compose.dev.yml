@@ -158,6 +158,15 @@ services:
     networks:
       - t4y
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    restart: always
+    ports:
+      - "9411:9411"
+    networks:
+      - t4y
+
 networks:
   t4y:
     driver: bridge
