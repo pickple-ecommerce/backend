@@ -11,6 +11,7 @@ services:
     environment:
       - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
       - EUREKA_HOSTNAME=${EUREKA_HOSTNAME}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
 
   gateway:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/gateway:latest
@@ -28,5 +29,6 @@ services:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
     depends_on:
       - eureka-server
