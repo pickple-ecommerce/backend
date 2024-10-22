@@ -1,0 +1,34 @@
+services:
+  eureka-server:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/eureka:latest
+    build:
+      context: ../eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    environment:
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
+      - EUREKA_HOSTNAME=${EUREKA_HOSTNAME}
+
+  gateway:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/gateway:latest
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "${GATEWAY_SERVER_PORT}:${GATEWAY_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - GATEWAY_SERVER_PORT=${GATEWAY_SERVER_PORT}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+    depends_on:
+      - eureka-server

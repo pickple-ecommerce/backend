@@ -1,0 +1,45 @@
+services:
+  commerce-service:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/commerce:latest
+    network_mode: host
+    build:
+      context: ../commerce-service
+      dockerfile: Dockerfile
+    container_name: commerce
+    ports:
+      - "${COMMERCE_SERVER_PORT}:${COMMERCE_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - COMMERCE_SERVER_PORT=${COMMERCE_SERVER_PORT}
+      - COMMERCE_DB_URL=${COMMERCE_DB_URL}
+      - COMMERCE_DB_USERNAME=${COMMERCE_DB_USERNAME}
+      - COMMERCE_DB_PASSWORD=${COMMERCE_DB_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+      - LOKI_URL=${LOKI_URL}
+
+  payment-service:
+    image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/payment:latest
+    network_mode: host
+    build:
+      context: ../payment-service
+      dockerfile: Dockerfile
+    container_name: payment
+    ports:
+      - "${PAYMENT_SERVER_PORT}:${PAYMENT_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - PAYMENT_SERVER_PORT=${PAYMENT_SERVER_PORT}
+      - PAYMENT_DB_URL=${PAYMENT_DB_URL}
+      - PAYMENT_DB_USERNAME=${PAYMENT_DB_USERNAME}
+      - PAYMENT_DB_PASSWORD=${PAYMENT_DB_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}

@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: commerce-service
+  sleuth:
+    service-name: ${spring.application.name}
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5433/commerce_db
+    username: commerce_db
+    password: commerce
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: commerce-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  data:
+    redis:
+      sentinel:
+        master:
+          host: localhost
+          port: 6379
+        nodes:
+          - localhost:26379
+          - localhost:26380
+          - localhost:26381
+      timeout: 10000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+server:
+  port: 19094
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
+  tracing:
+    sampling:
+      probability: 1.0
+
+kafka:
+  topic:
+    payment-create-request: payment-create-request
+    delivery-create-request: delivery-create-request
+    payment-cancel-request: payment-cancel-request
+    delivery-delete-request: delivery-delete-request
+    notification-create-request: notification-create-request

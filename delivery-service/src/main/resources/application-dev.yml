@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: delivery-service
+  data:
+    mongodb:
+      host: localhost
+      port: 5435
+      database: delivery_db
+      username: delivery_db
+      password: delivery
+      authentication-database: admin
+    redis:
+      sentinel:
+        master:
+          host: localhost
+          port: 6379
+        nodes:
+          - localhost:26379
+          - localhost:26380
+          - localhost:26381
+      timeout: 10000
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: delivery-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+kafka:
+  topic:
+    delivery-create-response: delivery-create-response
+    delivery-create-failure: delivery-create-failure
+    delivery-delete-failure: delivery-delete-failure
+    delivery-end-response: delivery-end-response
+    email-create-request: email-create-request
+
+server:
+  port: 19096
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
+  tracing:
+    sampling:
+      probability: 1.0

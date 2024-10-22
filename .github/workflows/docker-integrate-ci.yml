@@ -1,0 +1,54 @@
+name: Integrated Docker Services Test
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  integrate-test:
+
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WORKSPACE_URL: ${{ secrets.SLACK_WORKSPACE_URL }}
+      WEBHOOK_FOR_SERVER: ${{ secrets.WEBHOOK_FOR_SERVER }}
+      WEBHOOK_FOR_TRAFFIC: ${{ secrets.WEBHOOK_FOR_TRAFFIC }}
+      LOKI_URL: http://localhost:3100/loki/api/v1/push
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Docker Compose로 서비스 실행
+        run: |
+          docker compose -f docker/docker-compose.dev.yml up -d
+
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
+      
+      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      
+      - name: Grant execute permission for Gradle Wrapper in root directory
+        run: chmod +x ./gradlew
+      
+      - name: Build and Start Eureka Server
+        run: |
+          cd eureka-server
+          chmod +x ./gradlew # Grant execute permission within the eureka-server directory
+          ./gradlew bootJar
+          nohup java -jar build/libs/eureka-server-0.0.1-SNAPSHOT.jar &
+          cd ..
+        env:
+          SPRING_PROFILES_ACTIVE: dev
+      
+      - name: Build Gradle Project
+        run: ./gradlew build -Dspring.profiles.active=dev

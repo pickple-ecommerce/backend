@@ -1,0 +1,45 @@
+server:
+  port: ${AUTH_SERVER_PORT}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+spring:
+  data:
+    redis:
+      sentinel:
+        master:
+          host: ${REDIS_HOST}
+          port: ${REDIS_PORT}
+        nodes:
+          - ${REDIS_HOST}:${REDIS_SENTINEL_PORT1}
+          - ${REDIS_HOST}:${REDIS_SENTINEL_PORT2}
+          - ${REDIS_HOST}:${REDIS_SENTINEL_PORT3}
+      timeout: 10000
+
+service:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 0.2
