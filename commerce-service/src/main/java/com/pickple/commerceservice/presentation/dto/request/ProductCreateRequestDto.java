@@ -1,6 +1,7 @@
 package com.pickple.commerceservice.presentation.dto.request;
 
 import com.pickple.commerceservice.domain.model.Vendor;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class ProductCreateRequestDto {
     private String description;
 
     @NotNull(message = "상품 가격은 필수입니다.")
+    @DecimalMin(value = "0.0", inclusive = false, message = "상품 가격은 0보다 커야합니다.")
     private BigDecimal productPrice;
 
     private String productImage;
