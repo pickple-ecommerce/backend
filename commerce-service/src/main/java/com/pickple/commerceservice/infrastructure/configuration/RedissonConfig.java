@@ -5,18 +5,25 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.codec.JsonJacksonCodec;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RedissonConfig {
 
+    @Value("${spring.data.redis.sentinel.master.host}")
+    private String REDIS_HOST;
+
+    @Value("${spring.data.redis.sentinel.master.port}")
+    private String REDIS_PORT;
+
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
 
         // Redis 서버 주소 설정
-        config.useSingleServer().setAddress("redis://127.0.0.1:6379");
+        config.useSingleServer().setAddress("redis://" + REDIS_HOST + ":" + REDIS_PORT);
 
         // ObjectMapper를 설정하고 Redisson에서 사용할 수 있도록 JsonJacksonCodec으로 설정
         ObjectMapper objectMapper = new ObjectMapper();
