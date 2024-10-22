@@ -3,9 +3,9 @@ name: Deploy Commence, Payment to AWS ECR
 on:
   push:
     branches: [ "refactor/revise-ci-cd" ]
-#    paths:
-#      - 'commerce-service/**'
-#      - 'payment-service/**'
+    paths:
+      - 'commerce-service/**'
+      - 'payment-service/**'
 
 jobs:
   build:

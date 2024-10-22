@@ -3,9 +3,9 @@ name: Deploy Delivery, Notification to AWS ECR
 on:
   push:
     branches: [ "refactor/revise-ci-cd" ]
-#    paths:
-#      - 'delivery-service/**'
-#      - 'notification-service/**'
+    paths:
+      - 'delivery-service/**'
+      - 'notification-service/**'
 
 jobs:
   build:
