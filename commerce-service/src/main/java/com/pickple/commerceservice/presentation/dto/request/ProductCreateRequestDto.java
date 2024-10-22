@@ -1,6 +1,7 @@
 package com.pickple.commerceservice.presentation.dto.request;
 
 import com.pickple.commerceservice.domain.model.Vendor;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +34,7 @@ public class ProductCreateRequestDto {
     @NotNull(message = "Vendor ID는 필수입니다.")
     private UUID vendorId;
 
+    @Valid // 내부 필드 유효성 검사 활성화
     @NotNull(message = "Stock 정보는 필수입니다.")
     private StockCreateRequestDto stock;
 
