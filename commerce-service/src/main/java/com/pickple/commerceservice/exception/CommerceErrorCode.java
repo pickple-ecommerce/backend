@@ -18,6 +18,7 @@ public enum CommerceErrorCode implements ErrorCode {
     STOCK_LOCK_FAILED(HttpStatus.BAD_REQUEST, "재고 lock 획득에 실패했습니다."),
     STOCK_DECREASE_FAILED(HttpStatus.BAD_REQUEST, "재고 감소 작업이 중단되었습니다."),
     PREORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 구매 정보를 찾을 수 없습니다."),
+    INVALID_PRODUCT_FOR_PREORDER(HttpStatus.BAD_REQUEST, "예약 구매 상품이 아닙니다."),
     PRE_ORDER_NOT_FOUND_FOR_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품에 대한 예약 구매 정보를 찾을 수 없습니다."),
 
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다."),
