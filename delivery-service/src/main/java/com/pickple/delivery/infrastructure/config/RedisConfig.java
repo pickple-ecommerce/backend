@@ -1,6 +1,9 @@
 package com.pickple.delivery.infrastructure.config;
 
 import java.time.Duration;
+
+import io.lettuce.core.ReadFrom;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +11,9 @@ import org.springframework.data.redis.cache.CacheKeyPrefix;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
@@ -19,10 +25,29 @@ public class RedisConfig {
 
     public static final String CACHE_PREFIX = "deliveryCache";
 
+    @Autowired
+    private RedisSentinelProperties redisSentinelProperties;
+
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisConnectionFactory redisConnectionFactory() {
+
+        // Redis Sentinel 설정
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder().readFrom(ReadFrom.REPLICA_PREFERRED).build();
+
+        final RedisSentinelProperties.RedisMasterProperties masterConfig = redisSentinelProperties.getMaster();
+        RedisStaticMasterReplicaConfiguration staticMasterReplicaConfiguration = new RedisStaticMasterReplicaConfiguration(masterConfig.getHost(), masterConfig.getPort());
+        redisSentinelProperties.getNodes().forEach(node -> {
+            String[] nodeInfo = node.split(":");
+            staticMasterReplicaConfiguration.addNode(nodeInfo[0], Integer.parseInt(nodeInfo[1]));
+        });
+
+        return new LettuceConnectionFactory(staticMasterReplicaConfiguration, clientConfig);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
+        template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new JdkSerializationRedisSerializer());
         return template;
