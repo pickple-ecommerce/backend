@@ -11,8 +11,13 @@ eureka:
 spring:
   data:
     redis:
-      host: localhost
-      port: 6379
+      sentinel:
+        master: mymaster
+        nodes:
+          - localhost:26379
+          - localhost:26380
+          - localhost:26381
+      timeout: 10000
 
 service:
   jwt:
