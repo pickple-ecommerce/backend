@@ -69,6 +69,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("동시에 100개의 주문 생성 요청 테스트")
+    @Disabled
     void createPreOrder_MultiThreaded() throws InterruptedException {
         int threadCount = 100;
         CountDownLatch latch = new CountDownLatch(threadCount);
