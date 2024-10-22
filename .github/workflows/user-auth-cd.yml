@@ -3,9 +3,9 @@ name: Deploy User, Auth to AWS ECR
 on:
   push:
     branches: [ "refactor/revise-ci-cd" ]
-#    paths:
-#      - 'auth-service/**'
-#      - 'user-service/**'
+    paths:
+      - 'auth-service/**'
+      - 'user-service/**'
 
 jobs:
   build:
