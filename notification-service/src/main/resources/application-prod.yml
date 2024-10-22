@@ -62,6 +62,11 @@ management:
       show-details: always
     prometheus:
       enabled: true
-
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 0.2
 slack:
   workspaceUrl: ${SLACK_WORKSPACE_URL}
