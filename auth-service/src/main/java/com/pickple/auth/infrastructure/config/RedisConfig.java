@@ -1,6 +1,7 @@
 package com.pickple.auth.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.lettuce.core.ReadFrom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +9,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
+import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,23 +30,18 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
+
         // Redis Sentinel 설정
-        RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration()
-                .master(redisSentinelProperties.getMaster());
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder().readFrom(ReadFrom.REPLICA_PREFERRED).build();
 
-        // 노드를 Set<RedisNode>로 변환
-        Set<RedisNode> nodes = new HashSet<>();
-        for (String node : redisSentinelProperties.getNodes()) {
-            String[] parts = node.split(":");
-            nodes.add(new RedisNode(parts[0], Integer.parseInt(parts[1])));
-        }
+        final RedisSentinelProperties.RedisMasterProperties masterConfig = redisSentinelProperties.getMaster();
+        RedisStaticMasterReplicaConfiguration staticMasterReplicaConfiguration = new RedisStaticMasterReplicaConfiguration(masterConfig.getHost(), masterConfig.getPort());
+        redisSentinelProperties.getNodes().forEach(node -> {
+            String[] nodeInfo = node.split(":");
+            staticMasterReplicaConfiguration.addNode(nodeInfo[0], Integer.parseInt(nodeInfo[1]));
+        });
 
-        // 각 노드를 sentinelConfig에 추가
-        for (RedisNode redisNode : nodes) {
-            sentinelConfig.sentinel(redisNode);
-        }
-
-        return new LettuceConnectionFactory(sentinelConfig);
+        return new LettuceConnectionFactory(staticMasterReplicaConfiguration, clientConfig);
     }
 
     @Bean
