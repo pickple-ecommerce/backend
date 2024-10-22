@@ -1,6 +1,7 @@
 services:
   delivery-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/delivery:latest
+    network_mode: host
     build:
       context: ../delivery-service
       dockerfile: Dockerfile
@@ -27,6 +28,7 @@ services:
 
   notification-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/notification:latest
+    network_mode: host
     build:
       context: ../notification-service
       dockerfile: Dockerfile
