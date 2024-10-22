@@ -1,6 +1,7 @@
 services:
   delivery-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/delivery:latest
+    network_mode: host
     build:
       context: ../delivery-service
       dockerfile: Dockerfile
@@ -19,9 +20,15 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+      - LOKI_URL=${LOKI_URL}
 
   notification-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/notification:latest
+    network_mode: host
     build:
       context: ../notification-service
       dockerfile: Dockerfile
@@ -39,3 +46,5 @@ services:
       - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
       - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
       - SLACK_WORKSPACE_URL=${SLACK_WORKSPACE_URL}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}
