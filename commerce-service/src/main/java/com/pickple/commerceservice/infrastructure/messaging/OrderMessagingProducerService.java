@@ -1,15 +1,9 @@
 package com.pickple.commerceservice.infrastructure.messaging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pickple.commerceservice.application.service.TemporaryStorageService;
-import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryCreateRequestEvent;
-import com.pickple.commerceservice.infrastructure.messaging.events.DeliveryDeleteRequestEvent;
-import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCancelRequestEvent;
-import com.pickple.commerceservice.infrastructure.messaging.events.PaymentCreateRequestEvent;
+import com.pickple.commerceservice.infrastructure.messaging.events.*;
+import com.pickple.commerceservice.infrastructure.redis.TemporaryStorageService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -17,14 +11,12 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderMessagingProducerService {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final TemporaryStorageService temporaryStorageService;
-    private final ObjectMapper objectMapper;
 
     @Value("${kafka.topic.delivery-create-request}")
     private String deliveryCreateRequestTopic;
@@ -38,6 +30,9 @@ public class OrderMessagingProducerService {
     @Value("${kafka.topic.delivery-delete-request}")
     private String deliveryDeleteRequestTopic;
 
+    @Value("${kafka.topic.notification-create-request}")
+    private String notificationCreateRequestTopic;
+
     /**
      * 결제 요청 전송
      */
@@ -50,9 +45,8 @@ public class OrderMessagingProducerService {
      * 배송 생성 요청 전송
      */
     public void sendDeliveryCreateRequest(UUID orderId, String username) {
-        // 저장된 배송 정보를 조회
-        OrderCreateRequestDto.DeliveryInfo deliveryInfo =
-                temporaryStorageService.getDeliveryInfo(orderId);
+        // Redis에 저장된 배송 정보 조회
+        OrderCreateRequestDto.DeliveryInfo deliveryInfo = temporaryStorageService.getDeliveryInfo(orderId);
 
         // 배송 생성 이벤트 객체 생성
         DeliveryCreateRequestEvent event = new DeliveryCreateRequestEvent(
@@ -64,8 +58,9 @@ public class OrderMessagingProducerService {
                 username
         );
 
-        // Kafka 메시지 전송 및 성공 시 저장된 배송 정보 삭제
+        // delivery-create-request 메시지 전송
         sendMessage(deliveryCreateRequestTopic, event);
+        // Redis에 저장된 배송 정보 삭제
         temporaryStorageService.removeDeliveryInfo(orderId);
     }
 
@@ -80,21 +75,35 @@ public class OrderMessagingProducerService {
     /**
      * 배송 취소 요청 전송
      */
-    public void sendDeliveryDeleteRequest(UUID deliveryId, UUID orderId) {
-        DeliveryDeleteRequestEvent event = new DeliveryDeleteRequestEvent(deliveryId, orderId, "Order cancellation request.");
+    public void sendDeliveryDeleteRequest(UUID deliveryId, UUID orderId, String username) {
+        DeliveryDeleteRequestEvent event = new DeliveryDeleteRequestEvent(deliveryId, orderId, username);
         sendMessage(deliveryDeleteRequestTopic, event);
+    }
+
+    /**
+     * 알림 생성 요청 전송
+     */
+    public void sendNotificationCreateRequest(String username, String sender, String subject, String content, String category) {
+        // sender가 null일 경우 기본값으로 "System" 설정
+        if (sender == null || sender.isEmpty()) {
+            sender = "System";
+        }
+
+        NotificationCreateRequestEvent event = new NotificationCreateRequestEvent(
+                username,
+                sender,
+                subject,
+                content,
+                category
+        );
+
+        sendMessage(notificationCreateRequestTopic, event);
     }
 
     /**
      * 공통 메시지 전송 메소드
      */
     private void sendMessage(String topic, Object event) {
-        try {
-            String eventJson = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send(topic, eventJson);
-            log.info("{} 이벤트를 전송했습니다: {}", topic, eventJson);
-        } catch (JsonProcessingException e) {
-            log.error("{} 이벤트 직렬화 실패: {}", topic, e.getMessage());
-        }
+        kafkaTemplate.send(topic, event);
     }
 }

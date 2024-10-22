@@ -45,6 +45,7 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 
+    // addOrderDetails 메서드
     public void addOrderDetails(List<OrderDetail> details) {
         this.orderDetails = details;
     }
@@ -56,10 +57,12 @@ public class Order extends BaseEntity {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    // 결제 ID 연결
     public void assignPaymentId(UUID paymentId) {
         this.paymentId = paymentId;
     }
 
+    // 주문 ID 연결
     public void assignDeliveryId(UUID deliveryId) {
         this.deliveryId = deliveryId;
     }

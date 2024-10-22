@@ -22,7 +22,7 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   data:
     redis:
       sentinel:
@@ -63,3 +63,4 @@ kafka:
     delivery-create-request: delivery-create-request
     payment-cancel-request: payment-cancel-request
     delivery-delete-request: delivery-delete-request
+    notification-create-request: notification-create-request
