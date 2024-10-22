@@ -1,4 +1,4 @@
-name: Deploy Commence, Payment to AWS ECR
+name: Deploy Commerce, Payment to AWS ECR
 
 on:
   push:
