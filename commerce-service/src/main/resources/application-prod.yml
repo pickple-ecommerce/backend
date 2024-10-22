@@ -39,6 +39,8 @@ eureka:
       defaultZone: ${EUREKA_SERVER_URL}
     register-with-eureka: true
     fetch-registry: true
+  instance:
+    prefer-ip-address: true
 
 server:
   port: ${COMMERCE_SERVER_PORT}
