@@ -62,7 +62,7 @@ public class DeliveryController {
                 deliveryService.getDeliveryInfo(deliveryId)));
     }
 
-    @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'VENDOR_MANAGER', 'MASTER')")
     @GetMapping("/orders/{orderId}")
     public ResponseEntity<ApiResponse<DeliveryStartResponseDto>> getDeliveryInfoByOrderId(
             @PathVariable("orderId") UUID orderId) {
@@ -170,11 +170,10 @@ public class DeliveryController {
 
     @PreAuthorize("hasAnyAuthority('VENDOR_MANAGER', 'MASTER')")
     @PostMapping("/{delivery_id}/end")
-    public ResponseEntity<ApiResponse<Void>> endDelivery(
+    public ResponseEntity<ApiResponse<DeliveryInfoResponseDto>> endDelivery(
             @PathVariable("delivery_id") UUID deliveryId) {
-        deliveryService.endDelivery(deliveryId);
         return ResponseEntity.ok(
-                ApiResponse.success(HttpStatus.OK, "배송이 완료되었습니다.", null));
+                ApiResponse.success(HttpStatus.OK, "배송이 완료되었습니다.", deliveryService.endDelivery(deliveryId)));
     }
 
 }

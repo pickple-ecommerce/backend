@@ -33,6 +33,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -141,7 +142,8 @@ public class DeliveryApplicationService {
     }
 
     @Transactional
-    public void endDelivery(UUID deliveryId) {
+    @CachePut(value = CACHE_PREFIX, key = "#deliveryId")
+    public DeliveryInfoResponseDto endDelivery(UUID deliveryId) {
         log.info("배송 완료 요청을 처리합니다. 배송 ID: {}", deliveryId);
         Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
                 () -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND)
@@ -155,7 +157,7 @@ public class DeliveryApplicationService {
         }
 
         delivery.endDelivery();
-        deliveryRepository.save(delivery);
+        Delivery savedDelivery = deliveryRepository.save(delivery);
 
         deliveryMessageProducerService.sendMessage(deliveryEndResponseTopic,
                 EventSerializer.serialize(
@@ -164,6 +166,7 @@ public class DeliveryApplicationService {
 
         sendNotification(delivery, "배송 완료 알림", "배송이 완료되었습니다.");
         log.info("배송 완료 처리가 성공적으로 완료되었습니다. 배송 ID: {}", delivery.getDeliveryId());
+        return DeliveryMapper.convertEntityToInfoResponseDto(savedDelivery);
     }
 
     @Transactional(readOnly = true)

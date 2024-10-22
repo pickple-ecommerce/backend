@@ -1,6 +1,7 @@
 services:
   auth-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/auth:latest
+    network_mode: host
     build:
       context: ../auth-service
       dockerfile: Dockerfile
@@ -14,9 +15,15 @@ services:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+      - LOKI_URL=${LOKI_URL}
 
   user-service:
     image: ${ECR_REGISTRY}/${ECR_NAMESPACE}/user:latest
+    network_mode: host
     build:
       context: ../user-service
       dockerfile: Dockerfile
@@ -31,3 +38,5 @@ services:
       - USER_DB_PASSWORD=${USER_DB_PASSWORD}
       - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
       - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}

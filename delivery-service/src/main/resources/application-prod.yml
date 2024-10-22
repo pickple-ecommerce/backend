@@ -10,8 +10,15 @@ spring:
       password: ${DELIVERY_MONGODB_PASSWORD}
       authentication-database: admin
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      sentinel:
+        master:
+          host: ${REDIS_HOST}
+          port: ${REDIS_PORT}
+        nodes:
+          - ${REDIS_HOST}:${REDIS_SENTINEL_PORT1}
+          - ${REDIS_HOST}:${REDIS_SENTINEL_PORT2}
+          - ${REDIS_HOST}:${REDIS_SENTINEL_PORT3}
+      timeout: 10000
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
@@ -30,6 +37,8 @@ eureka:
       defaultZone: ${EUREKA_SERVER_URL}
     register-with-eureka: true
     fetch-registry: true
+  instance:
+    prefer-ip-address: true
 
 kafka:
   topic:
@@ -52,3 +61,9 @@ management:
       show-details: always
     prometheus:
       enabled: true
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 0.2
