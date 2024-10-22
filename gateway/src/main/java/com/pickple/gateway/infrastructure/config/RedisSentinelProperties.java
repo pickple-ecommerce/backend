@@ -1,4 +1,4 @@
-package com.pickple.auth.infrastructure.config;
+package com.pickple.gateway.infrastructure.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
