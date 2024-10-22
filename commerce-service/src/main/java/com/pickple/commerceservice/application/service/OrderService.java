@@ -6,6 +6,7 @@ import com.pickple.commerceservice.domain.model.OrderDetail;
 import com.pickple.commerceservice.domain.model.OrderStatus;
 import com.pickple.commerceservice.domain.model.Product;
 import com.pickple.commerceservice.domain.repository.OrderRepository;
+import com.pickple.commerceservice.domain.repository.PreOrderRepository;
 import com.pickple.commerceservice.domain.repository.ProductRepository;
 import com.pickple.commerceservice.exception.CommerceErrorCode;
 import com.pickple.commerceservice.infrastructure.facade.RedissonLockStockFacade;
@@ -42,6 +43,7 @@ public class OrderService {
     private final TemporaryStorageService temporaryStorageService;
     private final OrderMessagingProducerService messagingProducerService;
     private final ProductRepository productRepository;
+    private final PreOrderRepository preOrderRepository;
     private final PaymentClient paymentClient;
     private final DeliveryClient deliveryClient;
 
@@ -144,6 +146,10 @@ public class OrderService {
         Product product = productRepository.findById(requestDto.getProductId())
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.PRODUCT_NOT_FOUND));
 
+        // 예약구매 상품 여부 확인
+        preOrderRepository.findByProduct_ProductIdAndIsDeleteFalse(product.getProductId())
+                .orElseThrow(() -> new CustomException(CommerceErrorCode.INVALID_PRODUCT_FOR_PREORDER));
+
         // 재고 확인 및 차감
         try {
             redissonLockStockFacade.decreaseStockQuantityWithLock(product.getProductId());
@@ -157,19 +163,11 @@ public class OrderService {
                 .username(username)
                 .amount(product.getProductPrice())     // 주문 총액은 곧 상품 가격
                 .build();
-//        OrderDetail orderDetail = OrderDetail.builder()
-//                .product(product)
-//                .unitPrice(product.getProductPrice())
-//                .orderQuantity(1L)                     // 항상 수량은 1개
-//                .totalPrice(product.getProductPrice()) // 총 가격을 바로 설정
-//                .order(order)
-//                .build();
 
         // 주문 상태 변경
         order.changeStatus(OrderStatus.COMPLETED);
 
         // 주문 저장
-//        order.addOrderDetails(Collections.singletonList(orderDetail));
         orderRepository.save(order);
     }
 
