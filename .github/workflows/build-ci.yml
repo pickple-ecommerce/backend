@@ -2,7 +2,7 @@ name: Only Build Gradle without Test
 
 on:
   push:
-    branches: [ "refactor/revise-ci-cd" ]
+    branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
 

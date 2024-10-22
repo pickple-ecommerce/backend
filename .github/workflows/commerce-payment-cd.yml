@@ -2,7 +2,7 @@ name: Deploy Commerce, Payment to AWS ECR
 
 on:
   push:
-    branches: [ "refactor/revise-ci-cd" ]
+    branches: [ "main" ]
     paths:
       - 'commerce-service/**'
       - 'payment-service/**'

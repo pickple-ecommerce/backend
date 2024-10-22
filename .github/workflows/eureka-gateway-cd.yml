@@ -2,7 +2,7 @@ name: Deploy Gateway, Eureka to AWS ECR
 
 on:
   push:
-    branches: [ "refactor/revise-ci-cd" ]
+    branches: [ "main" ]
     paths:
       - 'gateway/**'
       - 'eureka-server/**'
