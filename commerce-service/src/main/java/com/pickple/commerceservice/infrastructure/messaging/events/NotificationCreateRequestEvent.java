@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeliveryDeleteRequestEvent {
-    private UUID deliveryId;
-    private UUID orderId;
-    private String deleter;
+public class NotificationCreateRequestEvent {
+    private String username;
+    private String sender;
+    private String subject;
+    private String content;
+    private String category;
 }

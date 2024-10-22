@@ -10,8 +10,15 @@ spring:
       password: delivery
       authentication-database: admin
     redis:
-      host: localhost
-      port: 6379
+      sentinel:
+        master:
+          host: localhost
+          port: 6379
+        nodes:
+          - localhost:26379
+          - localhost:26380
+          - localhost:26381
+      timeout: 10000
 
   kafka:
     bootstrap-servers: localhost:9092

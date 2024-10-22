@@ -32,7 +32,11 @@ dependencies {
 	// Prometheus
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
+	// zipkin
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	// loki
+	implementation 'com.github.loki4j:loki-logback-appender:1.5.1'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// QueryDSL
