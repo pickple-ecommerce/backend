@@ -27,6 +27,7 @@ public enum CommerceErrorCode implements ErrorCode {
     CANNOT_CANCEL_DELIVERY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "배송이 이미 진행 중이므로 취소할 수 없습니다."),
     DELIVERY_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 정보를 찾을 수 없습니다."),
     DELIVERY_SERVICE_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "배송 서비스와의 통신 중 오류가 발생했습니다."),
+    PAYMENT_SERVICE_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "결제 서비스와의 통신 중 오류가 발생했습니다."),
     ;
 
 
