@@ -10,5 +10,5 @@ public interface UserFeignClient {
     @GetMapping("/api/v1/users/get-user-email/{username}")
     String getUserEmail(@PathVariable("username") String reqUsername,
                         @RequestHeader("X-User-Name") String username,
-                        @RequestHeader("X-User-Role") String role);
+                        @RequestHeader("X-User-Roles") String role);
 }
