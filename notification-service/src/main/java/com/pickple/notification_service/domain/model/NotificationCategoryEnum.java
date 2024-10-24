@@ -1,12 +1,12 @@
 package com.pickple.notification_service.domain.model;
 
 public enum NotificationCategoryEnum {
-    USER("회원"),
-    PRODUCT("상품"),
-    VENDOR("업체"),
-    ORDER("주문"),
-    PAYMENT("결제"),
-    DELIVERY("배송");
+    USER("USER"),
+    PRODUCT("PRODUCT"),
+    VENDOR("VENDOR"),
+    ORDER("ORDER"),
+    PAYMENT("PAYMENT"),
+    DELIVERY("DELIVERY");
 
     private final String category;
 
