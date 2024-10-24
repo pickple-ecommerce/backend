@@ -9,9 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,12 +41,9 @@ public class NotificationController {
     @GetMapping("/notification-history/{username}")
     public ResponseEntity<ApiResponse<Page<NotificationRespDto>>> notificationHistory (
             @PathVariable("username") String username,
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="size", defaultValue = "10") int size,
-            @RequestParam(value="sort", defaultValue = "createdAt, desc") String[] sort
+            @PageableDefault(size = 10, sort = {"createdAt", "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable
     )
     {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
 
         ApiResponse<Page<NotificationRespDto>> response = ApiResponse.success(
                 HttpStatus.OK,
@@ -60,12 +57,8 @@ public class NotificationController {
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping("/get-all-notifications")
     public ResponseEntity<ApiResponse<Page<NotificationRespDto>>> getAllNotifications(
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="size", defaultValue = "10") int size,
-            @RequestParam(value="sort", defaultValue = "createdAt, desc") String[] sort
+            @PageableDefault(size = 10, sort = {"createdAt", "updatedAt"}, direction = Sort.Direction.DESC) Pageable pageable
     ){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-
         ApiResponse<Page<NotificationRespDto>> response = ApiResponse.success(
                 HttpStatus.OK,
                 "전체 알림 내역이 조회 되었습니다.",
@@ -80,7 +73,7 @@ public class NotificationController {
     public ResponseEntity<ApiResponse<ChannelCreateRespDto>> createChannel(@Valid @RequestBody ChannelCreateReqDto reqDto) {
         ApiResponse<ChannelCreateRespDto> response = ApiResponse.success(
                 HttpStatus.OK,
-                "전체 알림 내역이 조회 되었습니다.",
+                "새 알림 채널이 추가되었습니다.",
                 notificationService.createChannel(reqDto)
         );
 

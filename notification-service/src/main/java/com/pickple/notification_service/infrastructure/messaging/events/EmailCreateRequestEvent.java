@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmailCreateRequestEvent {
     private String username;
+    private String role;
     private String category;
 
     @NotBlank(message = "제목은 비워둘 수 없습니다.")
