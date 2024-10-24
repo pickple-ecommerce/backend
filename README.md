@@ -39,7 +39,7 @@ MSA 구조를 통해 서비스의 확장성과 유연성을 확보하고,  Kafka
 ## 📚 문서
 
 #### API 명세서   
-[🔗 API 명세서 - Postman]()   
+[🔗 API 명세서 - Postman](https://warped-crater-286335.postman.co/workspace/Pickple~c1fcfd4a-a7c2-4157-a97d-1e14584c9d9e/collection/26598837-c2fede18-1303-4a23-8b3f-387ceffda06a?action=share&creator=14476064)   
 
 <br>
 
