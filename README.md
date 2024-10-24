@@ -76,6 +76,20 @@ MSA 구조를 통해 서비스의 확장성과 유연성을 확보하고,  Kafka
 
 <br>
 
+## ✏️ 프로젝트 실행 방법
+
+### 1. 프로젝트 클론
+
+   ```bash
+  git clone https://github.com/pickple-ecommerce/backend.git
+   ```
+### 2. 순차적으로 docker compose 명령어 실행
+
+   ```bash
+    docker-compose -f docker-compose.dev.yml --env-file dev.env
+    docker-compose -f docker-compose.service.yml --env-file dev.env
+   ```
+
 ## 🚧 트러블 슈팅
 
 *
