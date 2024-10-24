@@ -77,10 +77,10 @@ resilience4j:
         waitDurationInOpenState: 20s  # Open 상태에서 Half-open 상태로 전환되기 전에 대기하는 시간을 20초로 설정
 
 payment-service:
-  url: http://localhost:19095
+  url: ${PAYMENT_SERVICE_URL}
 
 delivery-service:
-  url: http://localhost:19096
+  url: ${DELIVERY_SERVICE_URL}
 
 logging:
   level:
