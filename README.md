@@ -148,6 +148,10 @@
 | [`Delivery`]         | 배송 도메인 작업 관리 |                | `19096` |
 | [`Notification`]     | 알람 도메인 작업 관리    |                | `19097` |
 
+## 🚧 트러블 슈팅
+
+### [WIKI](https://github.com/pickple-ecommerce/backend/wiki/Pickple-Trouble-Shooting-Wiki)
+
 ## ✏️ 프로젝트 실행 방법
 
 ### 1. 프로젝트 클론
@@ -161,10 +165,6 @@
     docker-compose -f docker-compose.dev.yml --env-file dev.env
     docker-compose -f docker-compose.service.yml --env-file dev.env
    ```
-
-## 🚧 트러블 슈팅
-
-- 
 
 ## 🅰️ 팀 ATEEN
 
