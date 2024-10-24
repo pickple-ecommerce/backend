@@ -13,6 +13,7 @@ import java.util.UUID;
 public class NotificationRespDto {
     private UUID notificationId;
     private String channelName;
+    private String username;
     private String category;
     private String subject;
     private String content;
@@ -22,6 +23,7 @@ public class NotificationRespDto {
         return NotificationRespDto.builder()
                 .notificationId(notification.getNotificationId())
                 .channelName(notification.getChannel().getName())
+                .username(notification.getUsername())
                 .category(notification.getCategory().name())
                 .subject(notification.getSubject())
                 .content(notification.getContent())
