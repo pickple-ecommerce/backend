@@ -83,7 +83,7 @@ public class OrderMessagingProducerService {
     /**
      * 알림 생성 요청 전송
      */
-    public void sendNotificationCreateRequest(String username, String sender, String subject, String content, String category) {
+    public void sendNotificationCreateRequest(String username, String role, String sender, String subject, String content, String category) {
         // sender가 null일 경우 기본값으로 "System" 설정
         if (sender == null || sender.isEmpty()) {
             sender = "System";
@@ -91,6 +91,7 @@ public class OrderMessagingProducerService {
 
         NotificationCreateRequestEvent event = new NotificationCreateRequestEvent(
                 username,
+                role,
                 sender,
                 subject,
                 content,

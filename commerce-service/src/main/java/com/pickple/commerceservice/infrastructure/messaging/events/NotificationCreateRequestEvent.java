@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NotificationCreateRequestEvent {
     private String username;
+    private String role;
     private String sender;
     private String subject;
     private String content;

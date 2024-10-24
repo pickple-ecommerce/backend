@@ -50,7 +50,7 @@ public class OrderService {
      * 주문 생성
      */
     @Transactional
-    public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username) {
+    public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username, String role) {
         // 주문 정보 생성
         Order order = Order.builder()
                 .orderStatus(OrderStatus.PENDING)
@@ -97,6 +97,7 @@ public class OrderService {
                 // 주문 완료 알림 전송
                 messagingProducerService.sendNotificationCreateRequest(
                         username,
+                        role,
                         "System",
                         "주문 완료",
                         "주문이 성공적으로 완료되었습니다. 주문 번호: " + order.getOrderId(),
