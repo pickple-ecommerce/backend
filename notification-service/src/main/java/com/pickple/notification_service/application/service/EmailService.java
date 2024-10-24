@@ -43,7 +43,7 @@ public class EmailService {
     // 이메일 전송
     public void sendEmail(EmailCreateRequestEvent event) {
 
-        String toEmail = userFeignClient.getUserEmail(event.getUsername());
+        String toEmail = userFeignClient.getUserEmail(event.getUsername(),event.getUsername(), event.getRole());
 
         try{
             MimeMessage message = mailSender.createMimeMessage();
