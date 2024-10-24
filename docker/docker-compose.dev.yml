@@ -44,8 +44,6 @@ services:
       - "5432:5432"
     volumes:
       - ./db-init/user/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
-    networks:
-      - t4y
 
   notification_db:
     image: postgres:latest
@@ -75,8 +73,8 @@ services:
       - "9092:9092"
       - "29092:29092"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092,DOCKER://host.docker.internal:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_BROKER_ID: 1
@@ -229,22 +227,6 @@ services:
       - ../settings/grafana/loki/loki-config.yml:/etc/loki/local-config.yml
     command: -config.file=/etc/loki/local-config.yml
     restart: always
-
-  node_exporter:
-    image: prom/node-exporter
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    ports:
-      - 9100:9100
-    networks:
-      - t4y
 
   zipkin:
     image: openzipkin/zipkin

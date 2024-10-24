@@ -1,0 +1,169 @@
+services:
+  eureka-server:
+    build:
+      context: ../eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    environment:
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
+      - EUREKA_HOSTNAME=${EUREKA_HOSTNAME}
+
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "${GATEWAY_SERVER_PORT}:${GATEWAY_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - GATEWAY_SERVER_PORT=${GATEWAY_SERVER_PORT}
+      - EUREKA_GATEWAY_SERVER_URL=${EUREKA_GATEWAY_SERVER_URL}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+    depends_on:
+      - eureka-server
+
+  auth-service:
+    build:
+      context: ../auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - AUTH_SERVER_PORT=${AUTH_SERVER_PORT}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+      - LOKI_URL=${LOKI_URL}
+
+  user-service:
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "${USER_SERVER_PORT}:${USER_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - USER_SERVER_PORT=${USER_SERVER_PORT}
+      - USER_DB_URL=${USER_DB_URL}
+      - USER_DB_USERNAME=${USER_DB_USERNAME}
+      - USER_DB_PASSWORD=${USER_DB_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}
+    depends_on:
+      - eureka-server
+
+  commerce-service:
+    build:
+      context: ../commerce-service
+      dockerfile: Dockerfile
+    container_name: commerce-service
+    ports:
+      - "${COMMERCE_SERVER_PORT}:${COMMERCE_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - COMMERCE_SERVER_PORT=${COMMERCE_SERVER_PORT}
+      - COMMERCE_DB_URL=${COMMERCE_DB_URL}
+      - COMMERCE_DB_USERNAME=${COMMERCE_DB_USERNAME}
+      - COMMERCE_DB_PASSWORD=${COMMERCE_DB_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+      - LOKI_URL=${LOKI_URL}
+      - PAYMENT_SERVICE_URL=${PAYMENT_SERVICE_URL}
+      - DELIVERY_SERVICE_URL=${DELIVERY_SERVICE_URL}
+    depends_on:
+      - eureka-server
+
+  payment-service:
+    build:
+      context: ../payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    ports:
+      - "${PAYMENT_SERVER_PORT}:${PAYMENT_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - PAYMENT_SERVER_PORT=${PAYMENT_SERVER_PORT}
+      - PAYMENT_DB_URL=${PAYMENT_DB_URL}
+      - PAYMENT_DB_USERNAME=${PAYMENT_DB_USERNAME}
+      - PAYMENT_DB_PASSWORD=${PAYMENT_DB_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}
+    depends_on:
+      - eureka-server
+
+  delivery-service:
+    build:
+      context: ../delivery-service
+      dockerfile: Dockerfile
+    container_name: delivery-service
+    ports:
+      - "${DELIVERY_SERVER_PORT}:${DELIVERY_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DELIVERY_SERVER_PORT=${DELIVERY_SERVER_PORT}
+      - DELIVERY_MONGODB_HOST=${DELIVERY_MONGODB_HOST}
+      - DELIVERY_MONGODB_PORT=${DELIVERY_MONGODB_PORT}
+      - DELIVERY_MONGODB_DATABASE=${DELIVERY_MONGODB_DATABASE}
+      - DELIVERY_MONGODB_USERNAME=${DELIVERY_MONGODB_USERNAME}
+      - DELIVERY_MONGODB_PASSWORD=${DELIVERY_MONGODB_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - REDIS_SENTINEL_PORT1=${REDIS_SENTINEL_PORT1}
+      - REDIS_SENTINEL_PORT2=${REDIS_SENTINEL_PORT2}
+      - REDIS_SENTINEL_PORT3=${REDIS_SENTINEL_PORT3}
+      - LOKI_URL=${LOKI_URL}
+    depends_on:
+      - eureka-server
+
+  notification-service:
+    build:
+      context: ../notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "${NOTIFICATION_SERVER_PORT}:${NOTIFICATION_SERVER_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - NOTIFICATION_SERVER_PORT=${NOTIFICATION_SERVER_PORT}
+      - NOTIFICATION_DB_URL=${NOTIFICATION_DB_URL}
+      - NOTIFICATION_DB_USERNAME=${NOTIFICATION_DB_USERNAME}
+      - NOTIFICATION_DB_PASSWORD=${NOTIFICATION_DB_PASSWORD}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - EUREKA_SERVER_URL=${EUREKA_SERVER_URL}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - SLACK_WORKSPACE_URL=${SLACK_WORKSPACE_URL}
+      - ZIPKIN_ENDPOINT=${ZIPKIN_ENDPOINT}
+      - LOKI_URL=${LOKI_URL}
+    depends_on:
+      - eureka-server

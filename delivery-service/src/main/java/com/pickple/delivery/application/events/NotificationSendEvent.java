@@ -10,9 +10,12 @@ public class NotificationSendEvent {
 
     @Builder.Default
     private String category = "DELIVERY";
+
     private String subject;
 
     private String content;
 
     private String sender;
+
+    private String role;
 }

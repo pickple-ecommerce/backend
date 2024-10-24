@@ -83,7 +83,7 @@ public class DeliveryMapper {
                 .recipientContact(infoDto.getRecipientContact())
                 .recipientName(infoDto.getRecipientName())
                 .trackingNumber(infoDto.getTrackingNumber())
-                .deliveryDetailList(detailInfoDtoList)
+                .deliveryDetails(detailInfoDtoList)
                 .build();
     }
 

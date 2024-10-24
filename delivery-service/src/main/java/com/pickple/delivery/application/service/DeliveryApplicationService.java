@@ -124,23 +124,6 @@ public class DeliveryApplicationService {
         return DeliveryMapper.convertEntityToStartResponseDto(deliveryRepository.save(delivery));
     }
 
-    private void sendNotification(Delivery delivery, String subject, String content) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String sender = (String) authentication.getPrincipal();
-        String role =  authentication.getAuthorities().stream().findFirst().get().getAuthority();
-        String username = orderClient.getUsernameByDeliveryId(
-                delivery.getDeliveryId(), role, sender);
-
-        NotificationSendEvent notificationSendEvent = NotificationSendEvent.builder()
-                .username(username)
-                .subject(subject)
-                .content(content)
-                .sender(sender)
-                .build();
-        deliveryMessageProducerService.sendMessage(emailCreateRequestTopic,
-                EventSerializer.serialize(notificationSendEvent));
-    }
-
     @Transactional
     @CachePut(value = CACHE_PREFIX, key = "#deliveryId")
     public DeliveryInfoResponseDto endDelivery(UUID deliveryId) {
@@ -267,6 +250,26 @@ public class DeliveryApplicationService {
                 ));
         return new DeliveryDeleteResponseDto(delivery.getDeliveryId(), delivery.getOrderId(),
                 deleter);
+    }
+
+
+    private void sendNotification(Delivery delivery, String subject, String content) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String sender = (String) authentication.getPrincipal();
+        String role =  authentication.getAuthorities().stream().findFirst().get().getAuthority();
+        String username = orderClient.getUsernameByDeliveryId(
+                delivery.getDeliveryId(), role, sender);
+
+        NotificationSendEvent notificationSendEvent = NotificationSendEvent.builder()
+                .username(username)
+                .subject(subject)
+                .content(content)
+                .sender(sender)
+                .role(role)
+                .build();
+
+        deliveryMessageProducerService.sendMessage(emailCreateRequestTopic,
+                EventSerializer.serialize(notificationSendEvent));
     }
 
 }
