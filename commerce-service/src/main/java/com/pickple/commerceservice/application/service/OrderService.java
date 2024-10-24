@@ -19,6 +19,7 @@ import com.pickple.commerceservice.infrastructure.redis.TemporaryStorageService;
 import com.pickple.commerceservice.presentation.dto.request.OrderCreateRequestDto;
 import com.pickple.commerceservice.presentation.dto.request.PreOrderRequestDto;
 import com.pickple.common_module.exception.CustomException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -51,7 +52,7 @@ public class OrderService {
      * 주문 생성
      */
     @Transactional
-    public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username) {
+    public OrderCreateResponseDto createOrder(OrderCreateRequestDto requestDto, String username, String role) {
         // 주문 정보 생성
         Order order = Order.builder()
                 .orderStatus(OrderStatus.PENDING)
@@ -98,6 +99,7 @@ public class OrderService {
                 // 주문 완료 알림 전송
                 messagingProducerService.sendNotificationCreateRequest(
                         username,
+                        role,
                         "System",
                         "주문 완료",
                         "주문이 성공적으로 완료되었습니다. 주문 번호: " + order.getOrderId(),
@@ -122,15 +124,26 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(CommerceErrorCode.ORDER_NOT_FOUND));
 
-        // 결제 정보 가져오기 (Feign)
-        PaymentClientDto paymentInfo = paymentClient.getPaymentInfo(role, username, orderId);
+        // 결제 정보 가져오기
+        PaymentClientDto paymentInfo = null;
+        if (order.getPaymentId() != null) {
+            try {
+                paymentInfo = paymentClient.getPaymentInfo(role, username, orderId);
+            } catch (FeignException e) {
+                // 결제 정보를 가져오지 못했을 경우 CustomException 발생
+                throw new CustomException(CommerceErrorCode.PAYMENT_SERVICE_ERROR);
+            }
+        }
 
-        // 배송 정보 가져오기 (Feign)
+        // 배송 정보 가져오기
         DeliveryClientDto deliveryInfo = null;
-        try {
-            deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId).getData();
-        } catch (Exception e) {
-            log.warn("Failed to fetch delivery info for order {}: {}", orderId, e.getMessage());
+        if (order.getDeliveryId() != null) {
+            try {
+                deliveryInfo = deliveryClient.getDeliveryInfo(role, username, orderId).getData();
+            } catch (FeignException e) {
+                // 배송 정보를 가져오지 못했을 경우 CustomException 발생
+                throw new CustomException(CommerceErrorCode.DELIVERY_SERVICE_ERROR);
+            }
         }
 
         // OrderResponseDto 반환 (fromEntity 메서드 활용)

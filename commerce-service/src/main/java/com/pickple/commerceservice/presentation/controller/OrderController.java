@@ -37,9 +37,10 @@ public class OrderController {
     @PreAuthorize("hasAnyAuthority('USER', 'MASTER')")
     public ResponseEntity<ApiResponse<OrderCreateResponseDto>> createOrder(
             @RequestBody OrderCreateRequestDto requestDto,
-            @RequestHeader("X-User-Name") String username) {
+            @RequestHeader("X-User-Name") String username,
+            @RequestHeader("X-User-Roles") String role) {
 
-        OrderCreateResponseDto responseDto = orderService.createOrder(requestDto, username);
+        OrderCreateResponseDto responseDto = orderService.createOrder(requestDto, username, role);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(HttpStatus.CREATED, "주문이 성공적으로 생성되었습니다.", responseDto));

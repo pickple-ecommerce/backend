@@ -31,4 +31,13 @@ public class CommerceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    // Throwable 예외 처리 추가
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ErrorResponse> throwableExceptionHandler(Throwable e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message("서버 내부 오류가 발생했습니다. 나중에 다시 시도해주세요.")
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
 }

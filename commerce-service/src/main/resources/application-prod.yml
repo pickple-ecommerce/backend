@@ -69,3 +69,34 @@ kafka:
     payment-cancel-request: payment-cancel-request
     delivery-delete-request: delivery-delete-request
     notification-create-request: notification-create-request
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:  # 기본 구성 이름
+        registerHealthIndicator: true  # 애플리케이션의 헬스 체크에 서킷 브레이커 상태를 추가하여 모니터링 가능
+        # 서킷 브레이커가 동작할 때 사용할 슬라이딩 윈도우의 타입을 설정
+        # COUNT_BASED: 마지막 N번의 호출 결과를 기반으로 상태를 결정
+        # TIME_BASED: 마지막 N초 동안의 호출 결과를 기반으로 상태를 결정
+        slidingWindowType: COUNT_BASED  # 슬라이딩 윈도우의 타입을 호출 수 기반(COUNT_BASED)으로 설정
+        # 슬라이딩 윈도우의 크기를 설정
+        # COUNT_BASED일 경우: 최근 N번의 호출을 저장
+        # TIME_BASED일 경우: 최근 N초 동안의 호출을 저장
+        slidingWindowSize: 5  # 슬라이딩 윈도우의 크기를 5번의 호출로 설정
+        minimumNumberOfCalls: 5  # 서킷 브레이커가 동작하기 위해 필요한 최소한의 호출 수를 5로 설정
+        slowCallRateThreshold: 100  # 느린 호출의 비율이 이 임계값(100%)을 초과하면 서킷 브레이커가 동작
+        slowCallDurationThreshold: 60000  # 느린 호출의 기준 시간(밀리초)으로, 60초 이상 걸리면 느린 호출로 간주
+        failureRateThreshold: 50  # 실패율이 이 임계값(50%)을 초과하면 서킷 브레이커가 동작
+        permittedNumberOfCallsInHalfOpenState: 3  # 서킷 브레이커가 Half-open 상태에서 허용하는 최대 호출 수를 3으로 설정
+        # 서킷 브레이커가 Open 상태에서 Half-open 상태로 전환되기 전에 기다리는 시간
+        waitDurationInOpenState: 20s  # Open 상태에서 Half-open 상태로 전환되기 전에 대기하는 시간을 20초로 설정
+
+payment-service:
+  url: ${PAYMENT_SERVICE_URL}
+
+delivery-service:
+  url: ${DELIVERY_SERVICE_URL}
+
+logging:
+  level:
+    io.github.resilience4j.circuitbreaker: DEBUG
