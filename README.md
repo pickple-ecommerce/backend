@@ -124,9 +124,7 @@
 
 ## 📚 API 명세서
 
-#### API 명세서
-[🔗 API 명세서 - Postman]
-
+### [POSTMAN DOCS](https://documenter.getpostman.com/view/26598837/2sAY4rGRdh) 
 
 ## 🧩ERD
 ![pickple](https://github.com/user-attachments/assets/5641d753-fc1e-47d9-a1a8-eb1c28ed75ac)
